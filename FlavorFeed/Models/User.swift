@@ -7,7 +7,11 @@
 
 import Foundation
 
-struct User: Identifiable, Hashable {
+struct User: Identifiable {
+    static func == (lhs: User, rhs: User) -> Bool {
+        return true;
+    }
+    
     var id: UUID
     
     var name: String
