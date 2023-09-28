@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6602DD882AC625D7008C3177 /* FFColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6602DD832AC625D7008C3177 /* FFColors.swift */; };
 		664B8F062AC5F1AA001E8C7F /* FlavorFeedApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 664B8F052AC5F1AA001E8C7F /* FlavorFeedApp.swift */; };
 		664B8F082AC5F1AA001E8C7F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 664B8F072AC5F1AA001E8C7F /* ContentView.swift */; };
 		664B8F0A2AC5F1AB001E8C7F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 664B8F092AC5F1AB001E8C7F /* Assets.xcassets */; };
@@ -17,6 +16,7 @@
 		664B8F232AC5F1AB001E8C7F /* FlavorFeedUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 664B8F222AC5F1AB001E8C7F /* FlavorFeedUITestsLaunchTests.swift */; };
 		665113502AC601E900027654 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6651134F2AC601E900027654 /* Post.swift */; };
 		665113522AC6021800027654 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 665113512AC6021800027654 /* User.swift */; };
+		B2FCB8FF2AC63AA200865FCF /* FFColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FCB8FE2AC63AA100865FCF /* FFColors.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -37,7 +37,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		6602DD832AC625D7008C3177 /* FFColors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FFColors.swift; path = ../../../../Downloads/Archive/FFColors.swift; sourceTree = "<group>"; };
 		6602DD8B2AC625EF008C3177 /* SelfProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelfProfileView.swift; sourceTree = "<group>"; };
 		6602DD8C2AC625EF008C3177 /* ContactsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsView.swift; sourceTree = "<group>"; };
 		6602DD8D2AC625EF008C3177 /* MainScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainScrollView.swift; sourceTree = "<group>"; };
@@ -54,6 +53,7 @@
 		664B8F222AC5F1AB001E8C7F /* FlavorFeedUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlavorFeedUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		6651134F2AC601E900027654 /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		665113512AC6021800027654 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		B2FCB8FE2AC63AA100865FCF /* FFColors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FFColors.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,9 +106,7 @@
 			children = (
 				664B8F052AC5F1AA001E8C7F /* FlavorFeedApp.swift */,
 				664B8F072AC5F1AA001E8C7F /* ContentView.swift */,
-				6602DD832AC625D7008C3177 /* FFColors.swift */,
 				6651134C2AC601AF00027654 /* Models */,
-				6651134E2AC601C900027654 /* ViewModels */,
 				6651134D2AC601B500027654 /* Views */,
 				664B8F092AC5F1AB001E8C7F /* Assets.xcassets */,
 				664B8F0B2AC5F1AB001E8C7F /* Preview Content */,
@@ -144,6 +142,7 @@
 		6651134C2AC601AF00027654 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				B2FCB8FE2AC63AA100865FCF /* FFColors.swift */,
 				6651134F2AC601E900027654 /* Post.swift */,
 				665113512AC6021800027654 /* User.swift */,
 			);
@@ -159,13 +158,6 @@
 				6602DD8B2AC625EF008C3177 /* SelfProfileView.swift */,
 			);
 			path = Views;
-			sourceTree = "<group>";
-		};
-		6651134E2AC601C900027654 /* ViewModels */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = ViewModels;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -299,7 +291,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				665113522AC6021800027654 /* User.swift in Sources */,
-				6602DD882AC625D7008C3177 /* FFColors.swift in Sources */,
+				B2FCB8FF2AC63AA200865FCF /* FFColors.swift in Sources */,
 				665113502AC601E900027654 /* Post.swift in Sources */,
 				664B8F082AC5F1AA001E8C7F /* ContentView.swift in Sources */,
 				664B8F062AC5F1AA001E8C7F /* FlavorFeedApp.swift in Sources */,
