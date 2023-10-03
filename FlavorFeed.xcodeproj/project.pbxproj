@@ -17,6 +17,7 @@
 		665113502AC601E900027654 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6651134F2AC601E900027654 /* Post.swift */; };
 		665113522AC6021800027654 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 665113512AC6021800027654 /* User.swift */; };
 		B2FCB8FF2AC63AA200865FCF /* FFColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FCB8FE2AC63AA100865FCF /* FFColors.swift */; };
+		B6903C972AC8D2FF009CCE41 /* AddFriendsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6903C962AC8D2FF009CCE41 /* AddFriendsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,6 +55,7 @@
 		6651134F2AC601E900027654 /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		665113512AC6021800027654 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		B2FCB8FE2AC63AA100865FCF /* FFColors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FFColors.swift; sourceTree = "<group>"; };
+		B6903C962AC8D2FF009CCE41 /* AddFriendsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFriendsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -156,6 +158,7 @@
 				6602DD8C2AC625EF008C3177 /* ContactsView.swift */,
 				6602DD8D2AC625EF008C3177 /* MainScrollView.swift */,
 				6602DD8B2AC625EF008C3177 /* SelfProfileView.swift */,
+				B6903C962AC8D2FF009CCE41 /* AddFriendsView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -294,6 +297,7 @@
 				B2FCB8FF2AC63AA200865FCF /* FFColors.swift in Sources */,
 				665113502AC601E900027654 /* Post.swift in Sources */,
 				664B8F082AC5F1AA001E8C7F /* ContentView.swift in Sources */,
+				B6903C972AC8D2FF009CCE41 /* AddFriendsView.swift in Sources */,
 				664B8F062AC5F1AA001E8C7F /* FlavorFeedApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
