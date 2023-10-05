@@ -11,14 +11,7 @@ struct CalendarView: View {
     var user: User
     var body: some View {
         VStack {
-            HStack {
-                Text("Pins")
-                    .font(.title2)
-                    .padding()
-                Spacer()
-                Image(systemName: "person.2.fill")
-                    .padding()
-            }
+        
         }
     }
 }

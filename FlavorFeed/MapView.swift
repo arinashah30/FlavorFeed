@@ -11,6 +11,14 @@ struct MapView: View {
     var user: User
     var body: some View {
         VStack {
+            HStack {
+                Text("My Restaurants")
+                    .font(.title2)
+                    .padding()
+                Spacer()
+                Image(systemName: "person.2.fill")
+                    .padding()
+            }
             
         }
     }
