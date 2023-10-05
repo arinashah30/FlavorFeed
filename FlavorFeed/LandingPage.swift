@@ -14,6 +14,7 @@ enum Tabs {
 }
 
 struct LandingPage: View {
+    @ObservedObject var vm: ViewModel
     @State var tabSelection: Tabs = .mainScrollView
     
     var body: some View {
@@ -23,7 +24,7 @@ struct LandingPage: View {
                 ContactsView(tabSelection: $tabSelection)
                     .tag(Tabs.contactsView)
                 
-                MainScrollView(tabSelection: $tabSelection)
+                MainScrollView(vm: vm, tabSelection: $tabSelection)
                     .tag(Tabs.mainScrollView)
                 
                 SelfProfileView(tabSelection: $tabSelection)
@@ -41,6 +42,6 @@ struct LandingPage: View {
 
 struct LandingPage_Previews: PreviewProvider {
     static var previews: some View {
-        LandingPage()
+        LandingPage(vm: ViewModel())
     }
 }

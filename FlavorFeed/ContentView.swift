@@ -2,20 +2,21 @@
 //  ContentView.swift
 //  FlavorFeed
 //
-//  Created by Arina Shah on 9/28/23.
+//  Created by Nicholas Candello on 10/5/23.
 //
 
 import SwiftUI
 
 struct ContentView: View {
+    @ObservedObject var vm = ViewModel()
+    @AppStorage("log_Status") var log_Status = false
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        if(log_Status) {
+            LandingPage(vm: vm)
+        } else {
+            Onboarding(vm: vm)
         }
-        .padding()
     }
 }
 
