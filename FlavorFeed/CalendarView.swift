@@ -11,7 +11,7 @@ struct CalendarView: View {
     var user: User
     var body: some View {
         VStack {
-            
+        
         }
     }
 }
