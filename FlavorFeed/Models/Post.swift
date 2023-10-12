@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Post: Identifiable {
+struct Post: Identifiable, Hashable {
     var id: UUID
     var images: [String:String]
     var caption: String
