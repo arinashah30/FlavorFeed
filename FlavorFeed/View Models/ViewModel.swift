@@ -81,4 +81,14 @@ class ViewModel: ObservableObject {
             
         }
     }
+    
+    func firebase_delete_comment(post: Post, comment: Comment) {
+        self.db.collection("POSTS").document(post.id.uuidString).getDocument { (document, error) in
+            if let document = document, document.exists {
+                let data = document.data()
+                let comments = data["comments"]
+                
+            }
+        }
+    }
 }
