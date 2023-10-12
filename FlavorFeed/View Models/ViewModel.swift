@@ -12,6 +12,7 @@ import FirebaseFirestore
 
 class ViewModel: ObservableObject {
     @Published private var current_user: User? = nil
+    @Published private var post: Post? = nil
     
     let db = Firestore.firestore()
     let auth = Auth.auth()
@@ -79,6 +80,40 @@ class ViewModel: ObservableObject {
                 
             }
             
+        }
+        
+        func firebase_create_post(images: String, caption: String, recipe: String, date: String, likes: String, comments: String, location: String) {
+            
+            let data = ["images" : images, 
+                        "caption" : caption,
+                        "recipe" : recipe,
+                        "date" : date,
+                        "likes" : likes,
+                        "comments" : comments,
+                        "location" : location]
+            as [String : Any]
+            
+            self.db.collection("POSTS").addDocument(data: data) { error in
+                if let error = error {
+                    print("Error: \(error.localizedDescription)")
+                    return
+                }
+            }
+        }
+        
+        func firebase_search_for_username(username: String) {
+            self.db.collection("USERS").whereField("username", arrayContains: username)
+                .getDocuments() { (querySnapshot, error) in
+                    if let error = error {
+                        print("Error: \(error.localizedDescription)")
+                        return
+                    } else {
+                        for document in querySnapshot!.documents {
+                            let data = document.data()
+                            print("\(data["email"] ?? nil) \(data["name"] ?? nil)")
+                        }
+                    }
+                }
         }
     }
 }
