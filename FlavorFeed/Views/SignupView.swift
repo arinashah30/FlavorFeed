@@ -18,6 +18,8 @@ struct SignupView: View {
             HStack {
                 Image(systemName: "person.fill")
                 TextField("", text: Binding.constant(""), prompt: Text("Username"))
+                    .textInputAutocapitalization(.never)
+
             }
             .padding()
             .background(Color(uiColor: .secondarySystemBackground))
@@ -27,6 +29,8 @@ struct SignupView: View {
             HStack {
                 Image(systemName: "envelope.fill")
                 TextField("", text: Binding.constant(""), prompt: Text("Email Address"))
+                    .textInputAutocapitalization(.never)
+
             }
             .padding()
             .background(Color(uiColor: .secondarySystemBackground))
@@ -53,7 +57,8 @@ struct SignupView: View {
             
             HStack {
                 Image(systemName: "phone.fill")
-                SecureField("", text:  Binding.constant(""), prompt: Text("Phone number"))
+                TextField("", text: Binding.constant(""), prompt: Text("Phone Number"))
+                    .textInputAutocapitalization(.never)
             }
             .padding()
             .background(Color(uiColor: .secondarySystemBackground))
@@ -62,7 +67,8 @@ struct SignupView: View {
             
             HStack {
                 Image(systemName: "person.crop.rectangle")
-                SecureField("", text:  Binding.constant(""), prompt: Text("Display name"))
+                TextField("", text: Binding.constant(""), prompt: Text("Display Name"))
+                    .textInputAutocapitalization(.never)
             }
             .padding()
             .background(Color(uiColor: .secondarySystemBackground))
@@ -87,7 +93,7 @@ struct SignupView: View {
                 Text("Already have an account?")
                 
                 NavigationLink {
-                    SignupView()
+                    LoginView()
                 } label: {
                     Text("Login")
                         .fontWeight(.bold)

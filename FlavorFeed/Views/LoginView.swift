@@ -20,6 +20,7 @@ struct LoginView: View {
             HStack {
                 Image(systemName: "envelope.fill")
                 TextField("", text: Binding.constant(""), prompt: Text("Email Address"))
+                    .textInputAutocapitalization(.never)
             }
             .padding()
             .background(Color(uiColor: .secondarySystemBackground))
