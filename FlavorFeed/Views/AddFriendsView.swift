@@ -2,10 +2,11 @@
 //  AddFriendsView.swift
 //  FlavorFeed
 //
-//  Created by Misry Dhanani on 9/30/23.
+//  Created by Misry Dhanani, Husna Jakeer, and Triem Le on 10/12/23.
 //
 
 import SwiftUI
+
 
 struct Person {
     var name: String
@@ -16,15 +17,17 @@ struct AddFriendsView: View {
     var options = ["Suggestions", "Friends", "Requests"]
     @State private var searchText = "hello"
     
-    var body: some View {
+    var body: some View{
         VStack{
             NavigationStack {
                 Text("Searching for \(searchText)")
                     .navigationTitle("Searchable Example")
             }
             .searchable(text: $searchText)
-            NavigationView {
-                VStack {
+            let user = User(id: UUID(), name: "Triem", username: "", password: "", profilePicture: "", email: "", favorites: [], friends: [], savedPosts: [], bio: "", myPosts: [], phoneNumber: 0, location: "", myRecipes: [])
+            UserListView(user: user)
+            NavigationView{
+                VStack{
                     Text("\(selectedOption)")
                     Picker("Tabs", selection: $selectedOption) {
                         Text(options[0]).tag(options[0])
