@@ -59,10 +59,10 @@
 		664B8F1C2AC5F1AB001E8C7F /* FlavorFeedUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FlavorFeedUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		664B8F202AC5F1AB001E8C7F /* FlavorFeedUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlavorFeedUITests.swift; sourceTree = "<group>"; };
 		664B8F222AC5F1AB001E8C7F /* FlavorFeedUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlavorFeedUITestsLaunchTests.swift; sourceTree = "<group>"; };
-		666F5EF82ADF48A30019CCA3 /* FFColors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FFColors.swift; path = FlavorFeed/Models/Models/FFColors.swift; sourceTree = SOURCE_ROOT; };
+		666F5EF82ADF48A30019CCA3 /* FFColors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FFColors.swift; path = FlavorFeed/Models/FFColors.swift; sourceTree = SOURCE_ROOT; };
 		666F5EF92ADF48A30019CCA3 /* ToolBars.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ToolBars.swift; path = FlavorFeed/Views/ToolBars.swift; sourceTree = SOURCE_ROOT; };
-		666F5EFA2ADF48A30019CCA3 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = User.swift; path = FlavorFeed/Models/Models/User.swift; sourceTree = SOURCE_ROOT; };
-		666F5EFB2ADF48A30019CCA3 /* Post.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Post.swift; path = FlavorFeed/Models/Models/Post.swift; sourceTree = SOURCE_ROOT; };
+		666F5EFA2ADF48A30019CCA3 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = User.swift; path = FlavorFeed/Models/User.swift; sourceTree = SOURCE_ROOT; };
+		666F5EFB2ADF48A30019CCA3 /* Post.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Post.swift; path = FlavorFeed/Models/Post.swift; sourceTree = SOURCE_ROOT; };
 		666F5EFC2ADF48A30019CCA3 /* MainScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MainScrollView.swift; path = FlavorFeed/Views/MainScrollView.swift; sourceTree = SOURCE_ROOT; };
 		666F5EFD2ADF48A30019CCA3 /* ContactsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ContactsView.swift; path = FlavorFeed/Views/ContactsView.swift; sourceTree = SOURCE_ROOT; };
 		666F5EFE2ADF48A30019CCA3 /* LandingPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LandingPage.swift; path = FlavorFeed/Views/LandingPage.swift; sourceTree = SOURCE_ROOT; };
@@ -173,8 +173,7 @@
 				666F5EFB2ADF48A30019CCA3 /* Post.swift */,
 				666F5EFA2ADF48A30019CCA3 /* User.swift */,
 			);
-			name = Models;
-			path = Models/Models;
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
