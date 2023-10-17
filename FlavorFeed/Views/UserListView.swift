@@ -2,7 +2,7 @@ import SwiftUI
 
 struct UserListView: View {
     var user: User
-    let icon= "Image"
+    let icon = "Image"
     var body: some View{
         VStack{
             HStack{
