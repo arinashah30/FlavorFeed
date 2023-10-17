@@ -11,6 +11,7 @@ struct PostView: View {
     //var user: User
     var gold = Color(red:255/255, green:211/255, blue:122/255)
     var salmon = Color(red: 255/255, green: 112/255, blue: 112/255)
+    var teal = Color(red: 0/255, green: 82/255, blue: 79/255)
     
     
     var body: some View {
@@ -22,9 +23,13 @@ struct PostView: View {
                     .frame(width: 80)
                 
                 VStack (alignment: .leading) {
-                    Text("Name");
+                    Text("Name")
+                        .font(.system(size: 20))
+                        .foregroundColor(teal)
+                        .fontWeight(.semibold)
                     Text("Location • Time")
-                    
+                        .font(.system(size: 15))
+                        .fontWeight(.light)
                 }
                 
                 Spacer()
@@ -52,25 +57,28 @@ struct PostView: View {
                             Button {
                                 
                             } label: {
-                                Circle()
-                                    .foregroundColor(.red)
-                                    .frame(width: 20)
+                                Image("fork_and_knife")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 35)
+                                    .foregroundColor(gold)
                             }
                             
                             Button {
                                 
                             } label: {
-                                Circle()
-                                    .foregroundColor(.red)
-                                    .frame(width: 20)
+                                Image("Restaurant_logo")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 35)
                             }
-                        }.padding(20).offset(x: 150, y: -225)
+                        }.padding(20).offset(x: 165, y: -220)
                         
                         Text("This is a sample caption")
-                            .offset(x: 0, y: 250)
+                            .offset(x: 0, y: 245)
                             .background(RoundedRectangle(cornerRadius: 10.0)
                                 .frame(width: 300, height: 40)
-                                .offset(x: 0, y: 250)
+                                .offset(x: 0, y: 245)
                                 .foregroundColor(gold))
                         
                         Image("selfie")
@@ -78,9 +86,9 @@ struct PostView: View {
                             .aspectRatio(contentMode: .fill)
                             .frame(width: 120, height: 180)
                             .clipped()
-                            .cornerRadius(20)
+                            .cornerRadius(10)
                             .overlay(RoundedRectangle(cornerRadius: 10)
-                                .stroke(salmon, lineWidth: 4))
+                                .stroke(salmon, lineWidth: 2))
                             .offset(x: -120, y: -170)
                         
                         

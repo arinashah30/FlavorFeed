@@ -7,7 +7,11 @@
 
 import Foundation
 
-struct Post: Identifiable, Hashable {
+struct Post: Identifiable {
+//    static func == (lhs: Post, rhs: Post) -> Bool {
+//        <#code#>
+//    }
+    
     var id: UUID
     var images: [String:String]
     var caption: String
