@@ -40,6 +40,7 @@
 		B2BACCCF2ACF132000F942A3 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2BACCCE2ACF132000F942A3 /* ContentView.swift */; };
 		B2BACCD12ACF136B00F942A3 /* Onboarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2BACCD02ACF136B00F942A3 /* Onboarding.swift */; };
 		B2FCB8FF2AC63AA200865FCF /* FFColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FCB8FE2AC63AA100865FCF /* FFColors.swift */; };
+		F7D73F8B2ADF400600663EC1 /* CreatePostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7D73F8A2ADF400600663EC1 /* CreatePostView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -82,6 +83,7 @@
 		B2BACCD22ACF15C000F942A3 /* FlavorFeed.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FlavorFeed.entitlements; sourceTree = "<group>"; };
 		B2BACCD32ACF161100F942A3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		B2FCB8FE2AC63AA100865FCF /* FFColors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FFColors.swift; sourceTree = "<group>"; };
+		F7D73F8A2ADF400600663EC1 /* CreatePostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatePostView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -151,6 +153,7 @@
 				B2BACCD32ACF161100F942A3 /* Info.plist */,
 				B2BACCD22ACF15C000F942A3 /* FlavorFeed.entitlements */,
 				664B8F052AC5F1AA001E8C7F /* FlavorFeedApp.swift */,
+				F7D73F8A2ADF400600663EC1 /* CreatePostView.swift */,
 				B2BACCCE2ACF132000F942A3 /* ContentView.swift */,
 				B2BACCD02ACF136B00F942A3 /* Onboarding.swift */,
 				6602DD8E2AC6262C008C3177 /* LandingPage.swift */,
@@ -369,6 +372,7 @@
 				B2BACCD12ACF136B00F942A3 /* Onboarding.swift in Sources */,
 				B21292512ACD21500064AE5D /* ViewModel.swift in Sources */,
 				B2BACCCF2ACF132000F942A3 /* ContentView.swift in Sources */,
+				F7D73F8B2ADF400600663EC1 /* CreatePostView.swift in Sources */,
 				664B8F062AC5F1AA001E8C7F /* FlavorFeedApp.swift in Sources */,
 				B2BACCCC2ACF12B300F942A3 /* MainScrollView.swift in Sources */,
 				B2BACCCB2ACF12B300F942A3 /* ContactsView.swift in Sources */,

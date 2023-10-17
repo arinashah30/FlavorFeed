@@ -11,8 +11,8 @@ import FirebaseAuth
 import FirebaseFirestore
 
 class ViewModel: ObservableObject {
-    @Published private var current_user: User? = nil
-    @Published private var post: Post? = nil
+    @Published var current_user: User? = nil
+    @Published var post: Post? = nil
     
     let db = Firestore.firestore()
     let auth = Auth.auth()
@@ -81,26 +81,36 @@ class ViewModel: ObservableObject {
             }
             
         }
+    }
+    
+    func firebase_create_post(images: String, caption: String, recipe: String, location: String) {
         
-        func firebase_create_post(images: String, caption: String, recipe: String, date: String, likes: String, comments: String, location: String) {
-            
-            let data = ["images" : images, 
-                        "caption" : caption,
-                        "recipe" : recipe,
-                        "date" : date,
-                        "likes" : likes,
-                        "comments" : comments,
-                        "location" : location]
-            as [String : Any]
-            
-            self.db.collection("POSTS").addDocument(data: data) { error in
-                if let error = error {
-                    print("Error: \(error.localizedDescription)")
-                    return
-                }
+        let date = Date()
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MM-dd-yyyy HH:mm:ss"
+        
+        let dateFormatted = dateFormatter.string(from: date) // get string from date
+        
+        let data = ["images" : images,
+                    "caption" : caption,
+                    "recipe" : recipe,
+                    "date" : dateFormatted,
+                    "likes" : [],
+                    "location" : location]
+        as [String : Any]
+        
+        let docId = UUID()
+        self.db.collection("POSTS").document(docId.uuidString).setData(data) { error in
+            if let error = error {
+                print("Error: \(error.localizedDescription)")
+                return
+            } else {
+                self.db.collection("USERS").document("1mLyRTekRPWRf2aJtmzYyaJQQqI2").updateData(["myPosts": FieldValue.arrayUnion([docId.uuidString])])
             }
-        }
         
+    }
+    
         func firebase_search_for_username(username: String) {
             self.db.collection("USERS").whereField("username", arrayContains: username)
                 .getDocuments() { (querySnapshot, error) in
@@ -114,6 +124,30 @@ class ViewModel: ObservableObject {
                         }
                     }
                 }
+            /*let ref = self.db.collection("USERS").queryOrdered(byChild: "username").queryStarting(atValue: username).queryEnding(atValue: "\(username)\\uf8ff")
+             ref.observeSingleEvent(of: .value) { (snapshot, error)  in
+             guard let dictionaries = snapshot.value as? [String: Any]
+             else { return }
+             
+             self.users.removeAll() // clear all previous results
+             
+             dictionaries.forEach({ (key, value) in
+             
+             if key == Auth.auth().currentUser?.uid {
+             return
+             }
+             
+             guard let userDictionary = value as? [String: Any] else { return }
+             
+             let user = User(uid: key, dictionary: userDictionary)
+             self.users.append(user)
+             
+             })
+             
+             self.users.sort(by: { (user1, user2) -> Bool in
+             
+             return user1.username.compare(user2.username) == .orderedAscending
+             })*/
         }
     }
 }
