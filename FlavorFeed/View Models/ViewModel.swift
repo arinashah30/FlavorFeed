@@ -5,6 +5,8 @@
 //  Created by Nicholas Candello on 10/4/23.
 //
 
+// Testing something out.
+
 import Foundation
 import Firebase
 import FirebaseAuth
@@ -15,6 +17,7 @@ class ViewModel: ObservableObject {
     
     let db = Firestore.firestore()
     let auth = Auth.auth()
+  
     
     func firebase_sign_out() {
         do {
@@ -25,7 +28,6 @@ class ViewModel: ObservableObject {
             print("Error signing out: %@", signOutError)
         }
     }
-    
     
     func firebase_email_password_sign_up(email: String, password: String, username: String, displayName: String, phoneNumber: String) {
         
@@ -76,9 +78,16 @@ class ViewModel: ObservableObject {
                         
                     }
                 }
-                
             }
-            
+        }
+    }
+    
+    func updateUser(bio: String, email: String, name: String, phoneNumber: String, username: String)
+    {
+        if let userID = auth.currentUser?.uid {
+            db.collection("USERS").document("\(userID)").updateData(["bio": bio, "email": email, "name": name, "phone_number": phoneNumber, "username": username])
+        } else {
+            print("error")
         }
     }
 }
