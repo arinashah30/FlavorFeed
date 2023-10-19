@@ -13,12 +13,13 @@ struct Post: Identifiable {
 //    }
     
     var id: UUID
-    var images: [String:String]
+    var userID: UUID
+    var images: [[String]]
     var caption: String
     var recipe: String? //Recipe
     var date: String
-    var likes: [User]
-    //var comments: [User : String]
+    var likes: [User]?
+    var comments: [Comment]?
     var location: String?
     
 }

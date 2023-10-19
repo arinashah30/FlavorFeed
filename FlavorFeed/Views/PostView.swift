@@ -8,16 +8,18 @@
 import SwiftUI
 
 struct PostView: View {
-//    var user: User
+    var post: Post
+//    var userID: String
     var gold = Color(red:255/255, green:211/255, blue:122/255)
     var salmon = Color(red: 255/255, green: 112/255, blue: 112/255)
     var teal = Color(red: 0/255, green: 82/255, blue: 79/255)
     var lightGray = Color(red: 238/255, green: 238/255, blue: 239/255)
     
+    @State private var showSelfieFirst = true
     @State private var showComments = true
-     let selfiePic: String
-     let foodPic: String
-     let caption: String
+//     let selfiePic: String
+//     let foodPic: String
+//     let caption: String
     
     var body: some View {
         VStack {
@@ -49,14 +51,16 @@ struct PostView: View {
             }.padding([.leading, .trailing] , 20)
             
             TabView {
-                ForEach(1...3, id: \.self) { pic in
+                ForEach(post.images, id: \.self) { postImage in
+                    
+                    //                ForEach(1...3, id: \.self) { pic in
                     ZStack (){
-                        Image(foodPic)
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                           .frame(width: 390, height: 550)
+                            Image((showSelfieFirst) ? postImage[1] : postImage[0])
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 390, height: 550)
                             .clipped()
-
+                        
                         VStack {
                             Button {
                                 
@@ -78,24 +82,28 @@ struct PostView: View {
                             }
                         }.padding(20).offset(x: 165, y: -220)
                         
-                        Text(caption)
+                        Text(post.caption)
                             .offset(x: 0, y: 245)
                             .background(RoundedRectangle(cornerRadius: 10.0)
                                 .frame(width: 300, height: 40)
                                 .offset(x: 0, y: 245)
                                 .foregroundColor(gold))
                         
-                        Image(selfiePic)
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 120, height: 180)
-                            .clipped()
+                        Button {
+                            self.showSelfieFirst.toggle()
+                        } label: {
+                            Image((showSelfieFirst) ? postImage[0] : postImage[1])
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 120, height: 180)
+                                .clipped()
+                        }
                             .cornerRadius(10)
                             .overlay(RoundedRectangle(cornerRadius: 10)
                                 .stroke(salmon, lineWidth: 2))
                             .offset(x: -120, y: -170)
                     }.cornerRadius(20)
-                    .padding(.bottom, 55)
+                        .padding(.bottom, 55)
                         .padding([.leading, .trailing] , 20)
                 }.frame(height:600)
                 
@@ -104,7 +112,7 @@ struct PostView: View {
                 .onAppear {
                     setupAppearance()
                 }
-                
+            
             VStack{
                 HStack{
                     Text("Top Comments")
@@ -125,20 +133,20 @@ struct PostView: View {
                 }
                 .padding(.horizontal, 20)
                 .padding(.top, 5)
-                if showComments {
+                if showComments && post.comments != nil {
                     VStack {
-                        ForEach(1...2, id: \.self) { comment in
+                        ForEach(post.comments!, id: \.self) { comment in
                             HStack{
-                                Image("samplePFP")
+                                Image(comment.profilePicture)
                                     .resizable()
                                     .frame(width: 60, height: 60)
                                 Spacer()
-                                   
-                                Text("**Name**: This is a sample comment that would be below a post")
+                                
+                                Text("**\(comment.username)**: \(comment.caption)")
                                     .padding(.horizontal, 5)
-                                .frame(width: 300, height: 60)
-                                .background(gold)
-                                .cornerRadius(10)
+                                    .frame(width: 300, height: 60)
+                                    .background(gold)
+                                    .cornerRadius(10)
                                 Spacer()
                             }
                             .padding(.horizontal, 15)
@@ -163,7 +171,7 @@ struct PostView: View {
 }
 
 #Preview {
-//    PostView(gold: <#T##arg#>, salmon: <#T##arg#>, teal: <#T##arg#>, lightGray: <#T##arg#>, showComments: <#T##arg#>, selfiePic: <#T##String#>, foodPic: <#T##String#>, caption: <#T##String#>)
-    PostView(selfiePic: "selfie", foodPic: "samplePic2", caption: "This is a sample caption")
+    PostView(post: Post(id: UUID(), userID: UUID(), images: [["drake_selfie", "food_pic_1"], ["drake_selfie2", "food_pic_2"], ["drake_selfie3", "food_pic_3"]], caption: "This is a sample caption", date: "October 24, 2022", comments: [Comment(id: UUID(), username: "Adonis", profilePicture: "samplePFP", caption: "Looking fresh Drake!"), Comment(id: UUID(), username: "Travis Scott", profilePicture: "samplePFP", caption: "She said do you love me I told her only partly.")]))
+//    PostView(selfiePic: "selfie", foodPic: "samplePic2", caption: "This is a sample caption")
 }
 
