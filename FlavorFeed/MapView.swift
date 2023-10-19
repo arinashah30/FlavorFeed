@@ -8,6 +8,7 @@
 import SwiftUI
 
 // Test Commit
+// Test commit 2
 struct MapView: View {
     var user: User
     var body: some View {
