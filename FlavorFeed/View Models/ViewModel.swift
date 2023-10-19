@@ -81,4 +81,28 @@ class ViewModel: ObservableObject {
             
         }
     }
+    
+    func accept_friend_request(from: String, to: String) {
+        var fromRef = self.db.collection("USERS").document(from)
+        var toRef = self.db.collection("USERS").document(to)
+        fromRef.updateData([
+            "outgoingRequests": FieldValue.arrayRemove([to]),
+            "friends": FieldValue.arrayUnion([to])
+        ])
+        toRef.updateData([
+            "incomingRequests": FieldValue.arrayRemove([from]),
+            "friends": FieldValue.arrayUnion([from])
+        ])
+    }
+    
+    func reject_friend_request(from: String, to: String) {
+        var fromRef = self.db.collection("USERS").document(from)
+        var toRef = self.db.collection("USERS").document(to)
+        fromRef.updateData([
+            "outgoingRequests": FieldValue.arrayRemove([to]),
+        ])
+        toRef.updateData([
+            "incomingRequests": FieldValue.arrayRemove([from])
+        ])
+    }
 }
