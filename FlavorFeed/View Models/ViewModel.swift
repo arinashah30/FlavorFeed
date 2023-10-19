@@ -54,7 +54,7 @@ class ViewModel: ObservableObject {
                     ] as [String : Any]
                 ) { err in
                     if let err = err {
-                        print("Error: \(error?.localizedDescription)")
+                        print("Error: \(err.localizedDescription)")
                     } else {
                         
                         self.current_user = User(
@@ -83,10 +83,11 @@ class ViewModel: ObservableObject {
     }
     
     func firebase_delete_comment(post: Post, comment: Comment) {
-        self.db.collection("POSTS").document(post.id.uuidString).getDocument { (document, error) in
-            if let document = document, document.exists {
-                let data = document.data()
-                let comments = data["comments"]
+        self.db.collection("POSTS").document(post.id.uuidString).collection("comments").document(comment.id.uuidString).delete { err in
+            if let err = err {
+                print("Error: \(err.localizedDescription)")
+            } else {
+                // Remove comment on screen
                 
             }
         }
