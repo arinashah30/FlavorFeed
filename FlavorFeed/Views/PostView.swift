@@ -8,11 +8,16 @@
 import SwiftUI
 
 struct PostView: View {
-    //var user: User
+//    var user: User
     var gold = Color(red:255/255, green:211/255, blue:122/255)
     var salmon = Color(red: 255/255, green: 112/255, blue: 112/255)
     var teal = Color(red: 0/255, green: 82/255, blue: 79/255)
+    var lightGray = Color(red: 238/255, green: 238/255, blue: 239/255)
     
+    @State private var showComments = true
+     let selfiePic: String
+     let foodPic: String
+     let caption: String
     
     var body: some View {
         VStack {
@@ -20,7 +25,7 @@ struct PostView: View {
                 Image("samplePFP")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(width: 80)
+                    .frame(width: 70)
                 
                 VStack (alignment: .leading) {
                     Text("Name")
@@ -38,7 +43,7 @@ struct PostView: View {
                     Image(systemName: "ellipsis")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .frame(width: 25)
+                        .frame(width: 20)
                         .foregroundColor(.black)
                 }
             }.padding([.leading, .trailing] , 20)
@@ -46,7 +51,7 @@ struct PostView: View {
             TabView {
                 ForEach(1...3, id: \.self) { pic in
                     ZStack (){
-                        Image("samplePic2")
+                        Image(foodPic)
                             .resizable()
                             .aspectRatio(contentMode: .fill)
                            .frame(width: 390, height: 550)
@@ -73,14 +78,14 @@ struct PostView: View {
                             }
                         }.padding(20).offset(x: 165, y: -220)
                         
-                        Text("This is a sample caption")
+                        Text(caption)
                             .offset(x: 0, y: 245)
                             .background(RoundedRectangle(cornerRadius: 10.0)
                                 .frame(width: 300, height: 40)
                                 .offset(x: 0, y: 245)
                                 .foregroundColor(gold))
                         
-                        Image("selfie")
+                        Image(selfiePic)
                             .resizable()
                             .aspectRatio(contentMode: .fill)
                             .frame(width: 120, height: 180)
@@ -92,14 +97,13 @@ struct PostView: View {
                     }.cornerRadius(20)
                     .padding(.bottom, 55)
                         .padding([.leading, .trailing] , 20)
-                }
+                }.frame(height:600)
                 
             }.tabViewStyle(.page).indexViewStyle(.page(backgroundDisplayMode: .always))
+                .frame(height: 610)
                 .onAppear {
                     setupAppearance()
                 }
-            
-//            Spacer().frame(height: 60)
                 
             VStack{
                 HStack{
@@ -108,9 +112,11 @@ struct PostView: View {
                         .fontWeight(.light)
                     Spacer()
                     Button {
-                        
+                        withAnimation (.smooth) {
+                            self.showComments.toggle()
+                        }
                     } label: {
-                        Image(systemName: "chevron.up")
+                        Image(systemName: self.showComments ? "chevron.down" : "chevron.up")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(width: 15)
@@ -119,30 +125,33 @@ struct PostView: View {
                 }
                 .padding(.horizontal, 20)
                 .padding(.top, 5)
-                VStack {
-                    ForEach(1...2, id: \.self) { comment in
-                        HStack{
-                            Image("samplePFP")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 60)
-                            Spacer()
+                if showComments {
+                    VStack {
+                        ForEach(1...2, id: \.self) { comment in
                             HStack{
-                                Text("Name:")
-                                Text("This is a sample comment that would be below a post")
+                                Image("samplePFP")
+                                    .resizable()
+                                    .frame(width: 60, height: 60)
+                                Spacer()
+                                   
+                                Text("**Name**: This is a sample comment that would be below a post")
+                                    .padding(.horizontal, 5)
+                                .frame(width: 300, height: 60)
+                                .background(gold)
+                                .cornerRadius(10)
+                                Spacer()
                             }
-                            .frame(width: 300, height: 60)
-                            .background(gold)
-                            .cornerRadius(10)
-                            Spacer()
+                            .padding(.horizontal, 15)
                         }
-                        .padding(.horizontal, 15)
+                        
                     }
-//                    .background(Color.gray)
+                    .padding(.vertical)
+                    .background(lightGray)
+                    .cornerRadius(20)
+                    .padding(.bottom, 5)
                 }
-                .padding(.bottom, 5)
- //               Spacer().frame(height: 50)
             }
+            Spacer()
         }
     }
     
@@ -154,5 +163,7 @@ struct PostView: View {
 }
 
 #Preview {
-    PostView()
+//    PostView(gold: <#T##arg#>, salmon: <#T##arg#>, teal: <#T##arg#>, lightGray: <#T##arg#>, showComments: <#T##arg#>, selfiePic: <#T##String#>, foodPic: <#T##String#>, caption: <#T##String#>)
+    PostView(selfiePic: "selfie", foodPic: "samplePic2", caption: "This is a sample caption")
 }
+
