@@ -36,6 +36,6 @@ struct MainScrollView: View {
 }
 
 #Preview {
-    MainScrollView(tabSelection: Binding.constant(Tabs.mainScrollView))
+    MainScrollView(vm: ViewModel(), tabSelection: Binding.constant(Tabs.mainScrollView))
 }
 

@@ -8,7 +8,10 @@
 import SwiftUI
 
 struct LoginView: View {
+    @ObservedObject var vm: ViewModel
     @State var isChecked = false
+    @State var email = ""
+    @State var password = ""
 
     var body: some View {
         VStack {
@@ -19,7 +22,7 @@ struct LoginView: View {
             
             HStack {
                 Image(systemName: "envelope.fill")
-                TextField("", text: Binding.constant(""), prompt: Text("Email Address"))
+                TextField("", text: $email, prompt: Text("Email Address"))
                     .textInputAutocapitalization(.never)
             }
             .padding()
@@ -29,7 +32,7 @@ struct LoginView: View {
 
             HStack {
                 Image(systemName: "lock.fill")
-                SecureField("", text:  Binding.constant(""), prompt: Text("Password"))
+                SecureField("", text:  $password, prompt: Text("Password"))
             }
             .padding()
             .background(Color(uiColor: .secondarySystemBackground))
@@ -63,8 +66,22 @@ struct LoginView: View {
             
             Spacer().frame(height: 150)
             
+            if let errorText = vm.errorText {
+                Text(errorText).foregroundStyle(Color.red)
+            } else {
+                Text(" ")
+            }
+            
             Button {
+                vm.errorText = nil
+                email = email.trimmingCharacters(in: .whitespacesAndNewlines)
+                password = password.trimmingCharacters(in: .whitespacesAndNewlines)
                 
+                if !email.isEmpty && !password.isEmpty {
+                    vm.firebase_sign_in(email: email, password: password)
+                } else {
+                    vm.errorText = "You must fill out all fields"
+                }
             } label: {
                 Text("LOGIN")
                     .font(.title3)
@@ -75,12 +92,12 @@ struct LoginView: View {
             .background(Color(uiColor: .secondarySystemBackground))
             .clipShape(.rect(cornerRadius: 50.0))
             .padding()
-            
+                        
             HStack {
                 Text("Don't have an account?")
                 
                 NavigationLink {
-                    SignupView()
+                    SignupView(vm: vm)
                 } label: {
                     Text("Sign up")
                         .fontWeight(.bold)
@@ -88,9 +105,12 @@ struct LoginView: View {
                 }
             }
         }
+        .onAppear {
+            vm.errorText = nil
+        }
     }
 }
 
 #Preview {
-    LoginView()
+    LoginView(vm: ViewModel())
 }

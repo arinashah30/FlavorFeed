@@ -40,6 +40,9 @@
 		B2BACCCF2ACF132000F942A3 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2BACCCE2ACF132000F942A3 /* ContentView.swift */; };
 		B2BACCD12ACF136B00F942A3 /* Onboarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2BACCD02ACF136B00F942A3 /* Onboarding.swift */; };
 		B2FCB8FF2AC63AA200865FCF /* FFColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FCB8FE2AC63AA100865FCF /* FFColors.swift */; };
+		BF0C62DB2ADF4399003A7553 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0C62DA2ADF4399003A7553 /* LoginView.swift */; };
+		BF0C62DD2ADF43A6003A7553 /* SignupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0C62DC2ADF43A6003A7553 /* SignupView.swift */; };
+		BF0C62DF2ADF43AE003A7553 /* ToolBars.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0C62DE2ADF43AE003A7553 /* ToolBars.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -82,6 +85,9 @@
 		B2BACCD22ACF15C000F942A3 /* FlavorFeed.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FlavorFeed.entitlements; sourceTree = "<group>"; };
 		B2BACCD32ACF161100F942A3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		B2FCB8FE2AC63AA100865FCF /* FFColors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FFColors.swift; sourceTree = "<group>"; };
+		BF0C62DA2ADF4399003A7553 /* LoginView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		BF0C62DC2ADF43A6003A7553 /* SignupView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignupView.swift; sourceTree = "<group>"; };
+		BF0C62DE2ADF43AE003A7553 /* ToolBars.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToolBars.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -151,8 +157,11 @@
 				B2BACCD32ACF161100F942A3 /* Info.plist */,
 				B2BACCD22ACF15C000F942A3 /* FlavorFeed.entitlements */,
 				664B8F052AC5F1AA001E8C7F /* FlavorFeedApp.swift */,
+				BF0C62DA2ADF4399003A7553 /* LoginView.swift */,
+				BF0C62DE2ADF43AE003A7553 /* ToolBars.swift */,
 				B2BACCCE2ACF132000F942A3 /* ContentView.swift */,
 				B2BACCD02ACF136B00F942A3 /* Onboarding.swift */,
+				BF0C62DC2ADF43A6003A7553 /* SignupView.swift */,
 				6602DD8E2AC6262C008C3177 /* LandingPage.swift */,
 				6602DD8C2AC625EF008C3177 /* ContactsView.swift */,
 				6602DD8D2AC625EF008C3177 /* MainScrollView.swift */,
@@ -367,10 +376,13 @@
 				B2FCB8FF2AC63AA200865FCF /* FFColors.swift in Sources */,
 				665113502AC601E900027654 /* Post.swift in Sources */,
 				B2BACCD12ACF136B00F942A3 /* Onboarding.swift in Sources */,
+				BF0C62DB2ADF4399003A7553 /* LoginView.swift in Sources */,
 				B21292512ACD21500064AE5D /* ViewModel.swift in Sources */,
 				B2BACCCF2ACF132000F942A3 /* ContentView.swift in Sources */,
 				664B8F062AC5F1AA001E8C7F /* FlavorFeedApp.swift in Sources */,
 				B2BACCCC2ACF12B300F942A3 /* MainScrollView.swift in Sources */,
+				BF0C62DF2ADF43AE003A7553 /* ToolBars.swift in Sources */,
+				BF0C62DD2ADF43A6003A7553 /* SignupView.swift in Sources */,
 				B2BACCCB2ACF12B300F942A3 /* ContactsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

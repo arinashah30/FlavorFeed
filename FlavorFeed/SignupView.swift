@@ -8,6 +8,14 @@
 import SwiftUI
 
 struct SignupView: View {
+    @ObservedObject var vm: ViewModel
+    @State private var email: String = ""
+    @State private var password: String = ""
+    @State private var repeatPassword = ""
+    @State private var username: String = ""
+    @State private var displayName: String = ""
+    @State private var phoneNumber = ""
+
     var body: some View {
         VStack {
             Text("Sign Up")
@@ -17,7 +25,7 @@ struct SignupView: View {
             
             HStack {
                 Image(systemName: "person.fill")
-                TextField("", text: Binding.constant(""), prompt: Text("Username"))
+                TextField("", text: $username, prompt: Text("Username"))
                     .textInputAutocapitalization(.never)
 
             }
@@ -28,7 +36,7 @@ struct SignupView: View {
             
             HStack {
                 Image(systemName: "envelope.fill")
-                TextField("", text: Binding.constant(""), prompt: Text("Email Address"))
+                TextField("", text: $email, prompt: Text("Email Address"))
                     .textInputAutocapitalization(.never)
 
             }
@@ -39,7 +47,7 @@ struct SignupView: View {
 
             HStack {
                 Image(systemName: "lock.fill")
-                SecureField("", text:  Binding.constant(""), prompt: Text("Password"))
+                SecureField("", text:  $password, prompt: Text("Password"))
             }
             .padding()
             .background(Color(uiColor: .secondarySystemBackground))
@@ -48,7 +56,7 @@ struct SignupView: View {
             
             HStack {
                 Image(systemName: "lock.fill")
-                SecureField("", text:  Binding.constant(""), prompt: Text("Confirm password"))
+                SecureField("", text:  $repeatPassword, prompt: Text("Confirm password"))
             }
             .padding()
             .background(Color(uiColor: .secondarySystemBackground))
@@ -57,7 +65,7 @@ struct SignupView: View {
             
             HStack {
                 Image(systemName: "phone.fill")
-                TextField("", text: Binding.constant(""), prompt: Text("Phone Number"))
+                TextField("", text: $phoneNumber, prompt: Text("Phone Number"))
                     .textInputAutocapitalization(.never)
             }
             .padding()
@@ -67,7 +75,7 @@ struct SignupView: View {
             
             HStack {
                 Image(systemName: "person.crop.rectangle")
-                TextField("", text: Binding.constant(""), prompt: Text("Display Name"))
+                TextField("", text: $displayName, prompt: Text("Display Name"))
                     .textInputAutocapitalization(.never)
             }
             .padding()
@@ -75,9 +83,31 @@ struct SignupView: View {
             .clipShape(.rect(cornerRadius: 8.0))
             .padding([.leading, .trailing])
             
+            if let errorText = vm.errorText {
+                Text(errorText).foregroundStyle(Color.red)
+            } else {
+                Text(" ")
+            }
             
             Button {
-                
+                vm.errorText = nil
+                email = email.trimmingCharacters(in: .whitespacesAndNewlines)
+                password = password.trimmingCharacters(in: .whitespacesAndNewlines)
+                repeatPassword = repeatPassword.trimmingCharacters(in: .whitespacesAndNewlines)
+                username = username.trimmingCharacters(in: .whitespacesAndNewlines)
+                phoneNumber = phoneNumber.trimmingCharacters(in: .whitespacesAndNewlines)
+
+                if !email.isEmpty && !username.isEmpty && !displayName.isEmpty && !phoneNumber.isEmpty && !password.isEmpty && password == repeatPassword {
+                    vm.firebase_email_password_sign_up(
+                        email: self.email,
+                        password: self.password,
+                        username: self.username,
+                        displayName: self.displayName,
+                        phoneNumber: self.phoneNumber
+                    )
+                } else {
+                    vm.errorText = "You must fill out all fields"
+                }
             } label: {
                 Text("SIGN UP")
                     .font(.title3)
@@ -88,12 +118,12 @@ struct SignupView: View {
             .background(Color(uiColor: .secondarySystemBackground))
             .clipShape(.rect(cornerRadius: 50.0))
             .padding()
-            
+                        
             HStack {
                 Text("Already have an account?")
                 
                 NavigationLink {
-                    LoginView()
+                    LoginView(vm: vm)
                 } label: {
                     Text("Login")
                         .fontWeight(.bold)
@@ -101,9 +131,12 @@ struct SignupView: View {
                 }
             }
         }
+        .onAppear {
+            vm.errorText = nil
+        }
     }
 }
 
 #Preview {
-    SignupView()
+    SignupView(vm: ViewModel())
 }
