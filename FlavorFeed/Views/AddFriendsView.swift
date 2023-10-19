@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-
 struct Person {
     var name: String
 }
@@ -17,14 +16,14 @@ struct AddFriendsView: View {
     var options = ["Suggestions", "Friends", "Requests"]
     @State private var searchText = "hello"
     
-    var body: some View{
+    var body: some View {
         VStack{
             NavigationStack {
                 Text("Searching for \(searchText)")
                     .navigationTitle("Searchable Example")
             }
             .searchable(text: $searchText)
-            let user = User(id: UUID(), name: "Triem", username: "", password: "", profilePicture: "", email: "", favorites: [], friends: [], savedPosts: [], bio: "", myPosts: [], phoneNumber: 0, location: "", myRecipes: [])
+            let user = User(id: UUID(), name: "Triem", username: "triem123", password: "", profilePicture: "", email: "", favorites: [], friends: [], savedPosts: [], bio: "", myPosts: [], phoneNumber: 0, location: "", myRecipes: [])
             UserListView(user: user)
             NavigationView{
                 VStack{
@@ -38,7 +37,7 @@ struct AddFriendsView: View {
                     .padding(.horizontal)
                     .menuStyle(.borderlessButton)
                 }
-            }
+            } 
         }
     }
     
