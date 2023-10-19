@@ -17,7 +17,7 @@ struct PostView: View {
     var body: some View {
         VStack {
             HStack {
-                Image("profilePic")
+                Image("samplePFP")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 80)
@@ -34,7 +34,6 @@ struct PostView: View {
                 
                 Spacer()
                 Button {
-                    
                 } label: {
                     Image(systemName: "ellipsis")
                         .resizable()
@@ -50,7 +49,7 @@ struct PostView: View {
                         Image("samplePic2")
                             .resizable()
                             .aspectRatio(contentMode: .fill)
-                            .frame(width: 390, height: 550)
+                           .frame(width: 390, height: 550)
                             .clipped()
 
                         VStack {
@@ -90,16 +89,9 @@ struct PostView: View {
                             .overlay(RoundedRectangle(cornerRadius: 10)
                                 .stroke(salmon, lineWidth: 2))
                             .offset(x: -120, y: -170)
-                        
-                        
-                        
-                        
-                        
                     }.cornerRadius(20)
                     .padding(.bottom, 55)
                         .padding([.leading, .trailing] , 20)
-                    
-                        
                 }
                 
             }.tabViewStyle(.page).indexViewStyle(.page(backgroundDisplayMode: .always))
@@ -107,9 +99,50 @@ struct PostView: View {
                     setupAppearance()
                 }
             
-            Spacer().frame(height: 60)
+//            Spacer().frame(height: 60)
                 
-            
+            VStack{
+                HStack{
+                    Text("Top Comments")
+                        .font(.system(size: 15))
+                        .fontWeight(.light)
+                    Spacer()
+                    Button {
+                        
+                    } label: {
+                        Image(systemName: "chevron.up")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 15)
+                            .foregroundColor(.black)
+                    }
+                }
+                .padding(.horizontal, 20)
+                .padding(.top, 5)
+                VStack {
+                    ForEach(1...2, id: \.self) { comment in
+                        HStack{
+                            Image("samplePFP")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 60)
+                            Spacer()
+                            HStack{
+                                Text("Name:")
+                                Text("This is a sample comment that would be below a post")
+                            }
+                            .frame(width: 300, height: 60)
+                            .background(gold)
+                            .cornerRadius(10)
+                            Spacer()
+                        }
+                        .padding(.horizontal, 15)
+                    }
+//                    .background(Color.gray)
+                }
+                .padding(.bottom, 5)
+ //               Spacer().frame(height: 50)
+            }
         }
     }
     
