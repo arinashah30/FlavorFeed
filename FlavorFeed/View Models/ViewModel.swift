@@ -81,4 +81,15 @@ class ViewModel: ObservableObject {
             
         }
     }
+    
+    func send_friend_request(from: String, to: String) {
+        var fromRef = self.db.collection("USERS").document(from)
+        var toRef = self.db.collection("USERS").document(to)
+        fromRef.updateData([
+            "outgoingRequests": FieldValue.arrayUnion([to])
+        ])
+        toRef.updateData([
+            "incomingRequests": FieldValue.arrayUnion([from])
+        ])
+    }
 }
