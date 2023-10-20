@@ -40,7 +40,15 @@ class ViewModel: ObservableObject {
         
         auth.createUser(withEmail: email, password: password) { [weak self] authResult, error in
             if let error = error {
-                self?.errorText = error.localizedDescription
+                let firebaseError = AuthErrorCode.Code(rawValue: error._code)
+                switch firebaseError {
+                case .emailAlreadyInUse:
+                    self?.errorText = "An account with this email already exists"
+                case .weakPassword:
+                    self?.errorText = "This password is too weak"
+                default:
+                    self?.errorText = "An error has occurred"
+                }
             } else if let user = authResult?.user {
                 let id = user.uid
                 self?.db.collection("USERS").document(id).setData(
@@ -68,7 +76,18 @@ class ViewModel: ObservableObject {
     func firebase_sign_in(email: String, password: String) {
         Auth.auth().signIn(withEmail: email, password: password) { [weak self] authResult, error in
             if let error = error {
-                self?.errorText = error.localizedDescription
+                print(error._code)
+                let firebaseError = AuthErrorCode.Code(rawValue: error._code)
+                switch firebaseError {
+                case .wrongPassword:
+                    self?.errorText = "Password incorrect"
+                case .userNotFound:
+                    self?.errorText = "User not found"
+                case .userDisabled:
+                    self?.errorText = "Your account has been disabled"
+                default:
+                    self?.errorText = "An error has occurred"
+                }
             }
         }
     }
