@@ -18,7 +18,7 @@ class ViewModel: ObservableObject {
     let auth = Auth.auth()
     
     init() {
-        let handle = Auth.auth().addStateDidChangeListener { [weak self] auth, user in
+        _ = Auth.auth().addStateDidChangeListener { [weak self] auth, user in
             if let user = user {
                 self?.setCurrentUser(userId: user.uid)
             } else {
@@ -41,7 +41,26 @@ class ViewModel: ObservableObject {
         auth.createUser(withEmail: email, password: password) { [weak self] authResult, error in
             if let error = error {
                 self?.errorText = error.localizedDescription
-                return
+            } else if let user = authResult?.user {
+                let id = user.uid
+                self?.db.collection("USERS").document(id).setData(
+                    ["name" : displayName,
+                     "username" : username,
+                     "profilePicture" : "",
+                     "email" : email,
+                     "favorites" : [],
+                     "friends" : [],
+                     "savedPosts" : [],
+                     "bio" : "",
+                     "myPosts" : [],
+                     "phone_number" : phoneNumber,
+                     "location" : "",
+                     "myRecipes" : []
+                    ] as [String : Any]) { error in
+                        if let error = error {
+                            self?.errorText = error.localizedDescription
+                        }
+                    }
             }
         }
     }
