@@ -10,35 +10,15 @@ import SwiftUI
 struct MainScrollView: View {
     @ObservedObject var vm: ViewModel
     @Binding var tabSelection: Tabs
+
     var body: some View {
-        VStack {
-            HStack {
-                
-                Button {
-                    self.tabSelection = .contactsView
-                } label: {
-                    Image(systemName: "person.2.fill")
-                        .padding()
-                }
-                
+        ZStack {
+            VStack {
+                TopBar().padding()
                 Spacer()
-                Button {
-                    self.tabSelection = .mainScrollView
-
-                } label: {
-                    Text("FlavorFeed")
-                        .font(.title)
-                        .bold()
-                }
-                Spacer()
-                Button {
-                    self.tabSelection = .selfProfileView
-
-                } label: {
-                    Image(systemName: "person.circle.fill")
-                        .padding()
-                }
-            }.foregroundColor(.black)
+                BottomBar(messagesRemaing: Binding.constant(2)).padding()
+            }
+            
             ScrollView {
                 VStack {
                     Text("Main ScrollView")
@@ -50,6 +30,12 @@ struct MainScrollView: View {
 
                 }
             }
+            
         }
     }
 }
+
+#Preview {
+    MainScrollView(tabSelection: Binding.constant(Tabs.mainScrollView))
+}
+
