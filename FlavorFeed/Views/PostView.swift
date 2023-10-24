@@ -134,29 +134,31 @@ struct PostView: View {
                 .padding(.horizontal, 20)
                 .padding(.top, 5)
                 if showComments && post.comments != nil {
-                    VStack {
-                        ForEach(post.comments!, id: \.self) { comment in
-                            HStack{
-                                Image(comment.profilePicture)
-                                    .resizable()
-                                    .frame(width: 60, height: 60)
-                                Spacer()
-                                
-                                Text("**\(comment.username)**: \(comment.caption)")
-                                    .padding(.horizontal, 5)
-                                    .frame(width: 300, height: 60)
-                                    .background(gold)
-                                    .cornerRadius(10)
-                                Spacer()
+                    ScrollView {
+                        VStack {
+                            ForEach(post.comments!, id: \.self) { comment in
+                                HStack{
+                                    Image(comment.profilePicture)
+                                        .resizable()
+                                        .frame(width: 60, height: 60)
+                                    Spacer()
+                                    
+                                    Text("**\(comment.username)**: \(comment.caption)")
+                                        .padding(.horizontal, 5)
+                                        .frame(width: 300, height: 60)
+                                        .background(gold)
+                                        .cornerRadius(10)
+                                    Spacer()
+                                }
+                                .padding(.horizontal, 15)
                             }
-                            .padding(.horizontal, 15)
+                            
                         }
-                        
-                    }
-                    .padding(.vertical)
-                    .background(lightGray)
-                    .cornerRadius(20)
+                        .padding(.vertical)
+                        .background(lightGray)
+                        .cornerRadius(20)
                     .padding(.bottom, 5)
+                    }
                 }
             }
             Spacer()
