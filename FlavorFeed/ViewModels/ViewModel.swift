@@ -54,7 +54,7 @@ class ViewModel: ObservableObject {
                     ] as [String : Any]
                 ) { err in
                     if let err = err {
-                        print("Error: \(error?.localizedDescription)")
+                        print("Error: \(err.localizedDescription)")
                     } else {
                         
                         self.current_user = User(
@@ -82,6 +82,7 @@ class ViewModel: ObservableObject {
         }
     }
     
+
     func send_friend_request(from: String, to: String) {
         var fromRef = self.db.collection("USERS").document(from)
         var toRef = self.db.collection("USERS").document(to)
@@ -92,4 +93,42 @@ class ViewModel: ObservableObject {
             "incomingRequests": FieldValue.arrayUnion([from])
         ])
     }
+
+
+    func accept_friend_request(from: String, to: String) {
+        var fromRef = self.db.collection("USERS").document(from)
+        var toRef = self.db.collection("USERS").document(to)
+        fromRef.updateData([
+            "outgoingRequests": FieldValue.arrayRemove([to]),
+            "friends": FieldValue.arrayUnion([to])
+        ])
+        toRef.updateData([
+            "incomingRequests": FieldValue.arrayRemove([from]),
+            "friends": FieldValue.arrayUnion([from])
+        ])
+    }
+    
+    func reject_friend_request(from: String, to: String) {
+        var fromRef = self.db.collection("USERS").document(from)
+        var toRef = self.db.collection("USERS").document(to)
+        fromRef.updateData([
+            "outgoingRequests": FieldValue.arrayRemove([to]),
+        ])
+        toRef.updateData([
+            "incomingRequests": FieldValue.arrayRemove([from])
+        ])
+    }
+    
+    func firebase_delete_comment(post: Post, comment: Comment) {
+        self.db.collection("POSTS").document(post.id.uuidString).collection("comments").document(comment.id.uuidString).delete { err in
+            if let err = err {
+                print("Error: \(err.localizedDescription)")
+            } else {
+                // Remove comment on screen
+                
+            }
+        }
+
+    }
+
 }
