@@ -54,7 +54,7 @@ class ViewModel: ObservableObject {
                     ] as [String : Any]
                 ) { err in
                     if let err = err {
-                        print("Error: \(error?.localizedDescription)")
+                        print("Error: \(err.localizedDescription)")
                     } else {
                         
                         self.current_user = User(
@@ -87,9 +87,81 @@ class ViewModel: ObservableObject {
         var toRef = self.db.collection("USERS").document(to)
         fromRef.updateData([
             "outgoingRequests": FieldValue.arrayUnion([to])
-        ])
+        ]) { error in
+            if let error = error {
+                print("Error: \(error.localizedDescription)")
+            } else {
+                // UI Changes
+            }
+        }
         toRef.updateData([
             "incomingRequests": FieldValue.arrayUnion([from])
-        ])
+        ]) { error in
+            if let error = error {
+                print("Error: \(error.localizedDescription)")
+            } else {
+                // UI Changes
+            }
+        }
+    }
+    
+
+    func accept_friend_request(from: String, to: String) {
+        var fromRef = self.db.collection("USERS").document(from)
+        var toRef = self.db.collection("USERS").document(to)
+        fromRef.updateData([
+            "outgoingRequests": FieldValue.arrayRemove([to]),
+            "friends": FieldValue.arrayUnion([to])
+        ]) { error in
+            if let error = error {
+                print("Error: \(error.localizedDescription)")
+            } else {
+                // UI Changes
+            }
+        }
+        toRef.updateData([
+            "incomingRequests": FieldValue.arrayRemove([from]),
+            "friends": FieldValue.arrayUnion([from])
+        ]) { error in
+            if let error = error {
+                print("Error: \(error.localizedDescription)")
+            } else {
+                // UI Changes
+            }
+        }
+    }
+    
+    func reject_friend_request(from: String, to: String) {
+        var fromRef = self.db.collection("USERS").document(from)
+        var toRef = self.db.collection("USERS").document(to)
+        fromRef.updateData([
+            "outgoingRequests": FieldValue.arrayRemove([to])
+        ]) { error in
+            if let error = error {
+                print("Error: \(error.localizedDescription)")
+            } else {
+                // UI Changes
+            }
+        }
+        toRef.updateData([
+            "incomingRequests": FieldValue.arrayRemove([from])
+        ]) { error in
+            if let error = error {
+                print("Error: \(error.localizedDescription)")
+            } else {
+                // UI Changes
+            }
+        }
+    }
+    
+    func firebase_delete_comment(post: Post, comment: Comment) {
+        self.db.collection("POSTS").document(post.id.uuidString).collection("comments").document(comment.id.uuidString).delete { err in
+            if let err = err {
+                print("Error: \(err.localizedDescription)")
+            } else {
+                // UI Changes
+            }
+        }
+
     }
 }
