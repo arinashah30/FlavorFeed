@@ -25,6 +25,4 @@ struct User: Hashable {
     var streak: Int {
         return myPosts.count
     }
-    
-    
 }
