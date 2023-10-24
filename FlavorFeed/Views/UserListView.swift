@@ -16,7 +16,7 @@ struct UserListView: View {
                 }
             }
         }
-        .frame(height: 450)
+        .frame(height: 550)
     }
 
     struct UserRow: View {
@@ -41,7 +41,7 @@ struct UserListView: View {
                         .foregroundColor(.white)
                 }
                 .buttonStyle(.bordered)
-                .background(Color(.darkGray))
+                .background(Color.ffPrimary)
                 .cornerRadius(25)
                 Button(action: {}) {
                     Image(systemName: "xmark")
