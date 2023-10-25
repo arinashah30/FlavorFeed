@@ -9,6 +9,7 @@ import SwiftUI
 
 struct BottomBar: View {
     @Binding var messagesRemaing: Int
+    
 
     var body: some View {
         ZStack {
@@ -49,10 +50,11 @@ struct BottomBar: View {
 }
 
 struct TopBar: View {
+    @Binding var tabSelection: Tabs
     var body: some View {
         HStack {
             Button {
-                
+                tabSelection = .contactsView
             } label: {
                 Image(systemName: "person.3")
                     .frame(width: 25)
@@ -64,19 +66,11 @@ struct TopBar: View {
             
             
             Button {
-                
+                tabSelection = .selfProfileView
             } label: {
                 Image(systemName: "person.crop.circle")
                     .frame(width: 25)
             }
         }
-    }
-}
-
-#Preview {
-    VStack {
-        TopBar().padding()
-        Spacer()
-        BottomBar(messagesRemaing: Binding.constant(2)).padding()
     }
 }

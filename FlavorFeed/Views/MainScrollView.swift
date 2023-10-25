@@ -14,7 +14,7 @@ struct MainScrollView: View {
     var body: some View {
         ZStack {
             VStack {
-                TopBar().padding()
+                TopBar(tabSelection: $tabSelection).padding()
                 Spacer()
                 BottomBar(messagesRemaing: Binding.constant(2)).padding()
             }

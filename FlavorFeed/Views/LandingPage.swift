@@ -15,7 +15,7 @@ enum Tabs {
 
 struct LandingPage: View {
     @ObservedObject var vm: ViewModel
-    @State var tabSelection: Tabs = .mainScrollView
+    @State var tabSelection: Tabs
     
     var body: some View {
         ZStack {
@@ -42,6 +42,6 @@ struct LandingPage: View {
 
 struct LandingPage_Previews: PreviewProvider {
     static var previews: some View {
-        LandingPage(vm: ViewModel())
+        LandingPage(vm: ViewModel(), tabSelection: .mainScrollView)
     }
 }

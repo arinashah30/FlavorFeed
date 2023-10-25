@@ -13,7 +13,7 @@ import FirebaseFirestore
 /**
  View Model Directory:
  
- Methods:
+Firebase Methods:
 1. firebase_sign_out
 2. firebase_email_password_sign_up
 3. firebase_sign_in
@@ -29,7 +29,7 @@ import FirebaseFirestore
 
 class ViewModel: ObservableObject {
     
-    @Published var current_user: User? = nil
+    @Published var current_user: User? = nil 
     @Published var errorText: String? = nil
     
     
@@ -216,7 +216,9 @@ class ViewModel: ObservableObject {
             if let err = err {
                 print("Error: \(err.localizedDescription)")
             } else {
+                // comment deleted
                 // UI Changes
+                
             }
         }
         

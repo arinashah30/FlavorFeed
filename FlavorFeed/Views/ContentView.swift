@@ -13,7 +13,7 @@ struct ContentView: View {
     
     var body: some View {
         if logStatus == true && vm.auth.currentUser != nil {
-            LandingPage(vm: vm)
+            LandingPage(vm: vm, tabSelection: .mainScrollView)
         } else {
             NavigationStack {
                 LoginView(vm: vm)
