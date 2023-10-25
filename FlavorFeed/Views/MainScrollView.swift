@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct MainScrollView: View {
+    @ObservedObject var vm: ViewModel
     @Binding var tabSelection: Tabs
 
     var body: some View {
@@ -21,6 +22,12 @@ struct MainScrollView: View {
             ScrollView {
                 VStack {
                     Text("Main ScrollView")
+                    Button {
+                        vm.firebase_sign_out()
+                    } label: {
+                        Text("Sign Out")
+                    }
+
                 }
             }
             
@@ -29,6 +36,6 @@ struct MainScrollView: View {
 }
 
 #Preview {
-    MainScrollView(tabSelection: Binding.constant(Tabs.mainScrollView))
+    MainScrollView(vm: ViewModel(), tabSelection: Binding.constant(Tabs.mainScrollView))
 }
 

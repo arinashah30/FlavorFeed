@@ -14,7 +14,6 @@ struct Post: Identifiable, Hashable {
     var recipe: String? //Recipe
     var date: String
     var likes: [User]
-    var comments: [User : String]
+    var comments: [Comment]
     var location: String?
-    
 }
