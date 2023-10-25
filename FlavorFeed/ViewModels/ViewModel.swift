@@ -205,4 +205,27 @@ class ViewModel: ObservableObject {
         
         
     }
+    
+    func firebase_add_comment(post: Post, text: String, date: String) {
+
+            let id = UUID()
+
+            self.db.collection("POSTS").document(post.id.uuidString).collection("COMMENTS").document(id.uuidString).setData(
+                ["user_id" : current_user!.id,
+                 "text": text,
+                 "date": date,
+                 "likes": [],
+                 "replies": []
+                ] as [String : Any]
+            ) { error in
+                if let error = error {
+                    print("Error: \(error.localizedDescription)")
+                } else {
+
+
+
+                }
+            }
+
+        }
 }

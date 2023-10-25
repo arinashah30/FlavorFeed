@@ -47,6 +47,7 @@
 		BF0C62DB2ADF4399003A7553 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0C62DA2ADF4399003A7553 /* LoginView.swift */; };
 		BF0C62DD2ADF43A6003A7553 /* SignupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0C62DC2ADF43A6003A7553 /* SignupView.swift */; };
 
+
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -93,8 +94,10 @@
 		B2BACCD22ACF15C000F942A3 /* FlavorFeed.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FlavorFeed.entitlements; sourceTree = "<group>"; };
 		B2BACCD32ACF161100F942A3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		B2FCB8FE2AC63AA100865FCF /* FFColors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FFColors.swift; sourceTree = "<group>"; };
+
 		BF0C62DA2ADF4399003A7553 /* LoginView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		BF0C62DC2ADF43A6003A7553 /* SignupView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignupView.swift; sourceTree = "<group>"; };
+
 
 /* End PBXFileReference section */
 
@@ -223,7 +226,9 @@
 				B2FCB8FE2AC63AA100865FCF /* FFColors.swift */,
 				6651134F2AC601E900027654 /* Post.swift */,
 				665113512AC6021800027654 /* User.swift */,
+
 				489E36122AD8ACE900369ECB /* Comment.swift */,
+
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -398,7 +403,9 @@
 				B2BACCD12ACF136B00F942A3 /* Onboarding.swift in Sources */,
 				BF0C62DB2ADF4399003A7553 /* LoginView.swift in Sources */,
 				B21292512ACD21500064AE5D /* ViewModel.swift in Sources */,
+
 				489E36132AD8ACE900369ECB /* Comment.swift in Sources */,
+
 				B2BACCCF2ACF132000F942A3 /* ContentView.swift in Sources */,
 
 				6C73C0902ACCD106001E6F5B /* ToolBars.swift in Sources */,
