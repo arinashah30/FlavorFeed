@@ -18,7 +18,7 @@ struct LandingPage: View {
     @State var tabSelection: Tabs
     
     var body: some View {
-        ZStack {
+        VStack {
             TabView(selection: $tabSelection) {
                 
                 ContactsView(tabSelection: $tabSelection)
@@ -35,7 +35,7 @@ struct LandingPage: View {
             .animation(.easeInOut, value: self.tabSelection)
             .transition(.slide)
             
-        }
+        }.edgesIgnoringSafeArea(.bottom)
     }
 }
 

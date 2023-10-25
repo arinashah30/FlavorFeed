@@ -8,12 +8,13 @@
 import SwiftUI
 
 struct ContentView: View {
-    @ObservedObject var vm = ViewModel()
+    @ObservedObject var vm: ViewModel = ViewModel()
     @AppStorage("log_Status") var logStatus = false
     
     var body: some View {
         if logStatus == true && vm.auth.currentUser != nil {
             LandingPage(vm: vm, tabSelection: .mainScrollView)
+                .edgesIgnoringSafeArea(.bottom)
         } else {
             NavigationStack {
                 LoginView(vm: vm)
