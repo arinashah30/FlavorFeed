@@ -10,6 +10,23 @@ import Firebase
 import FirebaseAuth
 import FirebaseFirestore
 
+/**
+ View Model Directory:
+ 
+ Methods:
+1. firebase_sign_out
+2. firebase_email_password_sign_up
+3. firebase_sign_in
+4. send_friend_request
+5. setCurrentUser
+6. accept_friend_request
+7. reject_friend_request
+8. firebase_delete_comment
+9. firebase_add_comment
+ 
+ 
+ **/
+
 class ViewModel: ObservableObject {
     
     @Published var current_user: User? = nil
