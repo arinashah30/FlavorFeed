@@ -20,8 +20,9 @@ struct MainScrollView: View {
             }
             
             ScrollView {
+                Spacer().frame(height: 40)
                 VStack {
-                    Text("Main ScrollView")
+                    Text("Welcome, \(vm.current_user?.name ?? "")!").font(.title)
                     Button {
                         vm.firebase_sign_out()
                     } label: {

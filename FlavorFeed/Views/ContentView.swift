@@ -9,13 +9,15 @@ import SwiftUI
 
 struct ContentView: View {
     @ObservedObject var vm = ViewModel()
-    @AppStorage("log_Status") var log_Status = false
+    @AppStorage("log_Status") var logStatus = false
     
     var body: some View {
-        if(log_Status) {
+        if logStatus == true && vm.auth.currentUser != nil {
             LandingPage(vm: vm)
         } else {
-            Onboarding(vm: vm)
+            NavigationStack {
+                LoginView(vm: vm)
+            }
         }
     }
 }
