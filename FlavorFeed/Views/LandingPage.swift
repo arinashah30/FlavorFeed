@@ -15,10 +15,10 @@ enum Tabs {
 
 struct LandingPage: View {
     @ObservedObject var vm: ViewModel
-    @State var tabSelection: Tabs = .mainScrollView
+    @State var tabSelection: Tabs
     
     var body: some View {
-        ZStack {
+        VStack {
             TabView(selection: $tabSelection) {
                 
                 ContactsView(tabSelection: $tabSelection)
@@ -35,13 +35,13 @@ struct LandingPage: View {
             .animation(.easeInOut, value: self.tabSelection)
             .transition(.slide)
             
-        }
+        }.edgesIgnoringSafeArea(.bottom)
     }
 }
 
 
 struct LandingPage_Previews: PreviewProvider {
     static var previews: some View {
-        LandingPage(vm: ViewModel())
+        LandingPage(vm: ViewModel(), tabSelection: .mainScrollView)
     }
 }

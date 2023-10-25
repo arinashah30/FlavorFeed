@@ -14,10 +14,12 @@ struct MainScrollView: View {
     var body: some View {
         ZStack {
             VStack {
-                TopBar().padding()
+                TopBar(tabSelection: $tabSelection)
                 Spacer()
-                BottomBar(messagesRemaing: Binding.constant(2)).padding()
-            }
+                BottomBar(messagesRemaing: Binding.constant(2))
+                    .frame(height: 120)
+                    .cornerRadius(10)
+            }.edgesIgnoringSafeArea(.bottom)
             
             ScrollView {
                 Spacer().frame(height: 40)
