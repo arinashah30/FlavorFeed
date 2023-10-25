@@ -16,5 +16,4 @@ struct Post: Identifiable, Hashable {
     var likes: [User]
     var comments: [Comment]
     var location: String?
-    
 }
