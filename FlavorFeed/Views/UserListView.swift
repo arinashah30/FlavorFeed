@@ -5,7 +5,7 @@ struct UserListView: View {
         var users: [User] = []
 
         for _ in 1...30 {
-            let user = User(id: UUID(), name: "name1", username: "userName1", password: "", profilePicture: "", email: "", favorites: [], friends: [], savedPosts: [], bio: "", myPosts: [], phoneNumber: 0, location: "", myRecipes: [])
+            let user = User(id: "name1", name: "name1", username: "userName1", profilePicture: "", email: "", favorites: [], friends: [], savedPosts: [], bio: "", myPosts: [], phoneNumber: 0, location: "", myRecipes: [])
             users.append(user)
         }
 
