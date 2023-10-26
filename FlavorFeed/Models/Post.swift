@@ -15,7 +15,7 @@ struct Post: Identifiable {
     var id: UUID
     var userID: UUID
     var images: [[String]]
-    var caption: String
+    var caption: [String]
     var recipe: String? //Recipe
     var date: String
     var likes: [User]?

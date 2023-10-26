@@ -22,146 +22,172 @@ struct PostView: View {
 //     let caption: String
     
     var body: some View {
-        VStack {
-            HStack {
-                Image("samplePFP")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 70)
-                
-                VStack (alignment: .leading) {
-                    Text("Name")
-                        .font(.system(size: 20))
-                        .foregroundColor(teal)
-                        .fontWeight(.semibold)
-                    Text("Location • Time")
-                        .font(.system(size: 15))
-                        .fontWeight(.light)
-                }
-                
-                Spacer()
-                Button {
-                } label: {
-                    Image(systemName: "ellipsis")
+        GeometryReader { geo in
+            VStack {
+                HStack {
+                    Image("samplePFP")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .frame(width: 20)
-                        .foregroundColor(.black)
-                }
-            }.padding([.leading, .trailing] , 20)
-            
-            TabView {
-                ForEach(post.images, id: \.self) { postImage in
+                        .frame(width: 70)
+                        .clipShape(.circle)
                     
-                    //                ForEach(1...3, id: \.self) { pic in
-                    ZStack (){
-                            Image((showSelfieFirst) ? postImage[1] : postImage[0])
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(width: 390, height: 550)
-                            .clipped()
-                        
-                        VStack {
-                            Button {
-                                
-                            } label: {
-                                Image("fork_and_knife")
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: 35)
-                                    .foregroundColor(gold)
-                            }
-                            
-                            Button {
-                                
-                            } label: {
-                                Image("Restaurant_logo")
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: 35)
-                            }
-                        }.padding(20).offset(x: 165, y: -220)
-                        
-                        Text(post.caption)
-                            .offset(x: 0, y: 245)
-                            .background(RoundedRectangle(cornerRadius: 10.0)
-                                .frame(width: 300, height: 40)
-                                .offset(x: 0, y: 245)
-                                .foregroundColor(gold))
-                        
-                        Button {
-                            self.showSelfieFirst.toggle()
-                        } label: {
-                            Image((showSelfieFirst) ? postImage[0] : postImage[1])
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(width: 120, height: 180)
-                                .clipped()
-                        }
-                            .cornerRadius(10)
-                            .overlay(RoundedRectangle(cornerRadius: 10)
-                                .stroke(salmon, lineWidth: 2))
-                            .offset(x: -120, y: -170)
-                    }.cornerRadius(20)
-                        .padding(.bottom, 55)
-                        .padding([.leading, .trailing] , 20)
-                }.frame(height:600)
-                
-            }.tabViewStyle(.page).indexViewStyle(.page(backgroundDisplayMode: .always))
-                .frame(height: 610)
-                .onAppear {
-                    setupAppearance()
-                }
-            
-            VStack{
-                HStack{
-                    Text("Top Comments")
-                        .font(.system(size: 15))
-                        .fontWeight(.light)
+                    VStack (alignment: .leading) {
+                        Text("Aubrey Drake Graham")
+                            .font(.system(size: 20))
+                            .foregroundColor(.ffSecondary)
+                            .fontWeight(.semibold)
+                        Text("Toronto • 7:00:02 AM")
+                            .font(.system(size: 15))
+                            .fontWeight(.light)
+                    }
+                    
                     Spacer()
                     Button {
-                        withAnimation (.smooth) {
-                            self.showComments.toggle()
-                        }
                     } label: {
-                        Image(systemName: self.showComments ? "chevron.down" : "chevron.up")
+                        Image(systemName: "ellipsis")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(width: 15)
+                            .frame(width: 20)
                             .foregroundColor(.black)
                     }
-                }
-                .padding(.horizontal, 20)
-                .padding(.top, 5)
-                if showComments && post.comments != nil {
-                    ScrollView {
-                        VStack {
-                            ForEach(post.comments!, id: \.self) { comment in
-                                HStack{
-                                    Image(comment.profilePicture)
-                                        .resizable()
-                                        .frame(width: 60, height: 60)
-                                    Spacer()
+                }.padding([.leading, .trailing] , 20)
+                
+                TabView {
+                    ForEach(0..<post.images.count) { index in
+                        
+                        //                ForEach(1...3, id: \.self) { pic in
+                        ZStack (){
+                            //
+                            Image((showSelfieFirst) ? post.images[index][1] : post.images[index][0])
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: geo.size.width*0.98, height: geo.size.height*0.66)
+                                .clipped()
+                            
+                            VStack {
+                                Button {
                                     
-                                    Text("**\(comment.username)**: \(comment.caption)")
-                                        .padding(.horizontal, 5)
-                                        .frame(width: 300, height: 60)
-                                        .background(gold)
-                                        .cornerRadius(10)
-                                    Spacer()
+                                } label: {
+                                    Image("fork_and_knife")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: 35)
+                                        .foregroundColor(.ffTertiary)
                                 }
-                                .padding(.horizontal, 15)
+                                
+                                Button {
+                                    
+                                } label: {
+                                    Image("Restaurant_logo")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: 35)
+                                }
+                            }.padding(20).offset(x: 165, y: -220)
+
+                            VStack {
+                                
+                                HStack {
+                                    Button {
+                                        self.showSelfieFirst.toggle()
+                                    } label: {
+                                        Image((showSelfieFirst) ? post.images[index][0] : post.images[index][1])
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fill)
+                                            .frame(width: 120, height: 180)
+                                            .clipped()
+                                    }
+                                    .cornerRadius(10)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .stroke(Color.ffPrimary, lineWidth: 2)
+                                    )
+                                    .padding()
+                                    Spacer()
+
+                                }
+                                Spacer()
+                                if post.caption[index] != "" {
+                                    Text(post.caption[index])
+                                        .background(RoundedRectangle(cornerRadius: 10.0)
+                                            .frame(width: 300, height: 40)
+                                            .foregroundColor(.ffTertiary))
+                                        .padding(20)
+                                }
                             }
                             
+                        }.cornerRadius(20)
+                            .padding(.bottom, 55)
+                            .padding([.leading, .trailing] , 20)
+                    }.frame(height:600)
+                    
+                }.tabViewStyle(.page).indexViewStyle(.page(backgroundDisplayMode: .always))
+                    .frame(height: 610)
+                    .onAppear {
+                        setupAppearance()
+                    }
+                
+                VStack{
+                    HStack{
+                        Text("Top Comments")
+                            .font(.system(size: 15))
+                            .fontWeight(.light)
+                        Spacer()
+                        Button {
+                            withAnimation (.smooth) {
+                                self.showComments.toggle()
+                            }
+                        } label: {
+                            Image(systemName: self.showComments ? "chevron.down" : "chevron.up")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 15)
+                                .foregroundColor(.black)
                         }
-                        .padding(.vertical)
-                        .background(lightGray)
-                        .cornerRadius(20)
-                    .padding(.bottom, 5)
+                    }
+                    .padding(.horizontal, 20)
+                    .padding(.top, 5)
+                    if showComments && post.comments != nil {
+                        ScrollView {
+                            VStack {
+                                ForEach(post.comments!, id: \.self) { comment in
+                                    HStack{
+                                        Image(comment.profilePicture)
+                                            .resizable()
+                                            .frame(width: 60, height: 60)
+                                            .clipShape(.circle)
+                                        Spacer()
+                                        
+                                        ZStack{
+                                            RoundedRectangle(cornerRadius: 10)
+                                                .fill(gold)
+                                            Text("**\(comment.username)**: \(comment.caption)")
+                                                .frame(maxWidth: .infinity, alignment: .leading)
+                                                .multilineTextAlignment(.leading)
+                                                .padding(.horizontal, 10)
+                                        }
+                                        //                                    .frame(alignment: .leading)
+                                        //                                    Text("**\(comment.username)**: \(comment.caption)")
+                                        //                                        .padding(.horizontal, 7)
+                                        //                                        .frame(width: .infinity, height: .infinity)
+                                        //                                        .background(gold)
+                                        //                                        .cornerRadius(10)
+                                        //                                        .multilineTextAlignment(.leading)
+                                        Spacer()
+                                    }
+                                    .padding(.horizontal, 15)
+                                }
+                                
+                            }
+                            .padding(.vertical)
+                            .background(lightGray)
+                            .cornerRadius(20)
+                            .padding(.bottom, 5)
+                        }
                     }
                 }
+                Spacer()
             }
-            Spacer()
         }
     }
     
@@ -173,7 +199,7 @@ struct PostView: View {
 }
 
 #Preview {
-    PostView(post: Post(id: UUID(), userID: UUID(), images: [["drake_selfie", "food_pic_1"], ["drake_selfie2", "food_pic_2"], ["drake_selfie3", "food_pic_3"]], caption: "This is a sample caption", date: "October 24, 2022", comments: [Comment(id: UUID(), username: "Adonis", profilePicture: "samplePFP", caption: "Looking fresh Drake!"), Comment(id: UUID(), username: "Travis Scott", profilePicture: "samplePFP", caption: "She said do you love me I told her only partly.")]))
+    PostView(post: Post(id: UUID(), userID: UUID(), images: [["drake_selfie", "food_pic_1"], ["drake_selfie2", "food_pic_2"], ["drake_selfie3", "food_pic_3"]], caption: ["Let's dig in!", "", "That was yummy in my tummy"], date: "October 24, 2022", comments: [Comment(id: UUID(), username: "Adonis", profilePicture: "adonis_pfp", caption: "Looking fresh Drake!"), Comment(id: UUID(), username: "Travis Scott", profilePicture: "travis_scott_pfp", caption: "She said do you love me I told her only partly.")]))
 //    PostView(selfiePic: "selfie", foodPic: "samplePic2", caption: "This is a sample caption")
 }
 
