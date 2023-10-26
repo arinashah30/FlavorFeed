@@ -16,7 +16,7 @@ struct UserListView: View {
                 }
             }
         }
-        .frame(height: 600)
+        .frame(maxHeight: .infinity)
     }
 
     struct UserRow: View {
@@ -25,8 +25,10 @@ struct UserListView: View {
 
         var body: some View {
             HStack {
-                Image(icon)
+                //Image(icon)
+                Image(systemName: "person.circle")
                     .resizable()
+                    .scaledToFit()
                     .frame(width: 80, height: 70)
                     .clipShape(Circle())
                 VStack(alignment: .leading) {
