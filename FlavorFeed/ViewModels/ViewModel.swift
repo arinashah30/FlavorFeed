@@ -247,4 +247,30 @@ class ViewModel: ObservableObject {
             }
 
         }
+    
+    func firebase_like_post(post: inout Post, user: String) {
+        var postRef = self.db.collection("POSTS").document(post.id.uuidString)
+        postRef.updateData([
+            "likes": FieldValue.arrayUnion([user])
+        ]) { error in
+            if let error = error {
+                print("Error: \(error.localizedDescription)")
+            } else {
+                // UI Changes
+            }
+        }
+    }
+    
+    func firebase_unlike_post(post: Post, user: String) {
+        var post = self.db.collection("POSTS").document(post.id.uuidString)
+        post.updateData([
+            "likes": FieldValue.arrayRemove([user])
+        ]) { error in
+            if let error = error {
+                print("Error: \(error.localizedDescription)")
+            } else {
+                // UI Changes
+            }
+        }
+    }
 }
