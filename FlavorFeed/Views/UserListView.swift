@@ -16,7 +16,7 @@ struct UserListView: View {
                 }
             }
         }
-        .frame(height: 550)
+        .frame(height: 600)
     }
 
     struct UserRow: View {

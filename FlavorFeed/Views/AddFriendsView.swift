@@ -17,7 +17,7 @@ struct AddFriendsView: View {
     @State private var searchText = "Add or search friends"
 
     var body: some View {
-        ZStack {
+    
             VStack {
                 Text("Flavor Feed")
                     .font(.largeTitle)
@@ -48,25 +48,33 @@ struct AddFriendsView: View {
                 .buttonStyle(.bordered)
                 .cornerRadius(25)
 
-                ScrollView {
-                    UserListView()
+                // Separate ZStack for Picker and ScrollView
+                
+                
+                ZStack {
+                    ScrollView {
+                        UserListView()
+                    }
+                    VStack {
+                        Spacer()
+                        Picker("Tabs", selection: $selectedOption) {
+                            Text(options[0]).tag(options[0])
+                            Text(options[1]).tag(options[1])
+                            Text(options[2]).tag(options[2])
+                        }
+                        .pickerStyle(.segmented)
+                        //.padding(.horizontal)
+                        .menuStyle(.borderlessButton)
+                        //.frame(maxWidth: .infinity)
+                        .background(Color.white)
+                        .cornerRadius(8)
+                        .shadow(radius: 5)
+                    }
                 }
-
-                //Spacer() // Add this Spacer to push the Picker to the bottom
-
-                Picker("Tabs", selection: $selectedOption) {
-                    Text(options[0]).tag(options[0])
-                    Text(options[1]).tag(options[1])
-                    Text(options[2]).tag(options[2])
-                }
-                .pickerStyle(.segmented)
-                .padding(.horizontal)
-                .menuStyle(.borderlessButton)
-                Spacer()
             }
         }
     }
-}
+
 
 #Preview {
     AddFriendsView()
