@@ -262,8 +262,8 @@ class ViewModel: ObservableObject {
     }
     
     func firebase_unlike_post(post: Post, user: String) {
-        var post = self.db.collection("POSTS").document(post.id.uuidString)
-        post.updateData([
+        var postRef = self.db.collection("POSTS").document(post.id.uuidString)
+        postRef.updateData([
             "likes": FieldValue.arrayRemove([user])
         ]) { error in
             if let error = error {
