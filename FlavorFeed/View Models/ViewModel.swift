@@ -13,6 +13,7 @@ import FirebaseFirestore
 class ViewModel: ObservableObject {
     @Published var current_user: User? = nil
     @Published var post: Post? = nil
+    @Published var searchResults: [String] = []
     
     let db = Firestore.firestore()
     let auth = Auth.auth()
@@ -109,45 +110,59 @@ class ViewModel: ObservableObject {
                 self.db.collection("USERS").document("1mLyRTekRPWRf2aJtmzYyaJQQqI2").updateData(["myPosts": FieldValue.arrayUnion([docId.uuidString])])
             }
         
+        }
     }
-    
-        func firebase_search_for_username(username: String) {
-            self.db.collection("USERS").whereField("username", arrayContains: username)
-                .getDocuments() { (querySnapshot, error) in
-                    if let error = error {
-                        print("Error: \(error.localizedDescription)")
-                        return
-                    } else {
-                        for document in querySnapshot!.documents {
-                            let data = document.data()
-                            print("\(data["email"] ?? nil) \(data["name"] ?? nil)")
-                        }
+    func firebase_search_for_username(username: String, completionHandler: @escaping (([String]) -> Void)) {
+        var arr: [String] = []
+        self.db.collection("USERS").whereField("username", isGreaterThanOrEqualTo: username).whereField("username", isLessThanOrEqualTo: username + "\u{f7ff}")
+            .getDocuments() { (querySnapshot, error) in
+                if let error = error {
+                    print("Error: \(error.localizedDescription)")
+                    return
+                } else {
+                    for document in querySnapshot!.documents {
+                        let data = document.data()
+                        //print(data)
+                        arr.append(data["username"] as! String)
+//                        print(data)*/
+//                        print("\(document.documentID) => \(document.data())")
                     }
                 }
-            /*let ref = self.db.collection("USERS").queryOrdered(byChild: "username").queryStarting(atValue: username).queryEnding(atValue: "\(username)\\uf8ff")
-             ref.observeSingleEvent(of: .value) { (snapshot, error)  in
-             guard let dictionaries = snapshot.value as? [String: Any]
-             else { return }
-             
-             self.users.removeAll() // clear all previous results
-             
-             dictionaries.forEach({ (key, value) in
-             
-             if key == Auth.auth().currentUser?.uid {
-             return
-             }
-             
-             guard let userDictionary = value as? [String: Any] else { return }
-             
-             let user = User(uid: key, dictionary: userDictionary)
-             self.users.append(user)
-             
-             })
-             
-             self.users.sort(by: { (user1, user2) -> Bool in
-             
-             return user1.username.compare(user2.username) == .orderedAscending
-             })*/
+                completionHandler(arr)
+            }
+                
+        
+        /*let ref = self.db.collection("USERS").queryOrdered(byChild: "username").queryStarting(atValue: username).queryEnding(atValue: "\(username)\\uf8ff")
+         ref.observeSingleEvent(of: .value) { (snapshot, error)  in
+         guard let dictionaries = snapshot.value as? [String: Any]
+         else { return }
+         
+         self.users.removeAll() // clear all previous results
+         
+         dictionaries.forEach({ (key, value) in
+         
+         if key == Auth.auth().currentUser?.uid {
+         return
+         }
+         
+         guard let userDictionary = value as? [String: Any] else { return }
+         
+         let user = User(uid: key, dictionary: userDictionary)
+         self.users.append(user)
+         
+         })
+         
+         self.users.sort(by: { (user1, user2) -> Bool in
+         
+         return user1.username.compare(user2.username) == .orderedAscending
+         })*/
+    }
+    func sendBackList(username: String) -> [String] {
+        var arr: [String] = []
+        
+        for num in 1...10 {
+            arr.append("NewUsername\(username)")
         }
+        return arr
     }
 }
