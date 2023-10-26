@@ -117,11 +117,6 @@
 			isa = PBXGroup;
 			children = (
 				664B8F052AC5F1AA001E8C7F /* FlavorFeedApp.swift */,
-				6602DD8B2AC625EF008C3177 /* SelfProfileView.swift */,
-				48349B1F2ACCCAEF00F672E3 /* CalendarView.swift */,
-				48349B212ACCCAF600F672E3 /* MapView.swift */,
-				48349B1D2ACCCAE700F672E3 /* PinsView.swift */,
-				48349B1B2ACCCADA00F672E3 /* BioView.swift */,
 				666F5F062ADF48F50019CCA3 /* Models */,
 				6651134D2AC601B500027654 /* Views */,
 				664B8F092AC5F1AB001E8C7F /* Assets.xcassets */,
@@ -158,6 +153,11 @@
 		6651134D2AC601B500027654 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				6602DD8B2AC625EF008C3177 /* SelfProfileView.swift */,
+				48349B1F2ACCCAEF00F672E3 /* CalendarView.swift */,
+				48349B212ACCCAF600F672E3 /* MapView.swift */,
+				48349B1D2ACCCAE700F672E3 /* PinsView.swift */,
+				48349B1B2ACCCADA00F672E3 /* BioView.swift */,
 				666F5EFD2ADF48A30019CCA3 /* ContactsView.swift */,
 				666F5EFE2ADF48A30019CCA3 /* LandingPage.swift */,
 				666F5EFC2ADF48A30019CCA3 /* MainScrollView.swift */,
