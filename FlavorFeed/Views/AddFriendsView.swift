@@ -15,61 +15,72 @@ struct AddFriendsView: View {
     @Binding var tabSelection: Tabs
     @State private var selectedOption = "Suggestions"
     var options = ["Suggestions", "Friends", "Requests"]
-    @State private var searchText = "Add or search friends"
-
+    @State private var searchText = ""
+    @ObservedObject var vm: ViewModel
+    var users: [User] = addUsers() //later this will be the list of users we load in from firebase available in the view model
+    
     var body: some View {
-        GeometryReader { geometry in
-            NavigationStack {
-            VStack {
-                Text("FlavorFeed")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                    .padding(.bottom, -10)
-                
-                Button(action: {}) {
-                    HStack {
-                        Image(systemName: "person.circle")
-                            .foregroundColor(.black)
-                        VStack {
-                            Text("Invite friends on Flavor Feed")
-                                .foregroundColor(.black)
-                            Text("flavor.feed/anonymous")
-                                .foregroundColor(.black)
-                        }
-                        Image(systemName: "square.and.arrow.up")
-                            .foregroundColor(.black)
-                    }
-                    .frame(width: 350)
-                }
-                .background(Color.ffTertiary)
-                .buttonStyle(.bordered)
-                .cornerRadius(25)
-                .padding(5)
-                
-                // Separate ZStack for Picker and ScrollView
-                
-                
-                ZStack {
-                    UserListView()
+        NavigationStack {
+            GeometryReader { geometry in
+                VStack {
+                    Text("FlavorFeed")
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+                        .padding(.bottom, -10)
                     
-                    VStack {
-                        Spacer()
-                        Picker("Tabs", selection: $selectedOption) {
-                            Text(options[0]).tag(options[0])
-                            Text(options[1]).tag(options[1])
-                            Text(options[2]).tag(options[2])
+                    Button(action: {}) {
+                        HStack {
+                            Image(systemName: "person.circle")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(height: 50, alignment: .leading)
+                                .foregroundColor(.black)
+                            VStack (alignment: .leading) {
+                                Text("Invite friends on Flavor Feed")
+                                    .foregroundColor(.black)
+                                Text("flavor.feed/anonymous")
+                                    .foregroundColor(.black)
+                            }
+                            Spacer()
+                            Button(action: {}, label: {
+                                Image(systemName: "square.and.arrow.up")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(height: 30, alignment: .trailing)
+                                    .foregroundColor(Color.ffPrimary)
+                            })
+                            
+                        }.padding(5)
+                            .frame(width: 350, height: 50)
+                    }
+                    .background(Color.ffTertiary)
+                    .buttonStyle(.bordered)
+                    .cornerRadius(25)
+                    .padding(.top, 50)
+                    
+                    // Separate ZStack for Picker and ScrollView
+                    
+                    ZStack {
+                        UserListView(users: users, searchText: $searchText)
+                            .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Add or search friends")
+                        
+                        VStack {
+                            Spacer()
+                            Picker("Tabs", selection: $selectedOption) {
+                                Text(options[0]).tag(options[0])
+                                Text(options[1]).tag(options[1])
+                                Text(options[2]).tag(options[2])
+                            }
+                            .pickerStyle(.segmented)
+                            .padding(.bottom, 30)
+                            .menuStyle(.borderlessButton)
+                            .frame(width: geometry.size.width - 50)
+                            .cornerRadius(15)
+                            //.shadow(radius: 15)
                         }
-                        .pickerStyle(.segmented)
-                        .padding(10)
-                        .menuStyle(.borderlessButton)
-                        .frame(maxWidth: geometry.size.width - 50)
-                        //.background(Color.white)
-                        .cornerRadius(15)
-                        .shadow(radius: 15)
                     }
                 }
-            }
-            .toolbar {
+                .toolbar {
                     Button {
                         self.tabSelection = .mainScrollView
                     } label: {
@@ -78,12 +89,25 @@ struct AddFriendsView: View {
                             .font(.system(size: 20)).padding(5)
                     }
                 }
-            }.searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always))
+            }
+        }
+        .onAppear {
+            UISegmentedControl.appearance().backgroundColor = .white
         }
     }
+}
+
+//can remove this function once we have users list from firebase
+func addUsers() -> [User] {
+    var users : [User] = []
+    for i in 1...30 {
+        let user = User(id: "name\(i)", name: "name\(i)", username: "userName\(i)", profilePicture: "self_profile_view_icon", email: "", favorites: [], friends: [], savedPosts: [], bio: "", myPosts: [], phoneNumber: 0, location: "", myRecipes: [])
+        users.append(user)
     }
+    return users
+}
 
 
 #Preview {
-    AddFriendsView(tabSelection: Binding.constant(Tabs.addFriendsView))
+    AddFriendsView(tabSelection: Binding.constant(Tabs.addFriendsView), vm: ViewModel())
 }

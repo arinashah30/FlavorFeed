@@ -7,11 +7,10 @@
 
 import Foundation
 
-struct User: Hashable {
+struct User: Hashable, Identifiable {
     var id: String
     var name: String
     var username: String
-    // var password: String // not secure to store within app. let firebase handle it
     var profilePicture: String
     var email: String
     var favorites: [Post]

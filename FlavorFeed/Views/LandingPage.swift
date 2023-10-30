@@ -22,9 +22,7 @@ struct LandingPage: View {
         VStack {
             TabView(selection: $tabSelection) {
                 
-                //ContactsView(tabSelection: $tabSelection).tag(Tabs.contactsView)
-                
-                AddFriendsView(tabSelection: $tabSelection).tag(Tabs.addFriendsView)
+                AddFriendsView(tabSelection: $tabSelection, vm: vm).tag(Tabs.addFriendsView)
                 
                 MainScrollView(vm: vm, tabSelection: $tabSelection)
                     .tag(Tabs.mainScrollView)
