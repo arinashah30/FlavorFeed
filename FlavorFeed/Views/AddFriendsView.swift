@@ -75,8 +75,6 @@ struct AddFriendsView: View {
                             .padding(.bottom, 30)
                             .menuStyle(.borderlessButton)
                             .frame(width: geometry.size.width - 50)
-                            .cornerRadius(15)
-                            //.shadow(radius: 15)
                         }
                     }
                 }
