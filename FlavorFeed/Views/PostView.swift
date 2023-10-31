@@ -150,7 +150,7 @@ struct PostView: View {
                     if showComments && post.comments != nil {
                         ScrollView {
                             VStack {
-                                ForEach(post.comments!, id: \.self) { comment in
+                                ForEach(post.comments, id: \.self) { comment in
                                     HStack{
                                         Image(comment.profilePicture)
                                             .resizable()
@@ -161,7 +161,7 @@ struct PostView: View {
                                         ZStack{
                                             RoundedRectangle(cornerRadius: 10)
                                                 .fill(gold)
-                                            Text("**\(comment.username)**: \(comment.caption)")
+                                            Text("**\(comment.username)**: \(comment.text)")
                                                 .frame(maxWidth: .infinity, alignment: .leading)
                                                 .multilineTextAlignment(.leading)
                                                 .padding(.horizontal, 10)
@@ -187,7 +187,7 @@ struct PostView: View {
                     }
                 }
                 Spacer()
-            }
+            }.frame(maxHeight: .infinity)
         }
     }
     
@@ -199,7 +199,6 @@ struct PostView: View {
 }
 
 #Preview {
-    PostView(post: Post(id: UUID(), userID: UUID(), images: [["drake_selfie", "food_pic_1"], ["drake_selfie2", "food_pic_2"], ["drake_selfie3", "food_pic_3"]], caption: ["Let's dig in!", "", "That was yummy in my tummy"], date: "October 24, 2022", comments: [Comment(id: UUID(), username: "Adonis", profilePicture: "adonis_pfp", caption: "Looking fresh Drake!"), Comment(id: UUID(), username: "Travis Scott", profilePicture: "travis_scott_pfp", caption: "She said do you love me I told her only partly.")]))
-//    PostView(selfiePic: "selfie", foodPic: "samplePic2", caption: "This is a sample caption")
+    PostView(post: Post(id: UUID(), userID: UUID(), images: [["drake_selfie", "food_pic_1"], ["drake_selfie2", "food_pic_2"], ["drake_selfie3", "food_pic_3"]], caption: ["Let's dig in!", "", "That was yummy in my tummy"], date: "October 24, 2022", likes: [], comments: [Comment(id: UUID(), username: "Adonis", profilePicture: "adonis_pfp", text: "Looking fresh Drake!", date: "October 24, 2022", likes: [], replies: []), Comment(id: UUID(), username: "Travis Scott", profilePicture: "travis_scott_pfp", text: "She said do you love me I told her only partly.", date: "October 24, 2022", likes: [], replies: [])]))
 }
 

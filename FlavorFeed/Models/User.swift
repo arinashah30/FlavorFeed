@@ -7,16 +7,16 @@
 
 import Foundation
 
-struct User: Identifiable {
+
+struct User: Identifiable, Hashable {
     static func == (lhs: User, rhs: User) -> Bool {
-        return true;
+        return (lhs.id == rhs.id)
     }
     
-    var id: UUID
-    
+    var id: String
     var name: String
     var username: String
-    var password: String
+    // var password: String // not secure to store within app. let firebase handle it
     var profilePicture: String
     var email: String
     var favorites: [Post]
@@ -30,6 +30,4 @@ struct User: Identifiable {
     var streak: Int {
         return myPosts.count
     }
-    
-    
 }
