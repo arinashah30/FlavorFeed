@@ -115,7 +115,7 @@ struct LoginView: View {
             .clipShape(.rect(cornerRadius: 50.0))
             .padding()
                         
-            Spacer().frame(height: 200)
+            Spacer().frame(height: 150)
             
             HStack {
                 Text("Don't have an account?")

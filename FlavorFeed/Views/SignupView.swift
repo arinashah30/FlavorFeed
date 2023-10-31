@@ -108,9 +108,16 @@ struct SignupView: View {
                 email = email.trimmingCharacters(in: .whitespacesAndNewlines)
                 password = password.trimmingCharacters(in: .whitespacesAndNewlines)
                 
-                if !email.isEmpty && !password.isEmpty {
-                    vm.firebase_sign_in(email: email, password: password)
-                } else {
+                if !email.isEmpty && !username.isEmpty && !displayName.isEmpty && !phoneNumber.isEmpty && !password.isEmpty && password == repeatPassword {
+                    vm.firebase_email_password_sign_up(
+                        email: self.email,
+                        password: self.password,
+                        username: self.username,
+                        displayName: self.displayName,
+                        phoneNumber: self.phoneNumber
+                    )
+                }
+                else {
                     vm.errorText = "You must fill out all fields"
                 }
             } label: {
@@ -124,14 +131,14 @@ struct SignupView: View {
             .background(Color.ffTertiary)
             .clipShape(.rect(cornerRadius: 50.0))
                         
-            Spacer().frame(height: 200)
+            Spacer().frame(height: 150)
             
             HStack {
                 Text("Already have an account?")
                     .foregroundStyle(Color.white)
                 
                 NavigationLink {
-                    SignupView(vm: vm)
+                    LoginView(vm: vm)
                 } label: {
                     Text("Log In")
                         .fontWeight(.bold)
