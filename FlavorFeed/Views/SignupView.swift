@@ -18,70 +18,84 @@ struct SignupView: View {
 
     var body: some View {
         VStack {
+            Spacer().frame(height:100)
+            Image("flavorfeed_logo_alt")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 340, height:34)
             Text("Sign Up")
                 .font(.largeTitle)
-                .padding()
+                .foregroundColor(.white)
             Text("Create your account")
+                .foregroundColor(.white)
+            
+            
             
             HStack {
-                Image(systemName: "person.fill")
-                TextField("", text: $username, prompt: Text("Username"))
-                    .textInputAutocapitalization(.never)
-
+                Image("signup_user_icon")
+                    .resizable()
+                    .frame(width:35,height:35)
+                    .padding(.leading)
+                HStack {
+                    TextField("", text: $username, prompt: Text("Username")                .foregroundColor(.white))
+                        .textInputAutocapitalization(.never)
+                }
+                .padding()
+                .background(Color.ffPrimary)
+                .clipShape(.rect(cornerRadius: 7.0))
+                .padding()
             }
-            .padding()
-            .background(Color(uiColor: .secondarySystemBackground))
-            .clipShape(.rect(cornerRadius: 7.0))
             .padding([.leading, .trailing, .top])
+            .padding(.bottom, -15)
             
             HStack {
-                Image(systemName: "envelope.fill")
-                TextField("", text: $email, prompt: Text("Email Address"))
-                    .textInputAutocapitalization(.never)
-
+                Image("email_icon")
+                    .resizable()
+                    .frame(width:35,height:30)
+                    .padding(.leading)
+                HStack {
+                    TextField("", text: $email, prompt: Text("Email")                .foregroundColor(.white))
+                        .textInputAutocapitalization(.never)
+                }
+                .padding()
+                .background(Color.ffPrimary)
+                .clipShape(.rect(cornerRadius: 7.0))
+                .padding()
             }
-            .padding()
-            .background(Color(uiColor: .secondarySystemBackground))
-            .clipShape(.rect(cornerRadius: 7.0))
-            .padding([.leading, .trailing])
-
-            HStack {
-                Image(systemName: "lock.fill")
-                SecureField("", text:  $password, prompt: Text("Password"))
-            }
-            .padding()
-            .background(Color(uiColor: .secondarySystemBackground))
-            .clipShape(.rect(cornerRadius: 8.0))
             .padding([.leading, .trailing])
             
             HStack {
-                Image(systemName: "lock.fill")
-                SecureField("", text:  $repeatPassword, prompt: Text("Confirm password"))
+                Image("password_icon")
+                    .resizable()
+                    .frame(width:35, height: 20)
+                    .padding(.leading)
+                HStack {
+                    SecureField("", text:  $password, prompt: Text("Password")
+                        .foregroundColor(.white))
+                }
+                .padding()
+                .background(Color.ffPrimary)
+                .clipShape(.rect(cornerRadius: 8.0))
+                .padding([.leading, .trailing])
             }
-            .padding()
-            .background(Color(uiColor: .secondarySystemBackground))
-            .clipShape(.rect(cornerRadius: 8.0))
-            .padding([.leading, .trailing])
+            .padding([.leading, .trailing, .bottom])
             
             HStack {
-                Image(systemName: "phone.fill")
-                TextField("", text: $phoneNumber, prompt: Text("Phone Number"))
-                    .textInputAutocapitalization(.never)
+                Image("password_icon")
+                    .resizable()
+                    .frame(width:35, height: 20)
+                    .padding(.leading)
+                HStack {
+                    SecureField("", text:  $repeatPassword, prompt: Text("Confirm Password")
+                        .foregroundColor(.white))
+                }
+                .padding()
+                .background(Color.ffPrimary)
+                .clipShape(.rect(cornerRadius: 8.0))
+                .padding([.leading, .trailing])
             }
-            .padding()
-            .background(Color(uiColor: .secondarySystemBackground))
-            .clipShape(.rect(cornerRadius: 8.0))
             .padding([.leading, .trailing])
             
-            HStack {
-                Image(systemName: "person.crop.rectangle")
-                TextField("", text: $displayName, prompt: Text("Display Name"))
-                    .textInputAutocapitalization(.never)
-            }
-            .padding()
-            .background(Color(uiColor: .secondarySystemBackground))
-            .clipShape(.rect(cornerRadius: 8.0))
-            .padding([.leading, .trailing])
             
             if let errorText = vm.errorText {
                 Text(errorText).foregroundStyle(Color.red)
@@ -93,47 +107,47 @@ struct SignupView: View {
                 vm.errorText = nil
                 email = email.trimmingCharacters(in: .whitespacesAndNewlines)
                 password = password.trimmingCharacters(in: .whitespacesAndNewlines)
-                repeatPassword = repeatPassword.trimmingCharacters(in: .whitespacesAndNewlines)
-                username = username.trimmingCharacters(in: .whitespacesAndNewlines)
-                phoneNumber = phoneNumber.trimmingCharacters(in: .whitespacesAndNewlines)
-
-                if !email.isEmpty && !username.isEmpty && !displayName.isEmpty && !phoneNumber.isEmpty && !password.isEmpty && password == repeatPassword {
-                    vm.firebase_email_password_sign_up(
-                        email: self.email,
-                        password: self.password,
-                        username: self.username,
-                        displayName: self.displayName,
-                        phoneNumber: self.phoneNumber
-                    )
+                
+                if !email.isEmpty && !password.isEmpty {
+                    vm.firebase_sign_in(email: email, password: password)
                 } else {
                     vm.errorText = "You must fill out all fields"
                 }
             } label: {
                 Text("SIGN UP")
+                    .bold()
                     .font(.title3)
-                    .foregroundStyle(Color.black)
+                    .foregroundStyle(Color.ffSecondary)
             }
             .padding()
-            .frame(maxWidth: .infinity)
-            .background(Color(uiColor: .secondarySystemBackground))
+            .frame(maxWidth: 140)
+            .background(Color.ffTertiary)
             .clipShape(.rect(cornerRadius: 50.0))
-            .padding()
                         
+            Spacer().frame(height: 200)
+            
             HStack {
                 Text("Already have an account?")
+                    .foregroundStyle(Color.white)
                 
                 NavigationLink {
-                    LoginView(vm: vm)
+                    SignupView(vm: vm)
                 } label: {
-                    Text("Login")
+                    Text("Log In")
                         .fontWeight(.bold)
-                        .foregroundStyle(Color.black)
+                        .foregroundStyle(Color.ffTertiary)
                 }
             }
         }
         .onAppear {
             vm.errorText = nil
         }
+        .background(
+            Image("onboarding_background")
+                .resizable()
+                .ignoresSafeArea()
+                .aspectRatio(contentMode: .fill)
+        )
     }
 }
 
