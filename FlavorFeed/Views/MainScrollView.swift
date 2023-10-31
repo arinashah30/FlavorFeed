@@ -16,12 +16,6 @@ struct MainScrollView: View {
         ZStack {
             VStack {
                 TopBar(tabSelection: $tabSelection)
-                Text("Welcome, \(vm.current_user?.name ?? "")!").font(.title)
-                Button {
-                    vm.firebase_sign_out()
-                } label: {
-                    Text("Sign Out")
-                }
                 VStack {
                     PostView(post: posts[0]).frame(maxHeight: .infinity)
                 }

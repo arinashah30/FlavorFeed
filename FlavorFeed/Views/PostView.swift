@@ -2,7 +2,7 @@
 //  PostView.swift
 //  FlavorFeed
 //
-//  Created by Rik Roy on 9/28/23.
+//  Created by Datta Kansal and Shaunak Karnik on 9/28/23.
 //
 
 import SwiftUI
@@ -25,18 +25,18 @@ struct PostView: View {
         GeometryReader { geo in
             VStack {
                 HStack {
-                    Image("samplePFP")
+                    Image("drake_pfp")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .frame(width: 70)
+                        .frame(width: geo.size.height * 0.08)
                         .clipShape(.circle)
                     
                     VStack (alignment: .leading) {
                         Text("Aubrey Drake Graham")
-                            .font(.system(size: 20))
+                            .font(.system(size: 18))
                             .foregroundColor(.ffSecondary)
                             .fontWeight(.semibold)
-                        Text("Toronto • 7:00:02 AM")
+                        Text("Toronto, ON • 7:00 AM")
                             .font(.system(size: 15))
                             .fontWeight(.light)
                     }
@@ -64,53 +64,57 @@ struct PostView: View {
                                 .frame(width: geo.size.width*0.98, height: geo.size.height*0.66)
                                 .clipped()
                             
-                            VStack {
-                                Button {
-                                    
-                                } label: {
-                                    Image("fork_and_knife")
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                        .frame(width: 35)
-                                        .foregroundColor(.ffTertiary)
-                                }
-                                
-                                Button {
-                                    
-                                } label: {
-                                    Image("Restaurant_logo")
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                        .frame(width: 35)
-                                }
-                            }.padding(20).offset(x: 165, y: -220)
 
                             VStack {
                                 
                                 HStack {
-                                    Button {
-                                        self.showSelfieFirst.toggle()
-                                    } label: {
-                                        Image((showSelfieFirst) ? post.images[index][0] : post.images[index][1])
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fill)
-                                            .frame(width: 120, height: 180)
-                                            .clipped()
-                                    }
-                                    .cornerRadius(10)
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 10)
-                                            .stroke(Color.ffPrimary, lineWidth: 2)
-                                    )
+                                    VStack {
+                                        Button {
+                                            self.showSelfieFirst.toggle()
+                                        } label: {
+                                            Image((showSelfieFirst) ? post.images[index][0] : post.images[index][1])
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fill)
+                                                .frame(width: geo.size.width * 0.30, height: geo.size.height * 0.2)
+                                                .clipped()
+                                        }
+                                        .cornerRadius(10)
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 10)
+                                                .stroke(Color.ffPrimary, lineWidth: 2)
+                                        )
                                     .padding()
+                                        Spacer()
+                                    }
                                     Spacer()
+                                    VStack {
+                                        Button {
+                                            
+                                        } label: {
+                                            Image("fork_and_knife")
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fit)
+                                                .frame(width: 35)
+                                                .foregroundColor(.ffTertiary)
+                                        }
+                                        
+                                        Button {
+                                            
+                                        } label: {
+                                            Image("Restaurant_logo")
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fit)
+                                                .frame(width: 35)
+                                        }
+                                        Spacer()
+                                    }.padding()
 
                                 }
                                 Spacer()
                                 if post.caption[index] != "" {
                                     Text(post.caption[index])
                                         .background(RoundedRectangle(cornerRadius: 10.0)
-                                            .frame(width: 300, height: 40)
+                                            .frame(width: geo.size.width * 0.7, height: geo.size.height * 0.05)
                                             .foregroundColor(.ffTertiary))
                                         .padding(20)
                                 }
@@ -119,10 +123,10 @@ struct PostView: View {
                         }.cornerRadius(20)
                             .padding(.bottom, 55)
                             .padding([.leading, .trailing] , 20)
-                    }.frame(height:600)
+                    }.frame(height: geo.size.height * 0.69)
                     
                 }.tabViewStyle(.page).indexViewStyle(.page(backgroundDisplayMode: .always))
-                    .frame(height: 610)
+                    .frame(height: geo.size.height * 0.735)
                     .onAppear {
                         setupAppearance()
                     }
@@ -166,13 +170,6 @@ struct PostView: View {
                                                 .multilineTextAlignment(.leading)
                                                 .padding(.horizontal, 10)
                                         }
-                                        //                                    .frame(alignment: .leading)
-                                        //                                    Text("**\(comment.username)**: \(comment.caption)")
-                                        //                                        .padding(.horizontal, 7)
-                                        //                                        .frame(width: .infinity, height: .infinity)
-                                        //                                        .background(gold)
-                                        //                                        .cornerRadius(10)
-                                        //                                        .multilineTextAlignment(.leading)
                                         Spacer()
                                     }
                                     .padding(.horizontal, 15)
@@ -199,6 +196,5 @@ struct PostView: View {
 }
 
 #Preview {
-    PostView(post: Post(id: UUID(), userID: UUID(), images: [["drake_selfie", "food_pic_1"], ["drake_selfie2", "food_pic_2"], ["drake_selfie3", "food_pic_3"]], caption: ["Let's dig in!", "", "That was yummy in my tummy"], date: "October 24, 2022", likes: [], comments: [Comment(id: UUID(), username: "Adonis", profilePicture: "adonis_pfp", text: "Looking fresh Drake!", date: "October 24, 2022", likes: [], replies: []), Comment(id: UUID(), username: "Travis Scott", profilePicture: "travis_scott_pfp", text: "She said do you love me I told her only partly.", date: "October 24, 2022", likes: [], replies: [])]))
+    PostView(post: Post(id: UUID(), userID: UUID(), images: [["drake_selfie", "food_pic_1"], ["drake_selfie2", "food_pic_2"], ["drake_selfie3", "food_pic_3"]], caption: ["That was yummy in my tummy", "", "Let's dig in"], date: "October 24, 2022", likes: [], comments: [Comment(id: UUID(), username: "Adonis", profilePicture: "adonis_pfp", text: "Looking fresh Drake!", date: "October 24, 2022", likes: [], replies: []), Comment(id: UUID(), username: "Travis Scott", profilePicture: "travis_scott_pfp", text: "She said do you love me I told her only partly.", date: "October 24, 2022", likes: [], replies: [])]))
 }
-
