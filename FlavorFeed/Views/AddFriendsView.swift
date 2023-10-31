@@ -16,6 +16,7 @@ struct AddFriendsView: View {
     @State private var selectedOption = "Suggestions"
     var options = ["Suggestions", "Friends", "Requests"]
     @State private var searchText = ""
+    //@FocusState private var emailFieldIsFocused: Bool = false
     @ObservedObject var vm: ViewModel
     var users: [User] = addUsers() //later this will be the list of users we load in from firebase available in the view model
     
@@ -23,10 +24,21 @@ struct AddFriendsView: View {
         NavigationStack {
             GeometryReader { geometry in
                 VStack {
-                    Text("FlavorFeed")
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-                        .padding(.bottom, -10)
+                    Spacer()
+                    Spacer()
+                    Spacer()
+                    Spacer()
+                    Spacer()
+                    Spacer()
+                    Spacer()
+                    Spacer()
+                    Spacer()
+                    Spacer()
+                    
+                    TextField("Add or search friends",text: $searchText)
+                        .textInputAutocapitalization(.never)
+                        .disableAutocorrection(true)
+                        .border(.secondary)
                     
                     Button(action: {}) {
                         HStack {
@@ -60,11 +72,12 @@ struct AddFriendsView: View {
                     
                     // Separate ZStack for Picker and ScrollView
                     
-                    ZStack {
-                        UserListView(users: users, searchText: $searchText)
-                            .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Add or search friends")
+                   
                         
-                        VStack {
+                        UserListView(users: users, searchText: $searchText)
+//                            .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Add or search friends")
+                        
+                        
                             Spacer()
                             Picker("Tabs", selection: $selectedOption) {
                                 Text(options[0]).tag(options[0])
@@ -76,16 +89,35 @@ struct AddFriendsView: View {
                             .menuStyle(.borderlessButton)
                             .frame(width: geometry.size.width - 50)
                         }
-                    }
-                }
+                    
+                
+                
                 .toolbar {
-                    Button {
-                        self.tabSelection = .mainScrollView
-                    } label: {
-                        Image(systemName: "arrow.right")
-                            .foregroundColor(.black)
-                            .font(.system(size: 20)).padding(5)
-                    }
+                    HStack {
+                        Spacer()
+                        Image("flavorfeed_logo")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(height:  18.3)
+                        
+                        Spacer()
+                        Spacer()
+                        Spacer()
+                        Spacer()
+                        Spacer()
+                        Spacer()
+                        Spacer()
+                        Spacer()
+                        Spacer()
+                        Spacer()
+                        Button {
+                            self.tabSelection = .mainScrollView
+                        } label: {
+                            Image(systemName: "arrow.right")
+                                .foregroundColor(.black)
+                                .font(.system(size: 20)).padding(5)
+                        }
+                    }.padding([.leading, .trailing])
                 }
             }
         }
