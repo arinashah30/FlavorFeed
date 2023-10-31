@@ -122,40 +122,12 @@ class ViewModel: ObservableObject {
                 } else {
                     for document in querySnapshot!.documents {
                         let data = document.data()
-                        //print(data)
                         arr.append(data["username"] as! String)
-//                        print(data)*/
-//                        print("\(document.documentID) => \(document.data())")
                     }
                 }
                 completionHandler(arr)
             }
-                
-        
-        /*let ref = self.db.collection("USERS").queryOrdered(byChild: "username").queryStarting(atValue: username).queryEnding(atValue: "\(username)\\uf8ff")
-         ref.observeSingleEvent(of: .value) { (snapshot, error)  in
-         guard let dictionaries = snapshot.value as? [String: Any]
-         else { return }
-         
-         self.users.removeAll() // clear all previous results
-         
-         dictionaries.forEach({ (key, value) in
-         
-         if key == Auth.auth().currentUser?.uid {
-         return
-         }
-         
-         guard let userDictionary = value as? [String: Any] else { return }
-         
-         let user = User(uid: key, dictionary: userDictionary)
-         self.users.append(user)
-         
-         })
-         
-         self.users.sort(by: { (user1, user2) -> Bool in
-         
-         return user1.username.compare(user2.username) == .orderedAscending
-         })*/
+            
     }
     func sendBackList(username: String) -> [String] {
         var arr: [String] = []
