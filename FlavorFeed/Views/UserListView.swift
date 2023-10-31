@@ -16,10 +16,10 @@ struct UserListView: View {
         GeometryReader { geometry in
             List {
                 ForEach(filteredUsers) { user in
-                    UserRow(user: user, width: geometry.size.width).padding(5)
+                    UserRow(user: user, width: geometry.size.width).padding(.horizontal, 10)
                 }//.listRowBackground(Color.ffPrimary)
-            }.scrollContentBackground(.hidden)
-                .edgesIgnoringSafeArea(.horizontal)
+            }//.scrollContentBackground(.hidden)
+                .listStyle(.plain)
         }
     }
 }
@@ -66,8 +66,6 @@ struct UserRow: View {
     }
 }
 
-struct UserList_Previews: PreviewProvider {
-    static var previews: some View {
-        UserListView(users: [User(id: "name1", name: "name1", username: "userName1", profilePicture: "self_profile_view_icon", email: "", favorites: [], friends: [], savedPosts: [], bio: "", myPosts: [], phoneNumber: 0, location: "", myRecipes: []), User(id: "name1", name: "name1", username: "userName1", profilePicture: "self_profile_view_icon", email: "", favorites: [], friends: [], savedPosts: [], bio: "", myPosts: [], phoneNumber: 0, location: "", myRecipes: []), User(id: "name1", name: "name1", username: "userName1", profilePicture: "self_profile_view_icon", email: "", favorites: [], friends: [], savedPosts: [], bio: "", myPosts: [], phoneNumber: 0, location: "", myRecipes: [])], searchText: Binding.constant(""))
-    }
+#Preview {
+    UserListView(users: [User(id: "name1", name: "name1", username: "userName1", profilePicture: "self_profile_view_icon", email: "", favorites: [], friends: [], savedPosts: [], bio: "", myPosts: [], phoneNumber: 0, location: "", myRecipes: []), User(id: "name1", name: "name1", username: "userName1", profilePicture: "self_profile_view_icon", email: "", favorites: [], friends: [], savedPosts: [], bio: "", myPosts: [], phoneNumber: 0, location: "", myRecipes: []), User(id: "name1", name: "name1", username: "userName1", profilePicture: "self_profile_view_icon", email: "", favorites: [], friends: [], savedPosts: [], bio: "", myPosts: [], phoneNumber: 0, location: "", myRecipes: [])], searchText: Binding.constant(""))
 }
