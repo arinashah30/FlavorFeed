@@ -175,7 +175,9 @@
 				B2BACCD32ACF161100F942A3 /* Info.plist */,
 				B2BACCD22ACF15C000F942A3 /* FlavorFeed.entitlements */,
 				664B8F052AC5F1AA001E8C7F /* FlavorFeedApp.swift */,
+
 				662E0A272AE8BFF9007E1A1C /* Views */,
+
 				B21292522ACD21570064AE5D /* ViewModels */,
 				6651134C2AC601AF00027654 /* Models */,
 				664B8F092AC5F1AB001E8C7F /* Assets.xcassets */,
