@@ -11,6 +11,7 @@ enum Tabs {
     case mainScrollView
     case contactsView
     case selfProfileView
+    case addFriendsView
 }
 
 struct LandingPage: View {
@@ -21,8 +22,7 @@ struct LandingPage: View {
         VStack {
             TabView(selection: $tabSelection) {
                 
-                ContactsView(tabSelection: $tabSelection)
-                    .tag(Tabs.contactsView)
+                AddFriendsView(tabSelection: $tabSelection, vm: vm).tag(Tabs.addFriendsView)
                 
                 MainScrollView(vm: vm, tabSelection: $tabSelection)
                     .tag(Tabs.mainScrollView)
