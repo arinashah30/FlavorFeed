@@ -19,7 +19,7 @@ struct Post: Identifiable, Hashable {
     var comments: [Comment] //list of comments
     var caption: [String] // [caption_1, caption_2, caption_3]
     var likes: [String] //list of userIDs of users who liked
-    var location: [String] //location of post, if applicable [location_1, location_2, location_3]
-    var recipe: String //Recipe, if applicable [recipe_1, recipe_2, recipe_3]
+    var locations: [String] //location of post, if applicable [location_1, location_2, location_3]
+    var recipes: [Recipe] //Recipe, if applicable [recipe_1, recipe_2, recipe_3]
 
 }
