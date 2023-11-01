@@ -40,8 +40,6 @@
 		B2BACCCF2ACF132000F942A3 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2BACCCE2ACF132000F942A3 /* ContentView.swift */; };
 		B2BACCD12ACF136B00F942A3 /* Onboarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2BACCD02ACF136B00F942A3 /* Onboarding.swift */; };
 		B2FCB8FF2AC63AA200865FCF /* FFColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FCB8FE2AC63AA100865FCF /* FFColors.swift */; };
-		F7AD38BD2AE8788E001E053B /* SearchBarTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7AD38BC2AE8788E001E053B /* SearchBarTest.swift */; };
-		F7D73F8B2ADF400600663EC1 /* CreatePostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7D73F8A2ADF400600663EC1 /* CreatePostView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -163,7 +161,7 @@
 				6602DD8C2AC625EF008C3177 /* ContactsView.swift */,
 				6602DD8D2AC625EF008C3177 /* MainScrollView.swift */,
 				6602DD8B2AC625EF008C3177 /* SelfProfileView.swift */,
-				B21292522ACD21570064AE5D /* View Models */,
+				B21292522ACD21570064AE5D /* ViewModels */,
 				6651134C2AC601AF00027654 /* Models */,
 				664B8F092AC5F1AB001E8C7F /* Assets.xcassets */,
 				B21292452ACD20480064AE5D /* GoogleService-Info.plist */,
@@ -207,12 +205,12 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
-		B21292522ACD21570064AE5D /* View Models */ = {
+		B21292522ACD21570064AE5D /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
 				B21292502ACD21500064AE5D /* ViewModel.swift */,
 			);
-			path = "View Models";
+			path = ViewModels;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -375,11 +373,9 @@
 				B2BACCD12ACF136B00F942A3 /* Onboarding.swift in Sources */,
 				B21292512ACD21500064AE5D /* ViewModel.swift in Sources */,
 				B2BACCCF2ACF132000F942A3 /* ContentView.swift in Sources */,
-				F7D73F8B2ADF400600663EC1 /* CreatePostView.swift in Sources */,
 				664B8F062AC5F1AA001E8C7F /* FlavorFeedApp.swift in Sources */,
 				B2BACCCC2ACF12B300F942A3 /* MainScrollView.swift in Sources */,
 				B2BACCCB2ACF12B300F942A3 /* ContactsView.swift in Sources */,
-				F7AD38BD2AE8788E001E053B /* SearchBarTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
