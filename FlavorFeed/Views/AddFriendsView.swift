@@ -23,12 +23,18 @@ struct AddFriendsView: View {
         NavigationStack {
             GeometryReader { geometry in
                 VStack {
-                    Text("FlavorFeed")
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-                        .padding(.bottom, -10)
+                    Spacer(minLength: 40)
+                    HStack {
+                        Image(systemName: "magnifyingglass")
+                        TextField("Add or search friends",text: $searchText)
+                            .textInputAutocapitalization(.never)
+                            .disableAutocorrection(true)
+                    }
+                        .padding(10)
+                        .background(RoundedRectangle(cornerRadius: 8).fill(Color(UIColor.systemGray5)))
+                        .frame(maxWidth: geometry.size.width - 20)
+                        .padding(.bottom, 10)
                     
-                    Button(action: {}) {
                         HStack {
                             Image(systemName: "person.circle")
                                 .resizable()
@@ -50,21 +56,19 @@ struct AddFriendsView: View {
                                     .foregroundColor(Color.ffPrimary)
                             })
                             
-                        }.padding(5)
+                        }.padding(10)
                             .frame(width: 350, height: 50)
-                    }
-                    .background(Color.ffTertiary)
-                    .buttonStyle(.bordered)
-                    .cornerRadius(25)
-                    .padding(.top, 50)
+                            .background(RoundedRectangle(cornerRadius: 25).fill(Color.ffTertiary).frame(width: 350, height: 60))
+
                     
                     // Separate ZStack for Picker and ScrollView
                     
-                    ZStack {
-                        UserListView(users: users, searchText: $searchText)
-                            .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Add or search friends")
+                   
                         
-                        VStack {
+                        UserListView(users: users, searchText: $searchText)
+
+                        
+                        
                             Spacer()
                             Picker("Tabs", selection: $selectedOption) {
                                 Text(options[0]).tag(options[0])
@@ -76,16 +80,35 @@ struct AddFriendsView: View {
                             .menuStyle(.borderlessButton)
                             .frame(width: geometry.size.width - 50)
                         }
-                    }
-                }
+                    
+                
+                
                 .toolbar {
-                    Button {
-                        self.tabSelection = .mainScrollView
-                    } label: {
-                        Image(systemName: "arrow.right")
-                            .foregroundColor(.black)
-                            .font(.system(size: 20)).padding(5)
-                    }
+                    HStack {
+                        Spacer()
+                        Image("flavorfeed_logo")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(height:  18.3)
+                        
+                        Spacer()
+                        Spacer()
+                        Spacer()
+                        Spacer()
+                        Spacer()
+                        Spacer()
+                        Spacer()
+                        Spacer()
+                        Spacer()
+                        Spacer()
+                        Button {
+                            self.tabSelection = .mainScrollView
+                        } label: {
+                            Image(systemName: "arrow.right")
+                                .foregroundColor(.black)
+                                .font(.system(size: 20)).padding(5)
+                        }
+                    }.padding([.leading, .trailing])
                 }
             }
         }
