@@ -13,12 +13,13 @@ struct Comment: Identifiable, Hashable {
         return (lhs.id == rhs.id)
     }
     
-    var id: UUID
-    var username: String
-    var profilePicture: String
-    var text: String
-    var date: String
-    var likes: [User]
-    var replies: [Comment]
+    // REQUIRED PROPERTIES
+    var id: String // comment document ID
+    var userID: String // id of user who commented
+    var text: String // comment description (the comment itself)
+    var date: String // timestamp of comment
+    
+    // OPTIONAL PROPERTIES
+    var replies: [Comment]? // replies to comment
 
 }
