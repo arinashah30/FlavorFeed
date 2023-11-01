@@ -7,7 +7,12 @@
 
 import Foundation
 
-struct User: Hashable, Identifiable {
+
+struct User: Identifiable, Hashable {
+    static func == (lhs: User, rhs: User) -> Bool {
+        return (lhs.id == rhs.id)
+    }
+
     var id: String
     var name: String
     var username: String

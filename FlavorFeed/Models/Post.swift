@@ -9,8 +9,9 @@ import Foundation
 
 struct Post: Identifiable, Hashable {
     var id: UUID
-    var images: [String:String]
-    var caption: String
+    var userID: UUID
+    var images: [[String]]
+    var caption: [String]
     var recipe: String? //Recipe
     var date: String
     var likes: [User]

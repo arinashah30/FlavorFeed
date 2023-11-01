@@ -2,17 +2,23 @@
 //  Comment.swift
 //  FlavorFeed
 //
-//  Created by Austin Huguenard on 10/12/23.
 
+//  Created by Datta Kansal on 10/19/23.
 //
 
 import Foundation
 
 struct Comment: Identifiable, Hashable {
+    static func == (lhs: Comment, rhs: Comment) -> Bool {
+        return (lhs.id == rhs.id)
+    }
+    
     var id: UUID
-    var user: User
+    var username: String
+    var profilePicture: String
     var text: String
     var date: String
     var likes: [User]
     var replies: [Comment]
+
 }
