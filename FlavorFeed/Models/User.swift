@@ -21,9 +21,9 @@ struct User: Identifiable, Hashable {
     var bio: String // profile bio
     var phoneNumber: String // String of phone number
     
-    var pins: [String] // array of post IDs
-    var friends: [String] // array of userIDs (usernames)
     
-    // OPTIONAL PROPERTIES
-    var myPosts: [String]? // array of all user posts (may not always need all of your posts)
+    // OPTIONAL PROPERTIES (could be empty arrays)
+    var friends: [String] // array of userIDs (usernames)
+    var pins: [String] // array of post IDs
+    var myPosts: [String] // array of all user posts (may not always need all of your posts)
 }

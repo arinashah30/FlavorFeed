@@ -16,11 +16,11 @@ struct Friend: Identifiable, Hashable {
     var id: String // username
     var name: String //displayName
     var profilePicture: String // URL of profile picture
-    var pins: [String] // array of post IDs
-    var mutualFriends: [String] // array of userIDs of mutual friends (usernames)
     var bio: String // profile bio
     
-    // OPTIONAL PROPERTIES
-    var todaysPosts: [String]? // friend may not have posted today.
+    // OPTIONAL PROPERTIES (could be empty arrays)
+    var mutualFriends: [String] // array of userIDs of mutual friends (usernames)
+    var pins: [String] // array of post IDs
+    var todaysPosts: [String] // friend may not have posted today.
     
 }
