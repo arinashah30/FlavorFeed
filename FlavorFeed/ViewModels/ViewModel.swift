@@ -10,6 +10,7 @@ import Firebase
 import FirebaseAuth
 import FirebaseFirestore
 
+
 /**
  View Model Directory:
  
@@ -36,11 +37,17 @@ class ViewModel: ObservableObject {
     let db = Firestore.firestore()
     let auth = Auth.auth()
     
+
     
     init() {
         _ = Auth.auth().addStateDidChangeListener { [weak self] auth, user in
             if let user = user {
-                self?.setCurrentUser(userId: user.uid)
+                print("User Found")
+                if let username = user.displayName {
+                    print("Setting User: \(username)")
+                    self?.setCurrentUser(userId: username)
+                    UserDefaults.standard.setValue(true, forKey: "log_Status")
+                }
             } else {
                 UserDefaults.standard.setValue(false, forKey: "log_Status")
             }
@@ -58,7 +65,6 @@ class ViewModel: ObservableObject {
     
     func firebase_email_password_sign_up(email: String, password: String, username: String, displayName: String, phoneNumber: String) {
         
-        
         auth.createUser(withEmail: email, password: password) { [weak self] authResult, error in
             if let error = error {
                 let firebaseError = AuthErrorCode.Code(rawValue: error._code)
@@ -71,21 +77,25 @@ class ViewModel: ObservableObject {
                     self?.errorText = "An error has occurred"
                 }
             } else if let user = authResult?.user {
-                let id = user.uid
-                self?.db.collection("USERS").document(id).setData(
-                    ["name" : displayName,
-                     "username" : username,
+                print("UPDATING DISPLAY NAME")
+                let changeRequest = user.createProfileChangeRequest()
+                print(username)
+                changeRequest.displayName = username
+                changeRequest.commitChanges { error in
+                    if let error = error {
+                        print(error.localizedDescription)
+                    }
+                }
+                self?.db.collection("USERS").document(username).setData(
+                    ["id" : username,
+                     "name" : displayName,
                      "profilePicture" : "",
                      "email" : email,
-                     "favorites" : [],
-                     "friends" : [],
-                     "savedPosts" : [],
                      "bio" : "",
-                     "myPosts" : [],
                      "phone_number" : phoneNumber,
-                     "location" : "",
-                     
-                     "myRecipes" : []
+                     "friends" : [],
+                     "pins" : [],
+                     "myPosts" : []
                     ] as [String : Any]) { error in
                         if let error = error {
                             self?.errorText = error.localizedDescription
@@ -145,19 +155,15 @@ class ViewModel: ObservableObject {
             if let error = error {
                 self?.errorText = error.localizedDescription
             } else if let document = document {
-                self?.current_user = User(id: userId,
+                self?.current_user = User(id: document.documentID,
                                           name: document["name"] as! String,
-                                          username: document["username"] as! String,
                                           profilePicture: document["profilePicture"] as! String,
                                           email: document["email"] as! String,
-                                          favorites: document["favorites"] as! [Post],
-                                          friends: document["friends"] as! [User],
-                                          savedPosts: document["savedPosts"] as! [Post],
                                           bio: document["bio"] as! String,
-                                          myPosts: document["myPosts"] as! [Post],
-                                          phoneNumber: Int(document["phone_number"] as! String)!,
-                                          location: document["location"] as! String,
-                                          myRecipes: document["myRecipes"] as! [String])
+                                          phoneNumber: document["phone_number"] as! String,
+                                          friends: document["friends"] as! [String],
+                                          pins: document["pins"] as? [String] ?? [],
+                                          myPosts: document["myPosts"] as! [String])
                 UserDefaults.standard.setValue(true, forKey: "log_Status")
             }
         })
@@ -212,7 +218,7 @@ class ViewModel: ObservableObject {
     }
     
     func firebase_delete_comment(post: Post, comment: Comment) {
-        self.db.collection("POSTS").document(post.id.uuidString).collection("comments").document(comment.id.uuidString).delete { err in
+        self.db.collection("POSTS").document(post.id).collection("comments").document(comment.id).delete { err in
             if let err = err {
                 print("Error: \(err.localizedDescription)")
             } else {
@@ -229,11 +235,11 @@ class ViewModel: ObservableObject {
 
             let id = UUID()
 
-            self.db.collection("POSTS").document(post.id.uuidString).collection("COMMENTS").document(id.uuidString).setData(
-                ["user_id" : current_user!.id,
+            self.db.collection("POSTS").document(post.id).collection("COMMENTS").document(id.uuidString).setData(
+                ["id": id.uuidString,
+                 "user_id" : current_user!.id,
                  "text": text,
                  "date": date,
-                 "likes": [],
                  "replies": []
                 ] as [String : Any]
             ) { error in
@@ -249,7 +255,7 @@ class ViewModel: ObservableObject {
         }
     
     func firebase_like_post(post: inout Post, user: String) {
-        var postRef = self.db.collection("POSTS").document(post.id.uuidString)
+        var postRef = self.db.collection("POSTS").document(post.id)
         postRef.updateData([
             "likes": FieldValue.arrayUnion([user])
         ]) { error in
@@ -262,7 +268,7 @@ class ViewModel: ObservableObject {
     }
     
     func firebase_unlike_post(post: Post, user: String) {
-        var postRef = self.db.collection("POSTS").document(post.id.uuidString)
+        var postRef = self.db.collection("POSTS").document(post.id)
         postRef.updateData([
             "likes": FieldValue.arrayRemove([user])
         ]) { error in
@@ -272,5 +278,59 @@ class ViewModel: ObservableObject {
                 // UI Changes
             }
         }
+    }
+  
+    func firebase_create_post(images: String, caption: String, recipe: String, location: String) {
+        
+        let date = Date()
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MM-dd-yyyy HH:mm:ss"
+        
+        let dateFormatted = dateFormatter.string(from: date) // get string from date
+        
+        let data = ["images" : images,
+                    "caption" : caption,
+                    "recipe" : recipe,
+                    "date" : dateFormatted,
+                    "likes" : [],
+                    "location" : location]
+        as [String : Any]
+        
+        let docId = UUID()
+        self.db.collection("POSTS").document(docId.uuidString).setData(data) { error in
+            if let error = error {
+                print("Error: \(error.localizedDescription)")
+                return
+            } else {
+                self.db.collection("USERS").document("1mLyRTekRPWRf2aJtmzYyaJQQqI2").updateData(["myPosts": FieldValue.arrayUnion([docId.uuidString])])
+            }
+        
+        }
+    }
+    func firebase_search_for_username(username: String, completionHandler: @escaping (([String]) -> Void)) {
+        var arr: [String] = []
+        self.db.collection("USERS").whereField("id", isGreaterThanOrEqualTo: username).whereField("id", isLessThanOrEqualTo: username + "\u{f7ff}")
+            .getDocuments() { (querySnapshot, error) in
+                if let error = error {
+                    print("Error: \(error.localizedDescription)")
+                    return
+                } else {
+                    for document in querySnapshot!.documents {
+                        let data = document.data()
+                        arr.append(data["id"] as! String)
+                    }
+                }
+                completionHandler(arr)
+            }
+            
+    }
+    func sendBackList(username: String) -> [String] {
+        var arr: [String] = []
+        
+        for num in 1...10 {
+            arr.append("NewUsername\(username)")
+        }
+        return arr
     }
 }
