@@ -23,7 +23,7 @@ struct FlavorFeedApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            CreatePostView()
         }
     }
 }

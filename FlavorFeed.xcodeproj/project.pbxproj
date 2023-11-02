@@ -48,6 +48,7 @@
 		B6903C972AC8D2FF009CCE41 /* AddFriendsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6903C962AC8D2FF009CCE41 /* AddFriendsView.swift */; };
 		BF0C62DB2ADF4399003A7553 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0C62DA2ADF4399003A7553 /* LoginView.swift */; };
 		BF0C62DD2ADF43A6003A7553 /* SignupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0C62DC2ADF43A6003A7553 /* SignupView.swift */; };
+		F741600B2AF45D5100DDCE1F /* CreatePostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F741600A2AF45D5100DDCE1F /* CreatePostView.swift */; };
 		F75D1E8F2AC63EF40054F7EC /* PostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75D1E8E2AC63EF40054F7EC /* PostView.swift */; };
 /* End PBXBuildFile section */
 
@@ -99,6 +100,7 @@
 		B6903C962AC8D2FF009CCE41 /* AddFriendsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFriendsView.swift; sourceTree = "<group>"; };
 		BF0C62DA2ADF4399003A7553 /* LoginView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		BF0C62DC2ADF43A6003A7553 /* SignupView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignupView.swift; sourceTree = "<group>"; };
+		F741600A2AF45D5100DDCE1F /* CreatePostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatePostView.swift; sourceTree = "<group>"; };
 		F75D1E8E2AC63EF40054F7EC /* PostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -158,6 +160,7 @@
 				F75D1E8E2AC63EF40054F7EC /* PostView.swift */,
 				B6903C962AC8D2FF009CCE41 /* AddFriendsView.swift */,
 				668CD5202AF03F2F00A64DF1 /* UserListView.swift */,
+				F741600A2AF45D5100DDCE1F /* CreatePostView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -404,6 +407,7 @@
 				665113502AC601E900027654 /* Post.swift in Sources */,
 				F75D1E8F2AC63EF40054F7EC /* PostView.swift in Sources */,
 				B6903C972AC8D2FF009CCE41 /* AddFriendsView.swift in Sources */,
+				F741600B2AF45D5100DDCE1F /* CreatePostView.swift in Sources */,
 				B2BACCD12ACF136B00F942A3 /* Onboarding.swift in Sources */,
 				669C94B02AE98C770075BE66 /* ToolBars.swift in Sources */,
 				BF0C62DB2ADF4399003A7553 /* LoginView.swift in Sources */,
