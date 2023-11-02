@@ -37,7 +37,7 @@ struct UserRow: View {
             
             VStack(alignment: .leading) {
                 Text(user.name).bold()
-                Text(user.username)
+                Text(user.id)
             }
             Spacer()
             Button(action: {
@@ -68,5 +68,5 @@ struct UserRow: View {
 
 
 #Preview {
-    UserListView(users: [User(id: "name1", name: "name1", username: "userName1", profilePicture: "self_profile_view_icon", email: "", favorites: [], friends: [], savedPosts: [], bio: "", myPosts: [], phoneNumber: 0, location: "", myRecipes: []), User(id: "name1", name: "name1", username: "userName1", profilePicture: "self_profile_view_icon", email: "", favorites: [], friends: [], savedPosts: [], bio: "", myPosts: [], phoneNumber: 0, location: "", myRecipes: []), User(id: "name1", name: "name1", username: "userName1", profilePicture: "self_profile_view_icon", email: "", favorites: [], friends: [], savedPosts: [], bio: "", myPosts: [], phoneNumber: 0, location: "", myRecipes: [])], searchText: Binding.constant(""))
+    UserListView(users: [User(id: "travisscott", name: "Travis Scott", profilePicture: "travis_scott_pfp", email: "travisscott@gmail.com", bio: "I'm Travis Scott.", phoneNumber: "1234567890", friends: [], pins: [], myPosts: []), User(id: "champagnepapi", name: "Drake", profilePicture: "drake_pfp", email: "drake@gmail.com", bio: "I'm Drake.", phoneNumber: "1234567890", friends: [], pins: [], myPosts: [])], searchText: Binding.constant(""))
 }
