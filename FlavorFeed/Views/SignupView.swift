@@ -166,7 +166,7 @@ struct SignupView: View {
             .background(Color.ffTertiary)
             .clipShape(.rect(cornerRadius: 50.0))
                         
-            Spacer().frame(height: 50)
+            Spacer().frame(height: 20)
             
             HStack {
                 Text("Already have an account?")
