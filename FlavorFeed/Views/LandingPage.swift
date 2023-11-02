@@ -27,7 +27,7 @@ struct LandingPage: View {
                 MainScrollView(vm: vm, tabSelection: $tabSelection)
                     .tag(Tabs.mainScrollView)
                 
-                SelfProfileView(tabSelection: $tabSelection)
+                SelfProfileView(tabSelection: $tabSelection, vm: vm)
                     .tag(Tabs.selfProfileView)
                 
             }
