@@ -156,7 +156,8 @@ struct PostView: View {
                             VStack {
                                 ForEach(post.comments, id: \.self) { comment in
                                     HStack{
-                                        Image(comment.profilePicture)
+//                                        Image(comment.profilePicture)
+                                        Image("travis_scott_pfp")
                                             .resizable()
                                             .frame(width: 60, height: 60)
                                             .clipShape(.circle)
@@ -165,7 +166,7 @@ struct PostView: View {
                                         ZStack{
                                             RoundedRectangle(cornerRadius: 10)
                                                 .fill(gold)
-                                            Text("**\(comment.username)**: \(comment.text)")
+                                            Text("**\(comment.userID)**: \(comment.text)")
                                                 .frame(maxWidth: .infinity, alignment: .leading)
                                                 .multilineTextAlignment(.leading)
                                                 .padding(.horizontal, 10)
@@ -196,5 +197,5 @@ struct PostView: View {
 }
 
 #Preview {
-    PostView(post: Post(id: UUID(), userID: UUID(), images: [["drake_selfie", "food_pic_1"], ["drake_selfie2", "food_pic_2"], ["drake_selfie3", "food_pic_3"]], caption: ["That was yummy in my tummy", "", "Let's dig in"], date: "October 24, 2022", likes: [], comments: [Comment(id: UUID(), username: "Adonis", profilePicture: "adonis_pfp", text: "Looking fresh Drake!", date: "October 24, 2022", likes: [], replies: []), Comment(id: UUID(), username: "Travis Scott", profilePicture: "travis_scott_pfp", text: "She said do you love me I told her only partly.", date: "October 24, 2022", likes: [], replies: [])]))
+    PostView(post: Post(id: UUID().uuidString, userID: "champagnepapi", images: [["drake_selfie", "food_pic_1"], ["drake_selfie2", "food_pic_2"], ["drake_selfie3", "food_pic_3"]], date: ["October 24, 2022", "October 24, 2022", "October 24, 2022"], comments: [Comment(id: UUID().uuidString, userID: "adonis", text: "Looking fresh Drake!", date: "October 24, 2022", replies: []), Comment(id: UUID().uuidString, userID: "travisscott", text: "She said do you love me I told her only partly.", date: "October 24, 2022", replies: [])], caption: ["That was yummy in my tummy", "", "Let's dig in"], likes: [], locations: [], recipes: []))
 }

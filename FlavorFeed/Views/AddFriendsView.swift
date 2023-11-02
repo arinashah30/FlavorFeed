@@ -122,7 +122,13 @@ struct AddFriendsView: View {
 func addUsers() -> [User] {
     var users : [User] = []
     for i in 1...30 {
-        let user = User(id: "name\(i)", name: "name\(i)", username: "userName\(i)", profilePicture: "self_profile_view_icon", email: "", favorites: [], friends: [], savedPosts: [], bio: "", myPosts: [], phoneNumber: 0, location: "", myRecipes: [])
+        var user: User
+        if (i % 2 == 0) {
+            user = User(id: "champagnepapi", name: "Drake", profilePicture: "drake_pfp", email: "drake@gmail.com", bio: "I'm Drake.", phoneNumber: "1234567890", friends: [], pins: [], myPosts: [])
+        } else {
+            user = User(id: "travisscott", name: "Travis Scott", profilePicture: "travis_scott_pfp", email: "travisscott@gmail.com", bio: "I'm Travis Scott.", phoneNumber: "1234567890", friends: [], pins: [], myPosts: [])
+        }
+        
         users.append(user)
     }
     return users
