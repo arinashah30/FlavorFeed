@@ -18,7 +18,7 @@ struct SignupView: View {
 
     var body: some View {
         VStack {
-            Spacer().frame(height:100)
+            Spacer().frame(height:50)
             Image("flavorfeed_logo_alt")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
@@ -37,6 +37,23 @@ struct SignupView: View {
                     .frame(width:35,height:35)
                     .padding(.leading)
                 HStack {
+                    TextField("", text: $displayName, prompt: Text("Display Name")                .foregroundColor(.white))
+                        .textInputAutocapitalization(.never)
+                }
+                .padding()
+                .background(Color.ffPrimary)
+                .clipShape(.rect(cornerRadius: 7.0))
+                .padding()
+            }
+            .padding([.leading, .trailing])
+            .padding(.bottom, -15)
+            
+            HStack {
+                Image("signup_user_icon")
+                    .resizable()
+                    .frame(width:35,height:35)
+                    .padding(.leading)
+                HStack {
                     TextField("", text: $username, prompt: Text("Username")                .foregroundColor(.white))
                         .textInputAutocapitalization(.never)
                 }
@@ -45,7 +62,7 @@ struct SignupView: View {
                 .clipShape(.rect(cornerRadius: 7.0))
                 .padding()
             }
-            .padding([.leading, .trailing, .top])
+            .padding([.leading, .trailing])
             .padding(.bottom, -15)
             
             HStack {
@@ -55,6 +72,24 @@ struct SignupView: View {
                     .padding(.leading)
                 HStack {
                     TextField("", text: $email, prompt: Text("Email")                .foregroundColor(.white))
+                        .textInputAutocapitalization(.never)
+                }
+                .padding()
+                .background(Color.ffPrimary)
+                .clipShape(.rect(cornerRadius: 7.0))
+                .padding()
+            }
+            .padding([.leading, .trailing])
+            .padding(.bottom, -15)
+            
+            HStack {
+                Image(systemName:"number")
+                    .resizable()
+                    .frame(width:35,height:30)
+                    .padding(.leading)
+                    .foregroundColor(.ffTertiary)
+                HStack {
+                    TextField("", text: $phoneNumber, prompt: Text("Phone")                .foregroundColor(.white))
                         .textInputAutocapitalization(.never)
                 }
                 .padding()
@@ -131,7 +166,7 @@ struct SignupView: View {
             .background(Color.ffTertiary)
             .clipShape(.rect(cornerRadius: 50.0))
                         
-            Spacer().frame(height: 150)
+            Spacer().frame(height: 50)
             
             HStack {
                 Text("Already have an account?")
