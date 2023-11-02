@@ -42,7 +42,12 @@ class ViewModel: ObservableObject {
     init() {
         _ = Auth.auth().addStateDidChangeListener { [weak self] auth, user in
             if let user = user {
-                self?.setCurrentUser(userId: user.uid)
+                print("User Found")
+                if let username = user.displayName {
+                    print("Setting User: \(username)")
+                    self?.setCurrentUser(userId: username)
+                    UserDefaults.standard.setValue(true, forKey: "log_Status")
+                }
             } else {
                 UserDefaults.standard.setValue(false, forKey: "log_Status")
             }
@@ -60,8 +65,6 @@ class ViewModel: ObservableObject {
     
     func firebase_email_password_sign_up(email: String, password: String, username: String, displayName: String, phoneNumber: String) {
         
-
-        
         auth.createUser(withEmail: email, password: password) { [weak self] authResult, error in
             if let error = error {
                 let firebaseError = AuthErrorCode.Code(rawValue: error._code)
@@ -74,7 +77,15 @@ class ViewModel: ObservableObject {
                     self?.errorText = "An error has occurred"
                 }
             } else if let user = authResult?.user {
-                //let id = user.uid
+                print("UPDATING DISPLAY NAME")
+                let changeRequest = user.createProfileChangeRequest()
+                print(username)
+                changeRequest.displayName = username
+                changeRequest.commitChanges { error in
+                    if let error = error {
+                        print(error.localizedDescription)
+                    }
+                }
                 self?.db.collection("USERS").document(username).setData(
                     ["id" : username,
                      "name" : displayName,
@@ -144,7 +155,7 @@ class ViewModel: ObservableObject {
             if let error = error {
                 self?.errorText = error.localizedDescription
             } else if let document = document {
-                self?.current_user = User(id: userId,
+                self?.current_user = User(id: document.documentID,
                                           name: document["name"] as! String,
                                           profilePicture: document["profilePicture"] as! String,
                                           email: document["email"] as! String,
