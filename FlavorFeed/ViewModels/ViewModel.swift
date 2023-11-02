@@ -310,7 +310,7 @@ class ViewModel: ObservableObject {
     }
     func firebase_search_for_username(username: String, completionHandler: @escaping (([String]) -> Void)) {
         var arr: [String] = []
-        self.db.collection("USERS").whereField("username", isGreaterThanOrEqualTo: username).whereField("username", isLessThanOrEqualTo: username + "\u{f7ff}")
+        self.db.collection("USERS").whereField("id", isGreaterThanOrEqualTo: username).whereField("id", isLessThanOrEqualTo: username + "\u{f7ff}")
             .getDocuments() { (querySnapshot, error) in
                 if let error = error {
                     print("Error: \(error.localizedDescription)")
@@ -318,7 +318,7 @@ class ViewModel: ObservableObject {
                 } else {
                     for document in querySnapshot!.documents {
                         let data = document.data()
-                        arr.append(data["username"] as! String)
+                        arr.append(data["id"] as! String)
                     }
                 }
                 completionHandler(arr)
