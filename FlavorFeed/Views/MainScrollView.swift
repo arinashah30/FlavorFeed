@@ -16,11 +16,13 @@ struct MainScrollView: View {
             VStack {
                 TopBar(tabSelection: $tabSelection)
                 Spacer()
-                BottomBar(messagesRemaing: Binding.constant(2))
+                BottomBar(tabSelection: $tabSelection, messagesRemaining: Binding.constant(2))
                     .frame(height: 120)
                     .cornerRadius(10)
-            }.edgesIgnoringSafeArea(.bottom)
-            
+            }
+            .edgesIgnoringSafeArea(.bottom)
+            .zIndex(1.0)
+
             ScrollView {
                 Spacer().frame(height: 40)
                 VStack {
@@ -33,7 +35,7 @@ struct MainScrollView: View {
 
                 }
             }
-            
+            .zIndex(0)
         }
     }
 }

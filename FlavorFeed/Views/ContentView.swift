@@ -13,8 +13,10 @@ struct ContentView: View {
     
     var body: some View {
         if logStatus == true && vm.auth.currentUser != nil {
-            LandingPage(vm: vm, tabSelection: .mainScrollView)
-                .edgesIgnoringSafeArea(.bottom)
+            NavigationStack {
+                LandingPage(vm: vm, tabSelection: .mainScrollView)
+                    .edgesIgnoringSafeArea(.bottom)
+            }
         } else {
             NavigationStack {
                 LoginView(vm: vm)

@@ -9,10 +9,11 @@ import SwiftUI
 import AVFoundation
 
 struct CameraView: View {
-    @ObservedObject var camera: CameraModel
+    @ObservedObject var camera = CameraModel()
+    @Binding var tabSelection: Tabs
+
     var body: some View {
         ZStack {
-            //camera will go here
             CameraPreview(camera: camera)
                 .edgesIgnoringSafeArea(.all)
             
@@ -28,7 +29,10 @@ struct CameraView: View {
                 Spacer()
                 
                 if camera.isTaken {
-                    Button { if !camera.isSaved { camera.savePic()} } label: {
+                    Button {
+                        camera.savePic()
+                        tabSelection = .mainScrollView
+                    } label: {
                         Text(camera.isSaved ? "Saved" : "Save")
                             .padding(.vertical, 10)
                             .padding(.horizontal, 20)
@@ -211,5 +215,5 @@ struct CameraPreview: UIViewRepresentable {
 }
 
 #Preview {
-    CameraView(camera: CameraModel())
+    CameraView(tabSelection: Binding.constant(Tabs.cameraView))
 }

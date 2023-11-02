@@ -8,13 +8,14 @@
 import SwiftUI
 
 struct BottomBar: View {
-    @Binding var messagesRemaing: Int
-    
-    
+    @Binding var tabSelection: Tabs
+    @Binding var messagesRemaining: Int
+
     var body: some View {
         ZStack {
             Rectangle()
                 .foregroundStyle(Color.ffTertiary)
+
             HStack {
                 Button {
                     //rearrange main scroll view
@@ -25,9 +26,10 @@ struct BottomBar: View {
                         .frame(width: 28)
                     
                 }
+
                 Spacer()
                 
-                Text("\(messagesRemaing) left")
+                Text("\(messagesRemaining) left")
                     .foregroundStyle(.white)
                     .font(.system(size: 13))
                     .padding([.leading, .trailing], 9)
@@ -36,15 +38,17 @@ struct BottomBar: View {
                     .clipShape(Capsule())
                 
             }.padding()
+
+            
             Button {
-                // take picture
+                tabSelection = .cameraView
+                print(tabSelection)
             } label: {
                 Image(systemName: "circle.fill")
                     .resizable()
                     .frame(width: 57.77, height: 57.77)
                     .foregroundStyle(Color.ffPrimary)
             }
-            
         }
     }
 }
@@ -82,3 +86,8 @@ struct TopBar: View {
 }
 
 
+struct ToolBars_Previews: PreviewProvider {
+    static var previews: some View {
+        BottomBar(tabSelection: Binding.constant(Tabs.mainScrollView), messagesRemaining: Binding.constant(22))
+    }
+}

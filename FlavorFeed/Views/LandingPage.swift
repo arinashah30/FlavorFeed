@@ -11,16 +11,19 @@ enum Tabs {
     case mainScrollView
     case contactsView
     case selfProfileView
+    case cameraView
 }
 
 struct LandingPage: View {
     @ObservedObject var vm: ViewModel
-    @State var tabSelection: Tabs
+    @State var tabSelection = Tabs.mainScrollView
     
     var body: some View {
         VStack {
             TabView(selection: $tabSelection) {
-                
+                CameraView(tabSelection: $tabSelection)
+                    .tag(Tabs.cameraView)
+
                 ContactsView(tabSelection: $tabSelection)
                     .tag(Tabs.contactsView)
                 
@@ -34,6 +37,7 @@ struct LandingPage: View {
             .tabViewStyle(.page(indexDisplayMode: .never))
             .animation(.easeInOut, value: self.tabSelection)
             .transition(.slide)
+            .edgesIgnoringSafeArea(.bottom)
             
         }.edgesIgnoringSafeArea(.bottom)
     }
