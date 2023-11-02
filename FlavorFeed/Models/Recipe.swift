@@ -16,6 +16,6 @@ struct Recipe: Identifiable, Hashable {
     var title: String
     var link: String?
     var ingredients: [String]
-    var directions: [String]
+    var directions: String
 
 }
