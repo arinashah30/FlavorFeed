@@ -179,7 +179,7 @@ struct SignupView: View {
                         .fontWeight(.bold)
                         .foregroundStyle(Color.ffTertiary)
                 }
-            }
+            }.padding(.bottom, 10)
         }
         .onAppear {
             vm.errorText = nil
