@@ -6,11 +6,14 @@
 //
 
 import SwiftUI
+import MapKit
 
 struct SelfProfileView: View {
     @Binding var tabSelection: Tabs
     @ObservedObject var vm: ViewModel
-    var user = User(id: "Austin", name: "Austin Huguenard", username: "austinhuguenard", profilePicture: "profile picture", email: "na", favorites: [Post(id: UUID(), images: ["waffles"], caption: "nothing", date: "nothing", likes: [], comments: [], location: "none"), Post(id: UUID(), images: ["waffles"], caption: "nothing", date: "nothing", likes: [], comments: [], location: "none"), Post(id: UUID(), images: ["waffles"], caption: "nothing", date: "nothing", likes: [], comments: [], location: "none")], friends: [], savedPosts: [], bio: "nothing", myPosts: [Post(id: UUID(), images: ["waffles"], caption: "Caption", date: "October 27th", likes: [], comments: [])], phoneNumber: 7705958485, location: "Georgia", myRecipes: [])
+    var user = User(id: "AustinUserName", name: "Austin", profilePicture: "drake_pfp", email: "austin@gmail.com", bio: "", phoneNumber: "123456789", friends: [], pins: [], myPosts: [])
+    
+    
     var body: some View {
         VStack {
             HStack {
@@ -26,7 +29,7 @@ struct SelfProfileView: View {
             BioView(user: user)
             PinsView(user: user)
             CalendarView(user: user)
-            MapView(user: user)
+            MapView(user: user, restaurants: [CLLocationCoordinate2D(latitude: 43, longitude: 100), CLLocationCoordinate2D(latitude: -10, longitude: 30), CLLocationCoordinate2D(latitude: 20, longitude: -50), CLLocationCoordinate2D(latitude: 17, longitude: -40)])
         }
     }
 }
@@ -34,6 +37,6 @@ struct SelfProfileView: View {
 struct ContentView_Previews: PreviewProvider {
     @State static var tabSelection: Tabs = .selfProfileView
     static var previews: some View {
-        SelfProfileView(tabSelection: $tabSelection)
+        SelfProfileView(tabSelection: $tabSelection, vm: ViewModel())
     }
 }

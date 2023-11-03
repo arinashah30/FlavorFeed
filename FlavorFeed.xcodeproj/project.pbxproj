@@ -20,9 +20,9 @@
 		664B8F232AC5F1AB001E8C7F /* FlavorFeedUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 664B8F222AC5F1AB001E8C7F /* FlavorFeedUITestsLaunchTests.swift */; };
 		665113502AC601E900027654 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6651134F2AC601E900027654 /* Post.swift */; };
 		665113522AC6021800027654 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 665113512AC6021800027654 /* User.swift */; };
-		668CD5172AEC1D5000A64DF1 /* LandingPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 668CD5162AEC1D5000A64DF1 /* LandingPage.swift */; };
+		666AE2C62AF4747D003EF7B6 /* LandingPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 668CD5162AEC1D5000A64DF1 /* LandingPage.swift */; };
+		666AE2C72AF47508003EF7B6 /* MainScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 668CD51A2AEC1D6F00A64DF1 /* MainScrollView.swift */; };
 		668CD5192AEC1D6500A64DF1 /* ContactsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 668CD5182AEC1D6500A64DF1 /* ContactsView.swift */; };
-		668CD51B2AEC1D6F00A64DF1 /* MainScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 668CD51A2AEC1D6F00A64DF1 /* MainScrollView.swift */; };
 		668CD51F2AEC205300A64DF1 /* PinsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 668CD51E2AEC205300A64DF1 /* PinsView.swift */; };
 		668CD5212AF03F2F00A64DF1 /* UserListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 668CD5202AF03F2F00A64DF1 /* UserListView.swift */; };
 		669C94B02AE98C770075BE66 /* ToolBars.swift in Sources */ = {isa = PBXBuildFile; fileRef = 669C94AF2AE98C770075BE66 /* ToolBars.swift */; };
@@ -413,18 +413,20 @@
 			files = (
 				48349B202ACCCAEF00F672E3 /* CalendarView.swift in Sources */,
 				48349B222ACCCAF600F672E3 /* MapView.swift in Sources */,
+				666AE2C62AF4747D003EF7B6 /* LandingPage.swift in Sources */,
 				48349B1C2ACCCADA00F672E3 /* BioView.swift in Sources */,
 				668CD5192AEC1D6500A64DF1 /* ContactsView.swift in Sources */,
 				668CD5212AF03F2F00A64DF1 /* UserListView.swift in Sources */,
 				665113522AC6021800027654 /* User.swift in Sources */,
-				B212924F2ACD213C0064AE5D /* LandingPage.swift in Sources */,
+				B212924F2ACD213C0064AE5D /* (null) in Sources */,
 				B2BACCCD2ACF12B300F942A3 /* SelfProfileView.swift in Sources */,
 				B2FCB8FF2AC63AA200865FCF /* FFColors.swift in Sources */,
 				665113502AC601E900027654 /* Post.swift in Sources */,
+				666AE2C72AF47508003EF7B6 /* MainScrollView.swift in Sources */,
 				F75D1E8F2AC63EF40054F7EC /* PostView.swift in Sources */,
 				B6903C972AC8D2FF009CCE41 /* AddFriendsView.swift in Sources */,
 				B2BACCD12ACF136B00F942A3 /* Onboarding.swift in Sources */,
-                668CD51F2AEC205300A64DF1 /* PinsView.swift in Sources */,
+				668CD51F2AEC205300A64DF1 /* PinsView.swift in Sources */,
 				669C94B02AE98C770075BE66 /* ToolBars.swift in Sources */,
 				BF0C62DB2ADF4399003A7553 /* LoginView.swift in Sources */,
 				B21292512ACD21500064AE5D /* ViewModel.swift in Sources */,
@@ -432,9 +434,9 @@
 				B2C5E46C2AF2A476000EA620 /* Friend.swift in Sources */,
 				B2BACCCF2ACF132000F942A3 /* ContentView.swift in Sources */,
 				664B8F062AC5F1AA001E8C7F /* FlavorFeedApp.swift in Sources */,
-				B2BACCCC2ACF12B300F942A3 /* MainScrollView.swift in Sources */,
+				B2BACCCC2ACF12B300F942A3 /* (null) in Sources */,
 				BF0C62DD2ADF43A6003A7553 /* SignupView.swift in Sources */,
-				B2BACCCB2ACF12B300F942A3 /* ContactsView.swift in Sources */,
+				B2BACCCB2ACF12B300F942A3 /* (null) in Sources */,
 				B2C5E46E2AF2AF02000EA620 /* Recipe.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -609,6 +611,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -640,6 +643,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

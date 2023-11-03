@@ -11,14 +11,15 @@ struct BioView: View {
     var user: User
     var body: some View {
         VStack {
-            Image("profile picture")
+            Image(user.profilePicture)
                 .resizable()
-                .aspectRatio(contentMode: .fit)
+                .aspectRatio(contentMode: .fill)
                 .frame(maxWidth: 80)
-                .cornerRadius(40)
+                .clipShape(.circle)
+                
             Text(user.name)
                 .font(.title)
-            Text(user.username)
+            Text(user.id)
                 .font(.title2)
         }
     }

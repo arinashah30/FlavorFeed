@@ -9,6 +9,7 @@ import SwiftUI
 
 struct CalendarView: View {
     var user : User
+    var posts: [Post] = [Post(id: UUID().uuidString, userID: "champagnepapi", images: [["drake_selfie", "food_pic_1"], ["drake_selfie2", "food_pic_2"], ["drake_selfie3", "food_pic_3"]], date: ["October 24, 2022", "October 24, 2022", "October 24, 2022"], comments: [Comment(id: UUID().uuidString, userID: "adonis", text: "Looking fresh Drake!", date: "October 24, 2022", replies: []), Comment(id: UUID().uuidString, userID: "travisscott", text: "She said do you love me I told her only partly.", date: "October 24, 2022", replies: [])], caption: ["That was yummy in my tummy", "", "Let's dig in"], likes: [], locations: [], recipes: [])] //this is going to be replaced with calls to firebase to fetch posts
     var body: some View {
         VStack {
             HStack (alignment: .top) {
@@ -16,7 +17,7 @@ struct CalendarView: View {
                     
                     ZStack {
                         
-                        Image(user.myPosts[0].images[0]).resizable()
+                        Image(posts[0].images[0][1]).resizable()
                             .scaledToFit()
                             .frame(width: 45, height: 45).opacity(0.6)
                         Text(formatDate(date:(Date(timeIntervalSinceNow: TimeInterval(60 * -60 * 24 * daysPast)))))
@@ -32,7 +33,7 @@ struct CalendarView: View {
                 ForEach(7..<14) { daysPast in
                     
                     ZStack {
-                        Image(user.myPosts[0].images[0]).resizable()
+                        Image(posts[0].images[0][1]).resizable()
                             .scaledToFit()
                             .frame(width: 45, height: 45).opacity(0.6)
                         Text(formatDate(date:(Date(timeIntervalSinceNow: TimeInterval(60 * -60 * 24 * daysPast)))))
@@ -51,5 +52,5 @@ struct CalendarView: View {
 }
 
 #Preview {
-    CalendarView(user: User(id: "Austin", name: "Austin Huguenard", username: "austinhuguenard",  profilePicture: "profile picture", email: "na", favorites: [Post(id: UUID(), images: ["waffles"], caption: "nothing", date: "nothing", likes: [], comments: [], location: "none"), Post(id: UUID(), images: ["waffles"], caption: "nothing", date: "nothing", likes: [], comments: [], location: "none"), Post(id: UUID(), images: ["waffles"], caption: "nothing", date: "nothing", likes: [], comments: [], location: "none")], friends: [], savedPosts: [], bio: "nothing", myPosts: [Post(id: UUID(), images: ["waffles"], caption: "nothing", date: "nothing", likes: [], comments: [], location: "none")], phoneNumber: 7705958485, location: "Georgia", myRecipes: []))
+    CalendarView(user: User(id: "AustinUserName", name: "Austin", profilePicture: "drake_pfp", email: "austin@gmail.com", bio: "", phoneNumber: "123456789", friends: [], pins: [], myPosts: []))
 }
