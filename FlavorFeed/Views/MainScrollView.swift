@@ -10,13 +10,14 @@ import SwiftUI
 struct MainScrollView: View {
     @ObservedObject var vm: ViewModel
     @Binding var tabSelection: Tabs
+    @Binding var showCamera: Bool
 
     var body: some View {
         ZStack {
             VStack {
                 TopBar(tabSelection: $tabSelection)
                 Spacer()
-                BottomBar(tabSelection: $tabSelection, messagesRemaining: Binding.constant(2))
+                BottomBar(showCamera: $showCamera, messagesRemaining: Binding.constant(2))
                     .frame(height: 120)
                     .cornerRadius(10)
             }
@@ -41,6 +42,6 @@ struct MainScrollView: View {
 }
 
 #Preview {
-    MainScrollView(vm: ViewModel(), tabSelection: Binding.constant(Tabs.mainScrollView))
+    MainScrollView(vm: ViewModel(), tabSelection: Binding.constant(Tabs.mainScrollView), showCamera: Binding.constant(false))
 }
 

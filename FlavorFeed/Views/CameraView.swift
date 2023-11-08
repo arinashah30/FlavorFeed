@@ -10,7 +10,7 @@ import AVFoundation
 
 struct CameraView: View {
     @ObservedObject var camera = CameraModel()
-    @Binding var tabSelection: Tabs
+    @Binding var showCamera: Bool
 
     var body: some View {
         ZStack {
@@ -31,7 +31,7 @@ struct CameraView: View {
                 if camera.isTaken {
                     Button {
                         camera.savePic()
-                        tabSelection = .mainScrollView
+                        showCamera = false
                     } label: {
                         Text(camera.isSaved ? "Saved" : "Save")
                             .padding(.vertical, 10)
@@ -43,8 +43,8 @@ struct CameraView: View {
                             .padding()
                     }
                     
-                    Button { 
-                        camera.isTaken = false
+                    Button {
+                        camera.retake_picture()
                     } label: {
                         Text("Try Again")
                             .padding(.vertical, 10)
@@ -77,23 +77,16 @@ struct CameraView: View {
 
 class CameraModel: NSObject,ObservableObject, AVCapturePhotoCaptureDelegate {
     @Published var isTaken = false
-    
     @Published var session = AVCaptureSession()
-    
     @Published var alert = false
-    
     @Published var output = AVCapturePhotoOutput()
-    
     @Published var preview: AVCaptureVideoPreviewLayer!
-    
     @Published var isSaved = false
     @Published var picture_data = Data(count: 0)
     
     func check_camera_permissions() {
-        //first check camera has permission
         switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .authorized:
-            // Setting Up Session
             setup_camera()
             return
         case .notDetermined:
@@ -114,7 +107,6 @@ class CameraModel: NSObject,ObservableObject, AVCapturePhotoCaptureDelegate {
         // setting up camera...
         
         do {
-            //setting configs
             self.session.beginConfiguration()
             
             guard let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back) else {
@@ -124,12 +116,10 @@ class CameraModel: NSObject,ObservableObject, AVCapturePhotoCaptureDelegate {
             
             let input = try AVCaptureDeviceInput(device: device)
             
-            // checking and adding to session
             if self.session.canAddInput(input) {
                 self.session.addInput(input)
             }
             
-            //same for output
             if self.session.canAddOutput(self.output) {
                 self.session.addOutput(self.output)
             }
@@ -147,12 +137,13 @@ class CameraModel: NSObject,ObservableObject, AVCapturePhotoCaptureDelegate {
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 self.session.stopRunning()
             }
+
             DispatchQueue.main.async {
                 withAnimation{self.isTaken = true}
             }
         }
     }
-    
+
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
         
         if let error = error {
@@ -170,14 +161,14 @@ class CameraModel: NSObject,ObservableObject, AVCapturePhotoCaptureDelegate {
     func savePic() {
         let image = UIImage(data: self.picture_data)!
         
-        //saving image...
-        
         UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
         
         self.isSaved = true
     }
     
     func retake_picture() {
+        self.isTaken = false
+
         DispatchQueue.global(qos: .background).async {
             self.session.startRunning()
             
@@ -191,29 +182,23 @@ class CameraModel: NSObject,ObservableObject, AVCapturePhotoCaptureDelegate {
 }
 
 struct CameraPreview: UIViewRepresentable {
-    
-    @ObservedObject var camera : CameraModel
+    @ObservedObject var camera: CameraModel
     
     func makeUIView(context: Context) -> UIView {
         let view = UIView(frame: UIScreen.main.bounds)
         
+        DispatchQueue.global(qos: .userInitiated).async {
+            camera.session.startRunning()
+        }
+        
         camera.preview = AVCaptureVideoPreviewLayer(session: camera.session)
         camera.preview.frame = view.frame
         
-        // your own properties
         camera.preview.videoGravity = .resizeAspectFill
         view.layer.addSublayer(camera.preview)
-        
-        DispatchQueue.global(qos: .background).async {
-            camera.session.startRunning()
-        }
         
         return view
     }
     
     func updateUIView(_ uiView: UIView, context: Context) { }
-}
-
-#Preview {
-    CameraView(tabSelection: Binding.constant(Tabs.cameraView))
 }

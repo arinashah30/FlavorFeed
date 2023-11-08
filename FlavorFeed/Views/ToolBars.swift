@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct BottomBar: View {
-    @Binding var tabSelection: Tabs
+    @Binding var showCamera: Bool
     @Binding var messagesRemaining: Int
 
     var body: some View {
@@ -41,8 +41,7 @@ struct BottomBar: View {
 
             
             Button {
-                tabSelection = .cameraView
-                print(tabSelection)
+                showCamera = true
             } label: {
                 Image(systemName: "circle.fill")
                     .resizable()
@@ -88,6 +87,6 @@ struct TopBar: View {
 
 struct ToolBars_Previews: PreviewProvider {
     static var previews: some View {
-        BottomBar(tabSelection: Binding.constant(Tabs.mainScrollView), messagesRemaining: Binding.constant(22))
+        BottomBar(showCamera: Binding.constant(false), messagesRemaining: Binding.constant(22))
     }
 }
