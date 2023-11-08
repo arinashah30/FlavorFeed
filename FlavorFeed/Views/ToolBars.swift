@@ -57,7 +57,7 @@ struct TopBar: View {
     var body: some View {
         HStack {
             Button {
-                tabSelection = .contactsView
+                tabSelection = .addFriendsView
             } label: {
                 Image("contacts_view_icon")
                     .resizable()

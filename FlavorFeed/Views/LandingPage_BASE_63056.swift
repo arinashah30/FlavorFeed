@@ -11,34 +11,29 @@ enum Tabs {
     case mainScrollView
     case contactsView
     case selfProfileView
-    case addFriendsView
 }
 
 struct LandingPage: View {
     @ObservedObject var vm: ViewModel
-    @State var tabSelection = Tabs.mainScrollView
-    @State var showCamera = false
+    @State var tabSelection: Tabs
     
     var body: some View {
         VStack {
             TabView(selection: $tabSelection) {
                 
-                AddFriendsView(tabSelection: $tabSelection, vm: vm).tag(Tabs.addFriendsView)
+                ContactsView(tabSelection: $tabSelection)
+                    .tag(Tabs.contactsView)
                 
-                MainScrollView(vm: vm, tabSelection: $tabSelection, showCamera: $showCamera)
+                MainScrollView(vm: vm, tabSelection: $tabSelection)
                     .tag(Tabs.mainScrollView)
                 
-                SelfProfileView(tabSelection: $tabSelection, vm: vm)
+                SelfProfileView(tabSelection: $tabSelection)
                     .tag(Tabs.selfProfileView)
                 
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
             .animation(.easeInOut, value: self.tabSelection)
             .transition(.slide)
-            .fullScreenCover(isPresented: $showCamera) {
-                CameraView(camera: CameraModel(), showCamera: $showCamera)
-            }
-            .edgesIgnoringSafeArea(.bottom)
             
         }.edgesIgnoringSafeArea(.bottom)
     }

@@ -7,22 +7,23 @@
 
 import Foundation
 
-struct User: Hashable {
-    var id: String
-    var name: String
-    var username: String
-    // var password: String // not secure to store within app. let firebase handle it
-    var profilePicture: String
-    var email: String
-    var favorites: [Post]
-    var friends: [User]
-    var savedPosts: [Post]
-    var bio: String
-    var myPosts: [Post]
-    var phoneNumber: Int
-    var location: String
-    var myRecipes: [String] //[Recipe]
-    var streak: Int {
-        return myPosts.count
+
+struct User: Identifiable, Hashable {
+    static func == (lhs: User, rhs: User) -> Bool {
+        return (lhs.id == rhs.id)
     }
+
+    // REQUIRED PROPERTIES
+    var id: String // username
+    var name: String // display name
+    var profilePicture: String // url of profile picture
+    var email: String // email address
+    var bio: String // profile bio
+    var phoneNumber: String // String of phone number
+    
+    
+    // OPTIONAL PROPERTIES (could be empty arrays)
+    var friends: [String] // array of userIDs (usernames)
+    var pins: [String] // array of post IDs
+    var myPosts: [String] // array of all user posts (may not always need all of your posts)
 }

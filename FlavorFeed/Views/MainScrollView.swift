@@ -11,34 +11,48 @@ struct MainScrollView: View {
     @ObservedObject var vm: ViewModel
     @Binding var tabSelection: Tabs
     @Binding var showCamera: Bool
-
+    var posts : [Post] = addPosts() //replace with vm.posts later
+    
     var body: some View {
-        ZStack {
-            VStack {
-                TopBar(tabSelection: $tabSelection)
-                Spacer()
-                BottomBar(showCamera: $showCamera, messagesRemaining: Binding.constant(2))
-                    .frame(height: 120)
-                    .cornerRadius(10)
-            }
-            .edgesIgnoringSafeArea(.bottom)
-            .zIndex(1.0)
-
-            ScrollView {
-                Spacer().frame(height: 40)
+        GeometryReader { geometry in
+            ZStack {
                 VStack {
-                    Text("Welcome, \(vm.current_user?.name ?? "")!").font(.title)
-                    Button {
-                        vm.firebase_sign_out()
-                    } label: {
-                        Text("Sign Out")
-                    }
-
-                }
+                    TopBar(tabSelection: $tabSelection)
+                    //                ScrollView {
+                    //                    VStack {
+                    //                        ForEach(posts) {post in
+                    //                            PostView(post: post).frame(maxHeight: .infinity)
+                    //                        }
+                    //                    }
+                    //                }.frame(maxHeight: .infinity)
+                    List(posts, id: \.id) { post in
+                        PostView(post: post).frame(width: geometry.size.width, height: 700)
+                    }.listStyle(.plain).listRowSeparatorTint(Color.clear)
+                }.edgesIgnoringSafeArea(.bottom)
+                VStack {
+                    Spacer()
+                    BottomBar(showCamera: $showCamera, messagesRemaining: Binding.constant(2))
+                        .frame(height: 120)
+                        .cornerRadius(10)
+                }.edgesIgnoringSafeArea(.bottom).frame(maxHeight: .infinity)
+                
             }
             .zIndex(0)
         }
     }
+}
+
+//can remove this function when we get posts from firebase
+func addPosts() -> [Post] {
+    var posts: [Post] = []
+    
+    for i in 1...30 {
+        
+        posts.append(Post(id: UUID().uuidString, userID: "champagnepapi", images: [["drake_selfie", "food_pic_1"], ["drake_selfie2", "food_pic_2"], ["drake_selfie3", "food_pic_3"]], date: ["October 24, 2022", "October 24, 2022", "October 24, 2022"], comments: [Comment(id: UUID().uuidString, userID: "adonis", text: "Looking fresh Drake!", date: "October 24, 2022", replies: []), Comment(id: UUID().uuidString, userID: "travisscott", text: "She said do you love me I told her only partly.", date: "October 24, 2022", replies: [])], caption: ["That was yummy in my tummy", "", "Let's dig in"], likes: [], locations: [], recipes: []))
+        
+        
+    }
+    return posts
 }
 
 #Preview {
