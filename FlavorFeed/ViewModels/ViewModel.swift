@@ -280,30 +280,34 @@ class ViewModel: ObservableObject {
         }
     }
   
-    func firebase_create_post(images: String, caption: String, recipe: String, location: String) {
+    func firebase_create_post(userID: String, selfie: String, foodPic: String, caption: String, recipe: String, location: String) {
         
         let date = Date()
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MM-dd-yyyy HH:mm:ss"
-        
         let dateFormatted = dateFormatter.string(from: date) // get string from date
         
-        let data = ["images" : images,
-                    "caption" : caption,
-                    "recipe" : recipe,
-                    "date" : dateFormatted,
-                    "likes" : [],
-                    "location" : location]
-        as [String : Any]
         
         let docId = UUID()
+    
+        
+        let data = ["id" : docId.uuidString,
+                    "userID" : userID,
+                    "images" : [selfie, foodPic],
+                    "caption" : [caption],
+                    "recipe" : [recipe],
+                    "date" : [dateFormatted],
+                    "likes" : [],
+                    "location" : [location]]
+        as [String : Any]
+        
         self.db.collection("POSTS").document(docId.uuidString).setData(data) { error in
             if let error = error {
                 print("Error: \(error.localizedDescription)")
                 return
             } else {
-                self.db.collection("USERS").document("1mLyRTekRPWRf2aJtmzYyaJQQqI2").updateData(["myPosts": FieldValue.arrayUnion([docId.uuidString])])
+                self.db.collection("USERS").document(userID).updateData(["myPosts": FieldValue.arrayUnion([docId.uuidString])])
             }
         
         }
