@@ -14,8 +14,7 @@ struct Recipe: Identifiable, Hashable {
     
     var id: String
     var title: String
-    var link: String?
     var ingredients: [String]
-    var directions: String
-
+    var instructions: String
+    var link: String
 }
