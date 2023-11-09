@@ -288,9 +288,6 @@ class ViewModel: ObservableObject {
         dateFormatter.dateFormat = "MM-dd-yyyy HH:mm:ss"
         let dateFormatted = dateFormatter.string(from: date) // get string from date
         
-        dateFormatter.dateFormat = "MM-dd-yyyy"
-        let dayFormatted = dateFormatter.string(from: date)
-        
         
         let docId = UUID()
     
@@ -302,8 +299,7 @@ class ViewModel: ObservableObject {
                     "recipe" : [recipe],
                     "date" : [dateFormatted],
                     "likes" : [],
-                    "location" : [location],
-                    "day": dayFormatted]
+                    "location" : [location]]
         as [String : Any]
         
         self.db.collection("POSTS").document(docId.uuidString).setData(data) { error in

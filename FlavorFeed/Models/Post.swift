@@ -21,6 +21,5 @@ struct Post: Identifiable, Hashable {
     var likes: [String] //list of userIDs of users who liked
     var locations: [String] //location of post, if applicable [location_1, location_2, location_3]
     var recipes: [Recipe] //Recipe, if applicable [recipe_1, recipe_2, recipe_3]
-    var day: String
 
 }
