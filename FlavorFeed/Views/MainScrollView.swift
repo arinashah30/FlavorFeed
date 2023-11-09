@@ -33,6 +33,8 @@ struct MainScrollView: View {
                     BottomBar(messagesRemaing: Binding.constant(2)).frame(height: 100).edgesIgnoringSafeArea(.bottom)
                 }.edgesIgnoringSafeArea(.bottom).frame(maxHeight: .infinity)
                 
+            }.onAppear() {
+                var posts = vm.get_todays_posts()
             }
         }
     }

@@ -218,7 +218,7 @@ class ViewModel: ObservableObject {
     }
     
     func firebase_delete_comment(post: Post, comment: Comment) {
-        self.db.collection("POSTS").document(post.id).collection("comments").document(comment.id).delete { err in
+        self.db.collection("POSTS").document(post.id).collection("COMMENTS").document(comment.id).delete { err in
             if let err = err {
                 print("Error: \(err.localizedDescription)")
             } else {
@@ -325,12 +325,49 @@ class ViewModel: ObservableObject {
             }
             
     }
-    func sendBackList(username: String) -> [String] {
-        var arr: [String] = []
+
+    
+    func get_todays_posts() -> [String] {
+        let date = Date()
         
-        for num in 1...10 {
-            arr.append("NewUsername\(username)")
+        let dateFormatterSimple = DateFormatter()
+        dateFormatterSimple.dateFormat = "MM-dd-yyyy"
+        
+        let dateTodayString = dateFormatterSimple.string(from: date)
+        
+        var postList: [String] = [String]()
+        get_friends() { friends in
+            if friends.isEmpty {
+                // Problem getting friends, error screen
+            } else {
+                self.db.collection("POSTS").whereField("userID", in: friends).whereField("date", isGreaterThanOrEqualTo: dateTodayString).whereField("date", isLessThanOrEqualTo: dateTodayString + "\u{f7ff}").getDocuments() {documents, err in
+                    if let err = err {
+                        // Unable to get posts, error screen
+                    } else {
+                        for document in documents!.documents {
+                            postList.append(document.documentID)
+                            print(document.documentID)
+                        }
+                    }
+                }
+            }
+            
         }
-        return arr
+        return postList
     }
+    
+    func get_friends(completion: @escaping ([String]) -> Void) {
+        var userRef = self.db.collection("USERS").document(current_user!.id) // url endpoint
+        userRef.getDocument { document, err in
+            if let err = err  {
+                completion([])
+            } else {
+                var data = document!.data()!
+                var friends = data["friends"] as? [String]
+                completion(friends!)
+            }
+        }
+    }
+    
+
 }
