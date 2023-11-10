@@ -30,7 +30,7 @@ Firebase Methods:
 
 class ViewModel: ObservableObject {
     
-    @Published var current_user: User? = nil 
+    @Published var current_user: User? = nil
     @Published var errorText: String? = nil
     
     
@@ -327,8 +327,55 @@ class ViewModel: ObservableObject {
                 }
                 completionHandler(arr)
             }
-            
+        
     }
+    
+    func firebase_add_entry_post(userID: String, selfie: String, foodPic: String, caption: String, recipe: String, location: String) {
+        let date = Date()
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MM-dd-yyyy HH:mm:ss"
+        let dateFormatted = dateFormatter.string(from: date)
+        
+        self.db.collection("USERS").document(userID).getDocument { (document, error) in
+            var myPosts = []
+            if let document {
+                myPosts = document.data()!["myPosts"] as! [String]
+              } else {
+                print("Document does not exist")
+              }
+            let todayPostID = myPosts[myPosts.count - 1]
+            self.db.collection("POSTS").document(todayPostID as! String).getDocument { (document, error) in
+                if let document {
+                    var myCaptions = []
+                    myCaptions = document.data()!["caption"] as! [String]
+                    myCaptions.append(caption)
+                    self.db.collection("POSTS").document(todayPostID as! String).updateData(["caption": myCaptions])
+                    self.db.collection("POSTS").document(todayPostID as! String).updateData(["date": FieldValue.arrayUnion([dateFormatted])])
+                    
+                    var imagesArr = []
+                    imagesArr = document.data()!["images"] as! [String]
+                    imagesArr.append(selfie)
+                    imagesArr.append(foodPic)
+                    self.db.collection("POSTS").document(todayPostID as! String).updateData(["images": imagesArr])
+                    
+                    var locationArr = []
+                    locationArr = document.data()!["location"] as! [String]
+                    locationArr.append(location)
+                    self.db.collection("POSTS").document(todayPostID as! String).updateData(["location": locationArr])
+                    
+                    var recipeArr = []
+                    recipeArr = document.data()!["recipe"] as! [String]
+                    recipeArr.append(recipe)
+                    self.db.collection("POSTS").document(todayPostID as! String).updateData(["recipe": recipeArr])
+                } else {
+                    print("Document does not exist")
+                }
+            }
+        }
+        
+    }
+    
     func sendBackList(username: String) -> [String] {
         var arr: [String] = []
         
