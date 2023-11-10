@@ -12,7 +12,12 @@ struct Post: Identifiable, Hashable {
     init(id: String, userID: String, images: [String], date: [String], day: String, comments: [Comment], caption: [String], likes: [String], locations: [String], recipes: [Recipe]) {
         self.id = id
         self.userID = userID
-        self.images = images.split(separator: " ").map({ Array($0) })
+        
+        self.images = [[String]]()
+        
+        for i in 0..<images.count {
+            self.images.append(images[i].components(separatedBy: " "))
+        }
         self.date = date
         self.day = day
         self.comments = comments

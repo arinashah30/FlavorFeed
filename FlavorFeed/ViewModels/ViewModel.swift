@@ -54,9 +54,16 @@ class ViewModel: ObservableObject {
                         UserDefaults.standard.setValue(true, forKey: "log_Status")
                         self?.get_todays_posts() { postIDs in
                             // Create post models
+                            
                             for id in postIDs {
-                                self?.firebase_get_post(postID: id)
+                                print("get post object for \(id)")
+                                self?.firebase_get_post(postID: id) { post in
+                                    self?.todays_posts.append(post)
+                                    print("New feed size: \(String(describing: self?.todays_posts.count))")
+
+                                }
                             }
+                            
                         }
                     }
                 }
@@ -242,27 +249,26 @@ class ViewModel: ObservableObject {
             }
         }
     }
-    func firebase_get_post(postID: String) {
+    func firebase_get_post(postID: String, completion: @escaping ((Post) -> Void)) {
+        print("Getting post...")
         db.collection("POSTS").document(postID).getDocument { document, error in
             if let err = error {
                 print(err.localizedDescription)
                 return
             } else {
                 if let doc = document {
-                    let data = doc.data()
-                    
-                    self.todays_posts.append(
-                        Post(id: doc.documentID,
-                             userID: doc["userID"] as! String,
-                             images: doc["images"] as! [String],
-                             date: doc["date"] as! [String],
-                             day: doc["day"] as! String,
-                             comments: self.convertToComments(doc["comments"] as? [String] ?? []),
-                             caption: doc["caption"] as? [String] ?? [],
-                             likes: doc["likes"] as? [String] ?? [],
-                             locations: doc["locations"] as? [String] ?? [],
-                             recipes: self.convertToRecipe(doc["recipes"] as? [String] ?? []))
-                    )
+                    if let data = doc.data() {
+                        completion(Post(id: doc.documentID,
+                                 userID: data["userID"] as! String,
+                                 images: data["images"] as! [String],
+                                 date: data["date"] as! [String],
+                                 day: data["day"] as! String,
+                                 comments: self.convertToComments(data["comments"] as? [String] ?? []),
+                                 caption: data["caption"] as? [String] ?? [],
+                                 likes: data["likes"] as? [String] ?? [],
+                                 locations: data["locations"] as? [String] ?? [],
+                                 recipes: self.convertToRecipe(data["recipes"] as? [String] ?? [])))
+                    }
                 }
             }
         }
@@ -391,12 +397,13 @@ class ViewModel: ObservableObject {
                             postList.append(document.documentID)
                             print(document.documentID)
                         }
+                        completion(postList)
+
                     }
                 }
             }
             
         }
-        completion(postList)
     }
     
     func get_friends(completion: @escaping ([String]) -> Void) {
@@ -454,6 +461,9 @@ class ViewModel: ObservableObject {
         
         //synchronous approach
         func load_image_from_url(url: String) -> Image? {
+            if url == "NIL" {
+                return nil
+            }
             let url = URL(string: url)!
             
             guard let imageData = try? Data(contentsOf: url),

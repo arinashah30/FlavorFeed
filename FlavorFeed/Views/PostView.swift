@@ -24,14 +24,19 @@ struct PostView: View {
 
     
     init(vm: ViewModel, post: Post) {
+        print(post)
         self.vm = vm
         
         self.post = post
         
-        for postEntry in 0..<post.images.count {
+        for entry in 0..<post.images.count {
+            var postEntry: [Image] = [Image]()
+            print("Size of post entry: \(post.images[entry].count)")
             for picSide in 0..<2 {
-                post_images[postEntry][picSide] = vm.load_image_from_url(url: post.images[postEntry][picSide]) ?? Image(systemName: "person.circle")
+                postEntry.append(vm.load_image_from_url(url: post.images[entry][picSide]) ?? Image(systemName: "person.circle"))
             }
+            post_images.append(postEntry)
+            print("Size: \(post_images[0].count)")
         }
     }
     
@@ -72,7 +77,7 @@ struct PostView: View {
                         //                ForEach(1...3, id: \.self) { pic in
                         ZStack (){
                             //
-                            Image((showSelfieFirst) ? post.images[index][1] : post.images[index][0])
+                            bigImage(index)
                                 .resizable()
                                 .aspectRatio(contentMode: .fill)
                                 .frame(width: geo.size.width*0.98, height: geo.size.height*0.66)
@@ -86,7 +91,7 @@ struct PostView: View {
                                         Button {
                                             self.showSelfieFirst.toggle()
                                         } label: {
-                                            Image((showSelfieFirst) ? post.images[index][0] : post.images[index][1])
+                                            smallImage(index)
                                                 .resizable()
                                                 .aspectRatio(contentMode: .fill)
                                                 .frame(width: geo.size.width * 0.30, height: geo.size.height * 0.2)
@@ -125,7 +130,7 @@ struct PostView: View {
 
                                 }
                                 Spacer()
-                                if post.caption[index] != "" {
+                                if index < post.caption.count {
                                     Text(post.caption[index])
                                         .background(RoundedRectangle(cornerRadius: 10.0)
                                             .frame(width: geo.size.width * 0.7, height: geo.size.height * 0.05)
@@ -208,6 +213,14 @@ struct PostView: View {
         UIPageControl.appearance().pageIndicatorTintColor = UIColor.black.withAlphaComponent(0.2)
         
       }
+    
+    func bigImage(_ i: Int) -> Image {
+        return showSelfieFirst ? post_images[i][0] : post_images[i][1]
+    }
+    
+    func smallImage(_ i: Int) -> Image {
+        return showSelfieFirst ? post_images[i][1] : post_images[i][0]
+    }
 }
 
 //#Preview {
