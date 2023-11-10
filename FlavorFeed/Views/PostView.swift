@@ -7,7 +7,9 @@
 
 import SwiftUI
 
+
 struct PostView: View {
+    @ObservedObject var vm: ViewModel
     var post: Post
 //    var userID: String
     var gold = Color(red:255/255, green:211/255, blue:122/255)
@@ -17,9 +19,21 @@ struct PostView: View {
     
     @State private var showSelfieFirst = true
     @State private var showComments = true
-//     let selfiePic: String
-//     let foodPic: String
-//     let caption: String
+    
+    var post_images = [[Image]]()
+
+    
+    init(vm: ViewModel, post: Post) {
+        self.vm = vm
+        
+        self.post = post
+        
+        for postEntry in 0..<post.images.count {
+            for picSide in 0..<2 {
+                post_images[postEntry][picSide] = vm.load_image_from_url(url: post.images[postEntry][picSide]) ?? Image(systemName: "person.circle")
+            }
+        }
+    }
     
     var body: some View {
         GeometryReader { geo in
@@ -53,7 +67,7 @@ struct PostView: View {
                 }.padding([.leading, .trailing] , 20)
                 
                 TabView {
-                    ForEach(0..<post.images.count) { index in
+                    ForEach(0..<post_images.count) { index in
                         
                         //                ForEach(1...3, id: \.self) { pic in
                         ZStack (){
@@ -196,6 +210,6 @@ struct PostView: View {
       }
 }
 
-#Preview {
-    PostView(post: Post(id: UUID().uuidString, userID: "champagnepapi", images: [["drake_selfie", "food_pic_1"], ["drake_selfie2", "food_pic_2"], ["drake_selfie3", "food_pic_3"]], date: ["October 24, 2022", "October 24, 2022", "October 24, 2022"], day: "11-09-2923", comments: [Comment(id: UUID().uuidString, userID: "adonis", text: "Looking fresh Drake!", date: "October 24, 2022", replies: []), Comment(id: UUID().uuidString, userID: "travisscott", text: "She said do you love me I told her only partly.", date: "October 24, 2022", replies: [])], caption: ["That was yummy in my tummy", "", "Let's dig in"], likes: [], locations: [], recipes: []))
-}
+//#Preview {
+//    PostView(post: Post(id: UUID().uuidString, userID: "champagnepapi", images: [["drake_selfie", "food_pic_1"], ["drake_selfie2", "food_pic_2"], ["drake_selfie3", "food_pic_3"]], date: ["October 24, 2022", "October 24, 2022", "October 24, 2022"], day: "11-09-2923", comments: [Comment(id: UUID().uuidString, userID: "adonis", text: "Looking fresh Drake!", date: "October 24, 2022", replies: []), Comment(id: UUID().uuidString, userID: "travisscott", text: "She said do you love me I told her only partly.", date: "October 24, 2022", replies: [])], caption: ["That was yummy in my tummy", "", "Let's dig in"], likes: [], locations: [], recipes: []))
+//}

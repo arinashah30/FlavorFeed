@@ -9,6 +9,8 @@ import Foundation
 import Firebase
 import FirebaseAuth
 import FirebaseFirestore
+import FirebaseStorage
+import SwiftUI
 
 
 /**
@@ -38,6 +40,7 @@ class ViewModel: ObservableObject {
     
     let db = Firestore.firestore()
     let auth = Auth.auth()
+    let storageRef = Storage.storage().reference()
     
 
     
@@ -51,6 +54,9 @@ class ViewModel: ObservableObject {
                         UserDefaults.standard.setValue(true, forKey: "log_Status")
                         self?.get_todays_posts() { postIDs in
                             // Create post models
+                            for id in postIDs {
+                                self?.firebase_get_post(postID: id)
+                            }
                         }
                     }
                 }
@@ -100,6 +106,8 @@ class ViewModel: ObservableObject {
                      "bio" : "",
                      "phone_number" : phoneNumber,
                      "friends" : [],
+                     "incomingRequests": [],
+                     "outgoingRequests": [],
                      "pins" : [],
                      "myPosts" : []
                     ] as [String : Any]) { error in
@@ -233,15 +241,39 @@ class ViewModel: ObservableObject {
                 
             }
         }
-        
-        
     }
+    func firebase_get_post(postID: String) {
+        db.collection("POSTS").document(postID).getDocument { document, error in
+            if let err = error {
+                print(err.localizedDescription)
+                return
+            } else {
+                if let doc = document {
+                    let data = doc.data()
+                    
+                    self.todays_posts.append(
+                        Post(id: doc.documentID,
+                             userID: doc["userID"] as! String,
+                             images: doc["images"] as! [String],
+                             date: doc["date"] as! [String],
+                             day: doc["day"] as! String,
+                             comments: self.convertToComments(doc["comments"] as? [String] ?? []),
+                             caption: doc["caption"] as? [String] ?? [],
+                             likes: doc["likes"] as? [String] ?? [],
+                             locations: doc["locations"] as? [String] ?? [],
+                             recipes: self.convertToRecipe(doc["recipes"] as? [String] ?? []))
+                    )
+                }
+            }
+        }
+    }
+    
     
     func firebase_add_comment(post: Post, text: String, date: String) {
 
             let id = UUID()
 
-            self.db.collection("POSTS").document(post.id).collection("COMMENTS").document(id.uuidString).setData(
+        self.db.collection("POSTS").document(post.id).collection("COMMENTS").document(id.uuidString).setData(
                 ["id": id.uuidString,
                  "user_id" : current_user!.id,
                  "text": text,
@@ -381,5 +413,53 @@ class ViewModel: ObservableObject {
         }
     }
     
-
+    // needs to be done
+    func convertToRecipe(_ recipesString: [String]) -> [Recipe] {
+        return [Recipe]()
+    }
+    
+    // needs to be done
+    func convertToComments(_ commentsString: [String]) -> [Comment] {
+        return [Comment]()
+    }
+    
+    func firebase_get_url_from_image(image: UIImage, completion: @escaping (URL?) -> Void) {
+            guard let imageData = image.jpegData(compressionQuality: 0.8) else {
+                completion(nil)
+                return
+            }
+            // create random image path
+            let imagePath = "images/\(UUID()).jpg"
+            
+            // create reference to file you want to upload
+            let imageRef = storageRef.child(imagePath)
+            
+            //upload image
+            let uploadTask = imageRef.putData(imageData, metadata: nil) { (metadata, error) in
+                if let error = error {
+                    print("Error uploading image: \(error.localizedDescription)")
+                    completion(nil)
+                } else {
+                    // Image successfully uploaded
+                    imageRef.downloadURL { url, error in
+                        if let downloadURL = url {
+                            completion(downloadURL)
+                        } else {
+                            print("Error getting download URL: \(String(describing: error?.localizedDescription))")
+                        }
+                    }
+                }
+            }
+        }
+        
+        //synchronous approach
+        func load_image_from_url(url: String) -> Image? {
+            let url = URL(string: url)!
+            
+            guard let imageData = try? Data(contentsOf: url),
+                  let uiImage = UIImage(data: imageData) else {
+                return nil
+            }
+            return Image(uiImage: uiImage)
+        }
 }

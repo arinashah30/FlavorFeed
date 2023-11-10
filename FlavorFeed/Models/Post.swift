@@ -8,6 +8,19 @@
 import Foundation
 
 struct Post: Identifiable, Hashable {
+        
+    init(id: String, userID: String, images: [String], date: [String], day: String, comments: [Comment], caption: [String], likes: [String], locations: [String], recipes: [Recipe]) {
+        self.id = id
+        self.userID = userID
+        self.images = images.split(separator: " ").map({ Array($0) })
+        self.date = date
+        self.day = day
+        self.comments = comments
+        self.caption = caption
+        self.likes = likes
+        self.locations = locations
+        self.recipes = recipes
+    }
     
     // REQUIRED PROPERTIES
     var id: String // post id
