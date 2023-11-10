@@ -32,6 +32,9 @@ class ViewModel: ObservableObject {
     
     @Published var current_user: User? = nil
     @Published var errorText: String? = nil
+    @Published var comments: [Comment] = [Comment]()
+    @Published var usernameSearchResults: [String] = [String]()
+
     
     @Published var todays_posts: [Post] = [Post]()
     
@@ -318,20 +321,15 @@ class ViewModel: ObservableObject {
         dateFormatter.dateFormat = "MM-dd-yyyy HH:mm:ss"
         let dateFormatted = dateFormatter.string(from: date) // get string from date
         
-        
-        let docId = UUID()
-    
-        
-        let data = ["id" : docId.uuidString,
-                    "userID" : userID,
-                    "images" : [selfie, foodPic],
-                    "caption" : [caption],
-                    "recipe" : [recipe],
-                    "date" : [dateFormatted],
+        let data = ["images" : images,
+                    "caption" : caption,
+                    "recipes" : recipe,
+                    "date" : dateFormatted,
                     "likes" : [],
-                    "location" : [location]]
+                    "location" : location]
         as [String : Any]
-        
+      
+        let docId = UUID()
         self.db.collection("POSTS").document(docId.uuidString).setData(data) { error in
             if let error = error {
                 print("Error: \(error.localizedDescription) ")
@@ -362,6 +360,26 @@ class ViewModel: ObservableObject {
             }
         
     }
+
+    
+    func get_post_comments(postID: String, completion: @escaping ([Comment]) -> Void) {
+        let commentsRef = self.db.collection("POSTS").document(postID).collection("COMMENTS")
+        commentsRef.getDocuments() { (documents, error) in
+            var comments: [Comment] = [Comment]()
+            if let error = error {
+                // Error getting comments
+                print("Error in the get post comments: \(error.localizedDescription)")
+            } else {
+                for document in documents!.documents {
+                    var data = document.data()
+                    var comment = Comment(id: data["id"] as! String, userID: data["userID"] as! String, text: data["text"] as! String, date: data["date"] as! String)
+                    comments.append(comment)
+                }
+            }
+            completion(comments)
+        }
+    }
+
 
     
     func firebase_add_entry_post(userID: String, selfie: String, foodPic: String, caption: String, recipe: String, location: String) {
