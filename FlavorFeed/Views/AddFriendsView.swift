@@ -108,7 +108,7 @@ struct AddFriendsView: View {
                                 .foregroundColor(.black)
                                 .font(.system(size: 20)).padding(5)
                         }
-                    }.padding([.leading, .trailing])
+                    }
                 }
             }
         }

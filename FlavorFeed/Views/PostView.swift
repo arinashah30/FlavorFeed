@@ -50,7 +50,8 @@ struct PostView: View {
                             .frame(width: 20)
                             .foregroundColor(.black)
                     }
-                }.padding([.leading, .trailing] , 20)
+                }
+                .padding([.leading, .trailing] , 20)
                 
                 TabView {
                     ForEach(0..<post.images.count) { index in
@@ -126,7 +127,7 @@ struct PostView: View {
                     }.frame(height: geo.size.height * 0.69)
                     
                 }.tabViewStyle(.page).indexViewStyle(.page(backgroundDisplayMode: .always))
-                    .frame(height: geo.size.height * 0.735)
+                    .frame(height: geo.size.height * 0.725)
                     .onAppear {
                         setupAppearance()
                     }
@@ -136,6 +137,7 @@ struct PostView: View {
                         Text("Top Comments")
                             .font(.system(size: 15))
                             .fontWeight(.light)
+                            .padding(.top, -2)
                         Spacer()
                         Button {
                             withAnimation (.smooth) {
@@ -150,7 +152,6 @@ struct PostView: View {
                         }
                     }
                     .padding(.horizontal, 20)
-                    .padding(.top, 5)
                     if showComments && post.comments != nil {
                         ScrollView {
                             VStack {
@@ -180,10 +181,12 @@ struct PostView: View {
                             .padding(.vertical)
                             .background(lightGray)
                             .cornerRadius(20)
-                            .padding(.bottom, 5)
+                            .padding(.bottom, 8)
                         }
+                        .frame(width: geo.size.width * 0.97)
                     }
                 }
+                .padding(.top, -7)
                 Spacer()
             }.frame(maxHeight: .infinity)
         }
@@ -197,5 +200,5 @@ struct PostView: View {
 }
 
 #Preview {
-    PostView(post: Post(id: UUID().uuidString, userID: "champagnepapi", images: [["drake_selfie", "food_pic_1"], ["drake_selfie2", "food_pic_2"], ["drake_selfie3", "food_pic_3"]], date: ["October 24, 2022", "October 24, 2022", "October 24, 2022"], comments: [Comment(id: UUID().uuidString, userID: "adonis", text: "Looking fresh Drake!", date: "October 24, 2022", replies: []), Comment(id: UUID().uuidString, userID: "travisscott", text: "She said do you love me I told her only partly.", date: "October 24, 2022", replies: [])], caption: ["That was yummy in my tummy", "", "Let's dig in"], likes: [], locations: [], recipes: []))
+    PostView(post: Post(id: UUID().uuidString, userID: "champagnepapi", images: [["drake_selfie", "food_pic_1"], ["drake_selfie2", "food_pic_2"], ["drake_selfie3", "food_pic_3"]], date: ["October 24, 2022", "October 24, 2022", "October 24, 2022"], day: "11-09-2923", comments: [Comment(id: UUID().uuidString, userID: "adonis", text: "Looking fresh Drake!", date: "October 24, 2022", replies: []), Comment(id: UUID().uuidString, userID: "travisscott", text: "She said do you love me I told her only partly.", date: "October 24, 2022", replies: [])], caption: ["That was yummy in my tummy", "", "Let's dig in"], likes: [], locations: [], recipes: []))
 }
