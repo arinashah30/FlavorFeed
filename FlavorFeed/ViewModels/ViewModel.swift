@@ -32,6 +32,7 @@ class ViewModel: ObservableObject {
     
     @Published var current_user: User? = nil 
     @Published var errorText: String? = nil
+    @Published var comments: [String] = [String]()
     
     
     let db = Firestore.firestore()
@@ -291,7 +292,7 @@ class ViewModel: ObservableObject {
         
         let data = ["images" : images,
                     "caption" : caption,
-                    "recipe" : recipe,
+                    "recipes" : recipe,
                     "date" : dateFormatted,
                     "likes" : [],
                     "location" : location]
@@ -325,12 +326,22 @@ class ViewModel: ObservableObject {
             }
             
     }
-    func sendBackList(username: String) -> [String] {
-        var arr: [String] = []
-        
-        for num in 1...10 {
-            arr.append("NewUsername\(username)")
+    
+    func get_post_comments(postID: String, completion: @escaping ([String]) -> Void) {
+        let commentsRef = self.db.collection("POSTS").document(postID).collection("COMMENTS")
+        commentsRef.getDocuments() { (documents, error) in
+            var comments: [String] = [String]()
+            if let error = error {
+                // Error getting comments
+                print("Error in the get post comments: \(error.localizedDescription)")
+            } else {
+                for document in documents!.documents {
+                    var data = document.data()
+                    //var comment = Comment(id: data["id"] as! String, userID: data["userID"] as! String, text: data["text"] as! String, date: data["date"] as! String)
+                    comments.append(data["text"] as! String)
+                }
+            }
+            completion(comments)
         }
-        return arr
     }
 }
