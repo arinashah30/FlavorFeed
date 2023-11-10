@@ -175,6 +175,30 @@ class ViewModel: ObservableObject {
         })
     }
     
+    func fetchPosts(postIDs: [String]) -> [Post]{
+        var post: [Post]?
+        post = nil
+        self.db.collection("POSTS").whereField("id", in: postIDs).getDocuments(completion: { [weak self] documents, error in
+                if let error = error {
+                    self?.errorText = "Cannot get list of posts from Firebase."
+                } else {
+                    for document in documents!.documents {
+                        post?.append(Post(id: document.documentID,
+                                          userID: document["userID"] as! String,
+                                          images: document["images"] as! [[String]],
+                                          date: document["date"] as! [String],
+                                          comments: document["comments"] as? [Comment] ?? [],
+                                          caption: document["caption"] as? [String] ?? [],
+                                          likes: document["likes"] as? [String] ?? [],
+                                          locations: document["locations"] as? [String] ?? [],
+                                          recipes: document["recipes"] as? [Recipe] ?? []))
+                        UserDefaults.standard.setValue(true, forKey: "log_Status")
+                    }
+                }
+            })
+        return post!
+    }
+    
     func accept_friend_request(from: String, to: String) {
         let fromRef = self.db.collection("USERS").document(from)
         let toRef = self.db.collection("USERS").document(to)
@@ -310,7 +334,7 @@ class ViewModel: ObservableObject {
         
         self.db.collection("POSTS").document(docId.uuidString).setData(data) { error in
             if let error = error {
-                print("Error: \(error.localizedDescription)")
+                print("Error: \(error.localizedDescription) ")
                 return
             } else {
                 self.db.collection("USERS").document(userID).updateData(["myPosts": FieldValue.arrayUnion([docId.uuidString])])
@@ -318,6 +342,9 @@ class ViewModel: ObservableObject {
         
         }
     }
+    
+
+            
     func firebase_search_for_username(username: String, completionHandler: @escaping (([String]) -> Void)) {
         var arr: [String] = []
         self.db.collection("USERS").whereField("id", isGreaterThanOrEqualTo: username).whereField("id", isLessThanOrEqualTo: username + "\u{f7ff}")
