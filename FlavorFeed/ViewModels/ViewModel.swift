@@ -33,6 +33,8 @@ class ViewModel: ObservableObject {
     @Published var current_user: User? = nil 
     @Published var errorText: String? = nil
     
+    @Published var todays_posts: [Post] = [Post]()
+    
     
     let db = Firestore.firestore()
     let auth = Auth.auth()
@@ -45,8 +47,12 @@ class ViewModel: ObservableObject {
                 print("User Found")
                 if let username = user.displayName {
                     print("Setting User: \(username)")
-                    self?.setCurrentUser(userId: username)
-                    UserDefaults.standard.setValue(true, forKey: "log_Status")
+                    self?.setCurrentUser(userId: username) {
+                        UserDefaults.standard.setValue(true, forKey: "log_Status")
+                        self?.get_todays_posts() { postIDs in
+                            // Create post models
+                        }
+                    }
                 }
             } else {
                 UserDefaults.standard.setValue(false, forKey: "log_Status")
@@ -126,8 +132,8 @@ class ViewModel: ObservableObject {
     }
     
     func send_friend_request(from: String, to: String) {
-        var fromRef = self.db.collection("USERS").document(from)
-        var toRef = self.db.collection("USERS").document(to)
+        let fromRef = self.db.collection("USERS").document(from)
+        let toRef = self.db.collection("USERS").document(to)
         fromRef.updateData([
             "outgoingRequests": FieldValue.arrayUnion([to])
         ]) { error in
@@ -150,10 +156,10 @@ class ViewModel: ObservableObject {
     }
     
     
-    func setCurrentUser(userId: String) {
+    func setCurrentUser(userId: String, completion: @escaping (() -> Void)) {
         db.collection("USERS").document(userId).getDocument (completion: { [weak self] document, error in
             if let error = error {
-                self?.errorText = error.localizedDescription
+                print("SetCurrentUserError: \(error.localizedDescription)")
             } else if let document = document {
                 self?.current_user = User(id: document.documentID,
                                           name: document["name"] as! String,
@@ -164,14 +170,14 @@ class ViewModel: ObservableObject {
                                           friends: document["friends"] as! [String],
                                           pins: document["pins"] as? [String] ?? [],
                                           myPosts: document["myPosts"] as! [String])
-                UserDefaults.standard.setValue(true, forKey: "log_Status")
+                completion()
             }
         })
     }
     
     func accept_friend_request(from: String, to: String) {
-        var fromRef = self.db.collection("USERS").document(from)
-        var toRef = self.db.collection("USERS").document(to)
+        let fromRef = self.db.collection("USERS").document(from)
+        let toRef = self.db.collection("USERS").document(to)
         fromRef.updateData([
             "outgoingRequests": FieldValue.arrayRemove([to]),
             "friends": FieldValue.arrayUnion([to])
@@ -195,8 +201,8 @@ class ViewModel: ObservableObject {
     }
     
     func reject_friend_request(from: String, to: String) {
-        var fromRef = self.db.collection("USERS").document(from)
-        var toRef = self.db.collection("USERS").document(to)
+        let fromRef = self.db.collection("USERS").document(from)
+        let toRef = self.db.collection("USERS").document(to)
         fromRef.updateData([
             "outgoingRequests": FieldValue.arrayRemove([to])
         ]) { error in
@@ -255,7 +261,7 @@ class ViewModel: ObservableObject {
         }
     
     func firebase_like_post(post: inout Post, user: String) {
-        var postRef = self.db.collection("POSTS").document(post.id)
+        let postRef = self.db.collection("POSTS").document(post.id)
         postRef.updateData([
             "likes": FieldValue.arrayUnion([user])
         ]) { error in
@@ -268,7 +274,7 @@ class ViewModel: ObservableObject {
     }
     
     func firebase_unlike_post(post: Post, user: String) {
-        var postRef = self.db.collection("POSTS").document(post.id)
+        let postRef = self.db.collection("POSTS").document(post.id)
         postRef.updateData([
             "likes": FieldValue.arrayRemove([user])
         ]) { error in
@@ -327,7 +333,7 @@ class ViewModel: ObservableObject {
     }
 
     
-    func get_todays_posts() -> [String] {
+    func get_todays_posts(completion: @escaping ([String]) -> Void) {
         let date = Date()
         
         let dateFormatterSimple = DateFormatter()
@@ -340,9 +346,10 @@ class ViewModel: ObservableObject {
             if friends.isEmpty {
                 // Problem getting friends, error screen
             } else {
-                self.db.collection("POSTS").whereField("userID", in: friends).whereField("date", isGreaterThanOrEqualTo: dateTodayString).whereField("date", isLessThanOrEqualTo: dateTodayString + "\u{f7ff}").getDocuments() {documents, err in
+                self.db.collection("POSTS").whereField("userID", in: friends).whereField("day", isEqualTo: dateTodayString).getDocuments() {documents, err in
                     if let err = err {
                         // Unable to get posts, error screen
+                        print("In Get Todays Posts: \(err.localizedDescription)")
                     } else {
                         for document in documents!.documents {
                             postList.append(document.documentID)
@@ -353,17 +360,18 @@ class ViewModel: ObservableObject {
             }
             
         }
-        return postList
+        completion(postList)
     }
     
     func get_friends(completion: @escaping ([String]) -> Void) {
-        var userRef = self.db.collection("USERS").document(current_user!.id) // url endpoint
+        let userRef = self.db.collection("USERS").document(current_user!.id)
         userRef.getDocument { document, err in
             if let err = err  {
+                print("In Get Friends: \(err.localizedDescription)")
                 completion([])
             } else {
-                var data = document!.data()!
-                var friends = data["friends"] as? [String]
+                let data = document!.data()!
+                let friends = data["friends"] as? [String]
                 completion(friends!)
             }
         }
