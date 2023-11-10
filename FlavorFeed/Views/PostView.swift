@@ -10,6 +10,7 @@ import SwiftUI
 
 struct PostView: View {
     @ObservedObject var vm: ViewModel
+    @State private var tabSelection = 0
     var post: Post
 //    var userID: String
     var gold = Color(red:255/255, green:211/255, blue:122/255)
@@ -21,13 +22,16 @@ struct PostView: View {
     @State private var showComments = true
     
     var post_images = [[Image]]()
-
+    
+    var profilePicture: Image
     
     init(vm: ViewModel, post: Post) {
         print(post)
         self.vm = vm
         
         self.post = post
+        
+        profilePicture = vm.load_image_from_url(url: post.friend?.profilePicture ?? "NIL") ?? Image(systemName: "person.circle")
         
         for entry in 0..<post.images.count {
             var postEntry: [Image] = [Image]()
@@ -44,18 +48,18 @@ struct PostView: View {
         GeometryReader { geo in
             VStack {
                 HStack {
-                    Image("drake_pfp")
+                    profilePicture
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: geo.size.height * 0.08)
                         .clipShape(.circle)
                     
                     VStack (alignment: .leading) {
-                        Text("Aubrey Drake Graham")
+                        Text(post.friend!.name)
                             .font(.system(size: 18))
                             .foregroundColor(.ffSecondary)
                             .fontWeight(.semibold)
-                        Text("Toronto, ON • 7:00 AM")
+                        Text("\(post.locations[tabSelection]) • \(formatPostTime(time: post.date[tabSelection]))")
                             .font(.system(size: 15))
                             .fontWeight(.light)
                     }
@@ -71,7 +75,7 @@ struct PostView: View {
                     }
                 }.padding([.leading, .trailing] , 20)
                 
-                TabView {
+                TabView(selection: $tabSelection) {
                     ForEach(0..<post_images.count) { index in
                         
                         //                ForEach(1...3, id: \.self) { pic in
@@ -142,6 +146,8 @@ struct PostView: View {
                         }.cornerRadius(20)
                             .padding(.bottom, 55)
                             .padding([.leading, .trailing] , 20)
+                            .tag(index)
+
                     }.frame(height: geo.size.height * 0.69)
                     
                 }.tabViewStyle(.page).indexViewStyle(.page(backgroundDisplayMode: .always))
@@ -149,6 +155,7 @@ struct PostView: View {
                     .onAppear {
                         setupAppearance()
                     }
+                    
                 
                 VStack{
                     HStack{
@@ -214,12 +221,26 @@ struct PostView: View {
         
       }
     
+    func formatPostTime(time: String) -> String {
+        let dateFormatterIn = DateFormatter()
+        dateFormatterIn.dateFormat = "MM-dd-yyyy HH:mm:ss"
+        let date = dateFormatterIn.date(from: time)!
+        
+        let dateFormatterOut = DateFormatter()
+        dateFormatterOut.dateFormat = "HH:mm a"
+        return dateFormatterOut.string(from: date)
+    }
+    
     func bigImage(_ i: Int) -> Image {
         return showSelfieFirst ? post_images[i][0] : post_images[i][1]
     }
     
     func smallImage(_ i: Int) -> Image {
         return showSelfieFirst ? post_images[i][1] : post_images[i][0]
+    }
+    
+    mutating func populateFriend(friend: Friend) {
+        
     }
 }
 

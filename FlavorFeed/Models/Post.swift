@@ -9,7 +9,7 @@ import Foundation
 
 struct Post: Identifiable, Hashable {
         
-    init(id: String, userID: String, images: [String], date: [String], day: String, comments: [Comment], caption: [String], likes: [String], locations: [String], recipes: [Recipe]) {
+    init(id: String, userID: String, images: [String], date: [String], day: String, comments: [Comment], caption: [String], likes: [String], locations: [String], recipes: [Recipe], friend: Friend?) {
         self.id = id
         self.userID = userID
         
@@ -25,6 +25,7 @@ struct Post: Identifiable, Hashable {
         self.likes = likes
         self.locations = locations
         self.recipes = recipes
+        self.friend = friend
     }
     
     // REQUIRED PROPERTIES
@@ -41,4 +42,5 @@ struct Post: Identifiable, Hashable {
     var locations: [String] //location of post, if applicable [location_1, location_2, location_3]
     var recipes: [Recipe] //Recipe, if applicable [recipe_1, recipe_2, recipe_3]
 
+    var friend: Friend?
 }
