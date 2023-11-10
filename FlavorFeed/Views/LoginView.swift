@@ -15,39 +15,61 @@ struct LoginView: View {
 
     var body: some View {
         VStack {
-            Text("Welcome Back")
+            Spacer().frame(height:100)
+            Image("flavorfeed_logo_alt")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 340, height:34)
+            Spacer().frame(height:50)
+            Text("Welcome Back!")
                 .font(.largeTitle)
-                .padding()
+                .foregroundColor(.white)
             Text("Login to your account")
+                .foregroundColor(.white)
+            HStack {
+                Image("email_icon")
+                    .resizable()
+                    .frame(width:35,height:30)
+                    .padding(.leading)
+                HStack {
+                    TextField("", text: $email, prompt: Text("Email")                .foregroundColor(.white))
+                        .textInputAutocapitalization(.never)
+                }
+                .padding()
+                .background(Color.ffPrimary)
+                .clipShape(.rect(cornerRadius: 7.0))
+                .padding()
+            }
+            .padding([.leading, .trailing, .top])
             
             HStack {
-                Image(systemName: "envelope.fill")
-                TextField("", text: $email, prompt: Text("Email Address"))
-                    .textInputAutocapitalization(.never)
+                Image("password_icon")
+                    .resizable()
+                    .frame(width:35, height: 20)
+                    .padding(.leading)
+                HStack {
+                    SecureField("", text:  $password, prompt: Text("Password")
+                        .foregroundColor(.white))
+                }
+                .padding()
+                .background(Color.ffPrimary)
+                .clipShape(.rect(cornerRadius: 8.0))
+                .padding([.leading, .trailing])
             }
-            .padding()
-            .background(Color(uiColor: .secondarySystemBackground))
-            .clipShape(.rect(cornerRadius: 7.0))
-            .padding()
-
-            HStack {
-                Image(systemName: "lock.fill")
-                SecureField("", text:  $password, prompt: Text("Password"))
-            }
-            .padding()
-            .background(Color(uiColor: .secondarySystemBackground))
-            .clipShape(.rect(cornerRadius: 8.0))
-            .padding([.leading, .trailing])
+            .padding([.leading, .trailing, .bottom])
 
             HStack{
                 HStack {
                     Button { isChecked.toggle() } label: {
-                        isChecked ? Image(systemName: "checkmark.square") : Image(systemName: "square")
+                        isChecked ? Image(systemName: "checkmark.circle.fill").resizable() : Image(systemName: "circle").resizable()
                     }
+
                     .buttonStyle(.plain)
-                    .foregroundColor(Color.gray)
+                    .foregroundColor(Color.ffTertiary)
+                    .frame(width:25,height:25)
                     
                     Text("Remember me")
+                        .foregroundStyle(Color.white)
                 }
                 .frame(maxWidth: .infinity)
                                 
@@ -56,7 +78,7 @@ struct LoginView: View {
                 } label: {
                     Text("Forgot Password?")
                         .fontWeight(.bold)
-                        .foregroundStyle(Color.black)
+                        .foregroundStyle(Color.white)
                 }
                 .frame(maxWidth: .infinity)
                 
@@ -64,7 +86,6 @@ struct LoginView: View {
             .frame(maxWidth: .infinity)
             .padding([.bottom, .leading, .trailing])
             
-            Spacer().frame(height: 150)
             
             if let errorText = vm.errorText {
                 Text(errorText).foregroundStyle(Color.red)
@@ -84,30 +105,40 @@ struct LoginView: View {
                 }
             } label: {
                 Text("LOGIN")
+                    .bold()
                     .font(.title3)
-                    .foregroundStyle(Color.black)
+                    .foregroundStyle(Color.ffSecondary)
             }
             .padding()
-            .frame(maxWidth: .infinity)
-            .background(Color(uiColor: .secondarySystemBackground))
+            .frame(maxWidth: 140)
+            .background(Color.ffTertiary)
             .clipShape(.rect(cornerRadius: 50.0))
             .padding()
                         
+            Spacer().frame(height: 150)
+            
             HStack {
                 Text("Don't have an account?")
+                    .foregroundStyle(Color.white)
                 
                 NavigationLink {
                     SignupView(vm: vm)
                 } label: {
                     Text("Sign up")
                         .fontWeight(.bold)
-                        .foregroundStyle(Color.black)
+                        .foregroundStyle(Color.ffTertiary)
                 }
             }
         }
         .onAppear {
             vm.errorText = nil
         }
+        .background(
+            Image("onboarding_background")
+                .resizable()
+                .ignoresSafeArea()
+                .aspectRatio(contentMode: .fill)
+        )
     }
 }
 
