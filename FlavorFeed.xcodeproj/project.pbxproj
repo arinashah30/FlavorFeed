@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		489E36132AD8ACE900369ECB /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 489E36122AD8ACE900369ECB /* Comment.swift */; };
+		48D6A5942AFB0271009DE918 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48D6A5922AFB0271009DE918 /* SettingsView.swift */; };
 		660026442AF0B309002212E1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B21292452ACD20480064AE5D /* GoogleService-Info.plist */; };
 		660026462AF0B317002212E1 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 664B8F0C2AC5F1AB001E8C7F /* Preview Assets.xcassets */; };
 		664B8F062AC5F1AA001E8C7F /* FlavorFeedApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 664B8F052AC5F1AA001E8C7F /* FlavorFeedApp.swift */; };
@@ -69,6 +70,7 @@
 
 /* Begin PBXFileReference section */
 		489E36122AD8ACE900369ECB /* Comment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
+		48D6A5922AFB0271009DE918 /* SettingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SettingsView.swift; path = ../../../FFTesting/FFTesting/SettingsView.swift; sourceTree = "<group>"; };
 		6602DD8B2AC625EF008C3177 /* SelfProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelfProfileView.swift; sourceTree = "<group>"; };
 		6602DD8C2AC625EF008C3177 /* ContactsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsView.swift; sourceTree = "<group>"; };
 		6602DD8D2AC625EF008C3177 /* MainScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainScrollView.swift; sourceTree = "<group>"; };
@@ -155,6 +157,7 @@
 				F75D1E8E2AC63EF40054F7EC /* PostView.swift */,
 				B6903C962AC8D2FF009CCE41 /* AddFriendsView.swift */,
 				668CD5202AF03F2F00A64DF1 /* UserListView.swift */,
+				48D6A5922AFB0271009DE918 /* SettingsView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -398,6 +401,7 @@
 				B212924F2ACD213C0064AE5D /* LandingPage.swift in Sources */,
 				B2BACCCD2ACF12B300F942A3 /* SelfProfileView.swift in Sources */,
 				B2FCB8FF2AC63AA200865FCF /* FFColors.swift in Sources */,
+				48D6A5942AFB0271009DE918 /* SettingsView.swift in Sources */,
 				665113502AC601E900027654 /* Post.swift in Sources */,
 				F75D1E8F2AC63EF40054F7EC /* PostView.swift in Sources */,
 				B6903C972AC8D2FF009CCE41 /* AddFriendsView.swift in Sources */,

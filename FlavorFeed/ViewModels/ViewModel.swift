@@ -37,7 +37,7 @@ class ViewModel: ObservableObject {
     let db = Firestore.firestore()
     let auth = Auth.auth()
     
-
+    
     
     init() {
         _ = Auth.auth().addStateDidChangeListener { [weak self] auth, user in
@@ -232,27 +232,27 @@ class ViewModel: ObservableObject {
     }
     
     func firebase_add_comment(post: Post, text: String, date: String) {
-
-            let id = UUID()
-
-            self.db.collection("POSTS").document(post.id).collection("COMMENTS").document(id.uuidString).setData(
-                ["id": id.uuidString,
-                 "user_id" : current_user!.id,
-                 "text": text,
-                 "date": date,
-                 "replies": []
-                ] as [String : Any]
-            ) { error in
-                if let error = error {
-                    print("Error: \(error.localizedDescription)")
-                } else {
-
-
-
-                }
+        
+        let id = UUID()
+        
+        self.db.collection("POSTS").document(post.id).collection("COMMENTS").document(id.uuidString).setData(
+            ["id": id.uuidString,
+             "user_id" : current_user!.id,
+             "text": text,
+             "date": date,
+             "replies": []
+            ] as [String : Any]
+        ) { error in
+            if let error = error {
+                print("Error: \(error.localizedDescription)")
+            } else {
+                
+                
+                
             }
-
         }
+        
+    }
     
     func firebase_like_post(post: inout Post, user: String) {
         var postRef = self.db.collection("POSTS").document(post.id)
@@ -279,7 +279,7 @@ class ViewModel: ObservableObject {
             }
         }
     }
-  
+    
     func firebase_create_post(images: String, caption: String, recipe: String, location: String) {
         
         let date = Date()
@@ -305,7 +305,7 @@ class ViewModel: ObservableObject {
             } else {
                 self.db.collection("USERS").document("1mLyRTekRPWRf2aJtmzYyaJQQqI2").updateData(["myPosts": FieldValue.arrayUnion([docId.uuidString])])
             }
-        
+            
         }
     }
     func firebase_search_for_username(username: String, completionHandler: @escaping (([String]) -> Void)) {
@@ -323,7 +323,7 @@ class ViewModel: ObservableObject {
                 }
                 completionHandler(arr)
             }
-            
+        
     }
     func sendBackList(username: String) -> [String] {
         var arr: [String] = []
@@ -333,4 +333,50 @@ class ViewModel: ObservableObject {
         }
         return arr
     }
+    
+//    func updateUser(bio: String, email: String, name: String, phoneNumber: String, username: String)
+//    {
+//        if let userID = auth.currentUser?.uid {
+//            db.collection("USERS").document("\(userID)").updateData(["bio": bio, "email": email, "name": name, "phone_number": phoneNumber, "username": username])
+//        } else {
+//            print("error")
+//        }
+//    }
+    
+    func updateUserField(field: String, value: String) {
+        db.collection("USERS").document(current_user!.id).updateData(
+            [field: value]) { err in
+        }
+    }
+    
+    func getInformation(){
+        if let user = current_user {
+            db.collection("USERS").document(user.id).getDocument { document, error in
+                if let error = error {
+                    print("Error getting user information: \(error.localizedDescription)")
+                } else if let document = document, document.exists {
+                    if let data = document.data() {
+                        
+                        if let bio = data["bio"] as? String {
+                            self.current_user!.bio = bio
+                        }
+                        if let email = data["email"] as? String {
+                            self.current_user!.email = email
+                        }
+                        if let name = data["name"] as? String {
+                            self.current_user!.name = name
+                        }
+                        if let phoneNumber = data["phone_number"] as? String {
+                            self.current_user!.phoneNumber = phoneNumber
+                        }
+                        if let username = data["username"] as? String {
+                            self.current_user!.id = username
+                        }
+                        
+                    }
+                }
+            }
+        }
+    }
 }
+
