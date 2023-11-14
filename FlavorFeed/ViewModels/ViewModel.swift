@@ -201,13 +201,16 @@ class ViewModel: ObservableObject {
                     for document in documents!.documents {
                         post?.append(Post(id: document.documentID,
                                           userID: document["userID"] as! String,
-                                          images: document["images"] as! [[String]],
+                                          images: document["images"] as! [String],
                                           date: document["date"] as! [String],
+                                          day: document["day"] as! String,
                                           comments: document["comments"] as? [Comment] ?? [],
                                           caption: document["caption"] as? [String] ?? [],
                                           likes: document["likes"] as? [String] ?? [],
                                           locations: document["locations"] as? [String] ?? [],
-                                          recipes: document["recipes"] as? [Recipe] ?? []))
+                                          recipes: document["recipes"] as? [Recipe] ?? [],
+                                          friend: nil
+                                         ))
                         UserDefaults.standard.setValue(true, forKey: "log_Status")
                     }
                 }
@@ -294,7 +297,7 @@ class ViewModel: ObservableObject {
                                             likes: data["likes"] as? [String] ?? [],
                                             locations: data["location"] as? [String] ?? [],
                                             recipes: self.convertToRecipe(data["recipes"] as? [String] ?? []),
-                                            friend: friend
+                                            friend: nil
                                            
                                            ))
                         }
@@ -362,7 +365,7 @@ class ViewModel: ObservableObject {
         dateFormatter.dateFormat = "MM-dd-yyyy HH:mm:ss"
         let dateFormatted = dateFormatter.string(from: date) // get string from date
         
-        let data = ["images" : images,
+        let data = ["images" : "\(selfie) \(foodPic)",
                     "caption" : caption,
                     "recipes" : recipe,
                     "date" : dateFormatted,
