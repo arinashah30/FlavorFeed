@@ -333,15 +333,7 @@ class ViewModel: ObservableObject {
         }
         return arr
     }
-    
-//    func updateUser(bio: String, email: String, name: String, phoneNumber: String, username: String)
-//    {
-//        if let userID = auth.currentUser?.uid {
-//            db.collection("USERS").document("\(userID)").updateData(["bio": bio, "email": email, "name": name, "phone_number": phoneNumber, "username": username])
-//        } else {
-//            print("error")
-//        }
-//    }
+
     
     func updateUserField(field: String, value: String) {
         db.collection("USERS").document(current_user!.id).updateData(
