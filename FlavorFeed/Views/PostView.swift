@@ -7,7 +7,10 @@
 
 import SwiftUI
 
+
 struct PostView: View {
+    @ObservedObject var vm: ViewModel
+    @State private var tabSelection = 0
     var post: Post
 //    var userID: String
     var gold = Color(red:255/255, green:211/255, blue:122/255)
@@ -17,26 +20,46 @@ struct PostView: View {
     
     @State private var showSelfieFirst = true
     @State private var showComments = true
-//     let selfiePic: String
-//     let foodPic: String
-//     let caption: String
+    
+    var post_images = [[Image]]()
+    
+    var profilePicture: Image
+    
+    init(vm: ViewModel, post: Post) {
+        print(post)
+        self.vm = vm
+        
+        self.post = post
+        
+        profilePicture = vm.load_image_from_url(url: post.friend?.profilePicture ?? "NIL") ?? Image(systemName: "person.circle")
+        
+        for entry in 0..<post.images.count {
+            var postEntry: [Image] = [Image]()
+            print("Size of post entry: \(post.images[entry].count)")
+            for picSide in 0..<2 {
+                postEntry.append(vm.load_image_from_url(url: post.images[entry][picSide]) ?? Image(systemName: "person.circle"))
+            }
+            post_images.append(postEntry)
+            print("Size: \(post_images[0].count)")
+        }
+    }
     
     var body: some View {
         GeometryReader { geo in
             VStack {
                 HStack {
-                    Image("drake_pfp")
+                    profilePicture
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: geo.size.height * 0.08)
                         .clipShape(.circle)
                     
                     VStack (alignment: .leading) {
-                        Text("Aubrey Drake Graham")
+                        Text(post.friend!.name)
                             .font(.system(size: 18))
                             .foregroundColor(.ffSecondary)
                             .fontWeight(.semibold)
-                        Text("Toronto, ON • 7:00 AM")
+                        Text("\(post.locations[tabSelection]) • \(formatPostTime(time: post.date[tabSelection]))")
                             .font(.system(size: 15))
                             .fontWeight(.light)
                     }
@@ -52,13 +75,13 @@ struct PostView: View {
                     }
                 }.padding([.leading, .trailing] , 20)
                 
-                TabView {
-                    ForEach(0..<post.images.count) { index in
+                TabView(selection: $tabSelection) {
+                    ForEach(0..<post_images.count) { index in
                         
                         //                ForEach(1...3, id: \.self) { pic in
                         ZStack (){
                             //
-                            Image((showSelfieFirst) ? post.images[index][1] : post.images[index][0])
+                            bigImage(index)
                                 .resizable()
                                 .aspectRatio(contentMode: .fill)
                                 .frame(width: geo.size.width*0.98, height: geo.size.height*0.66)
@@ -72,7 +95,7 @@ struct PostView: View {
                                         Button {
                                             self.showSelfieFirst.toggle()
                                         } label: {
-                                            Image((showSelfieFirst) ? post.images[index][0] : post.images[index][1])
+                                            smallImage(index)
                                                 .resizable()
                                                 .aspectRatio(contentMode: .fill)
                                                 .frame(width: geo.size.width * 0.30, height: geo.size.height * 0.2)
@@ -111,7 +134,7 @@ struct PostView: View {
 
                                 }
                                 Spacer()
-                                if post.caption[index] != "" {
+                                if index < post.caption.count {
                                     Text(post.caption[index])
                                         .background(RoundedRectangle(cornerRadius: 10.0)
                                             .frame(width: geo.size.width * 0.7, height: geo.size.height * 0.05)
@@ -123,6 +146,8 @@ struct PostView: View {
                         }.cornerRadius(20)
                             .padding(.bottom, 55)
                             .padding([.leading, .trailing] , 20)
+                            .tag(index)
+
                     }.frame(height: geo.size.height * 0.69)
                     
                 }.tabViewStyle(.page).indexViewStyle(.page(backgroundDisplayMode: .always))
@@ -130,6 +155,7 @@ struct PostView: View {
                     .onAppear {
                         setupAppearance()
                     }
+                    
                 
                 VStack{
                     HStack{
@@ -194,8 +220,30 @@ struct PostView: View {
         UIPageControl.appearance().pageIndicatorTintColor = UIColor.black.withAlphaComponent(0.2)
         
       }
+    
+    func formatPostTime(time: String) -> String {
+        let dateFormatterIn = DateFormatter()
+        dateFormatterIn.dateFormat = "MM-dd-yyyy HH:mm:ss"
+        let date = dateFormatterIn.date(from: time)!
+        
+        let dateFormatterOut = DateFormatter()
+        dateFormatterOut.dateFormat = "HH:mm a"
+        return dateFormatterOut.string(from: date)
+    }
+    
+    func bigImage(_ i: Int) -> Image {
+        return showSelfieFirst ? post_images[i][0] : post_images[i][1]
+    }
+    
+    func smallImage(_ i: Int) -> Image {
+        return showSelfieFirst ? post_images[i][1] : post_images[i][0]
+    }
+    
+    mutating func populateFriend(friend: Friend) {
+        
+    }
 }
 
-#Preview {
-    PostView(post: Post(id: UUID().uuidString, userID: "champagnepapi", images: [["drake_selfie", "food_pic_1"], ["drake_selfie2", "food_pic_2"], ["drake_selfie3", "food_pic_3"]], date: ["October 24, 2022", "October 24, 2022", "October 24, 2022"], comments: [Comment(id: UUID().uuidString, userID: "adonis", text: "Looking fresh Drake!", date: "October 24, 2022", replies: []), Comment(id: UUID().uuidString, userID: "travisscott", text: "She said do you love me I told her only partly.", date: "October 24, 2022", replies: [])], caption: ["That was yummy in my tummy", "", "Let's dig in"], likes: [], locations: [], recipes: []))
-}
+//#Preview {
+//    PostView(post: Post(id: UUID().uuidString, userID: "champagnepapi", images: [["drake_selfie", "food_pic_1"], ["drake_selfie2", "food_pic_2"], ["drake_selfie3", "food_pic_3"]], date: ["October 24, 2022", "October 24, 2022", "October 24, 2022"], day: "11-09-2923", comments: [Comment(id: UUID().uuidString, userID: "adonis", text: "Looking fresh Drake!", date: "October 24, 2022", replies: []), Comment(id: UUID().uuidString, userID: "travisscott", text: "She said do you love me I told her only partly.", date: "October 24, 2022", replies: [])], caption: ["That was yummy in my tummy", "", "Let's dig in"], likes: [], locations: [], recipes: []))
+//}
