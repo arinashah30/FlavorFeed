@@ -34,6 +34,9 @@ class ViewModel: ObservableObject {
     
     @Published var current_user: User? = nil
     @Published var errorText: String? = nil
+    @Published var comments: [Comment] = [Comment]()
+    @Published var usernameSearchResults: [String] = [String]()
+
     
     @Published var todays_posts: [Post] = [Post]()
     
@@ -188,6 +191,30 @@ class ViewModel: ObservableObject {
         })
     }
     
+    func fetchPosts(postIDs: [String]) -> [Post]{
+        var post: [Post]?
+        post = nil
+        self.db.collection("POSTS").whereField("id", in: postIDs).getDocuments(completion: { [weak self] documents, error in
+                if let error = error {
+                    self?.errorText = "Cannot get list of posts from Firebase."
+                } else {
+                    for document in documents!.documents {
+                        post?.append(Post(id: document.documentID,
+                                          userID: document["userID"] as! String,
+                                          images: document["images"] as! [[String]],
+                                          date: document["date"] as! [String],
+                                          comments: document["comments"] as? [Comment] ?? [],
+                                          caption: document["caption"] as? [String] ?? [],
+                                          likes: document["likes"] as? [String] ?? [],
+                                          locations: document["locations"] as? [String] ?? [],
+                                          recipes: document["recipes"] as? [Recipe] ?? []))
+                        UserDefaults.standard.setValue(true, forKey: "log_Status")
+                    }
+                }
+            })
+        return post!
+    }
+    
     func accept_friend_request(from: String, to: String) {
         let fromRef = self.db.collection("USERS").document(from)
         let toRef = self.db.collection("USERS").document(to)
@@ -335,23 +362,18 @@ class ViewModel: ObservableObject {
         dateFormatter.dateFormat = "MM-dd-yyyy HH:mm:ss"
         let dateFormatted = dateFormatter.string(from: date) // get string from date
         
-        
-        let docId = UUID()
-        
-        
-        let data = ["id" : docId.uuidString,
-                    "userID" : userID,
-                    "images" : [selfie, foodPic],
-                    "caption" : [caption],
-                    "recipe" : [recipe],
-                    "date" : [dateFormatted],
+        let data = ["images" : images,
+                    "caption" : caption,
+                    "recipes" : recipe,
+                    "date" : dateFormatted,
                     "likes" : [],
-                    "location" : [location]]
+                    "location" : location]
         as [String : Any]
-        
+      
+        let docId = UUID()
         self.db.collection("POSTS").document(docId.uuidString).setData(data) { error in
             if let error = error {
-                print("Error: \(error.localizedDescription)")
+                print("Error: \(error.localizedDescription) ")
                 return
             } else {
                 self.db.collection("USERS").document(userID).updateData(["myPosts": FieldValue.arrayUnion([docId.uuidString])])
@@ -359,6 +381,9 @@ class ViewModel: ObservableObject {
             
         }
     }
+    
+
+            
     func firebase_search_for_username(username: String, completionHandler: @escaping (([String]) -> Void)) {
         var arr: [String] = []
         self.db.collection("USERS").whereField("id", isGreaterThanOrEqualTo: username).whereField("id", isLessThanOrEqualTo: username + "\u{f7ff}")
@@ -376,7 +401,76 @@ class ViewModel: ObservableObject {
             }
         
     }
+
     
+    func get_post_comments(postID: String, completion: @escaping ([Comment]) -> Void) {
+        let commentsRef = self.db.collection("POSTS").document(postID).collection("COMMENTS")
+        commentsRef.getDocuments() { (documents, error) in
+            var comments: [Comment] = [Comment]()
+            if let error = error {
+                // Error getting comments
+                print("Error in the get post comments: \(error.localizedDescription)")
+            } else {
+                for document in documents!.documents {
+                    var data = document.data()
+                    var comment = Comment(id: data["id"] as! String, userID: data["userID"] as! String, text: data["text"] as! String, date: data["date"] as! String)
+                    comments.append(comment)
+                }
+            }
+            completion(comments)
+        }
+    }
+
+
+    
+    func firebase_add_entry_post(userID: String, selfie: String, foodPic: String, caption: String, recipe: String, location: String) {
+        let date = Date()
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MM-dd-yyyy HH:mm:ss"
+        let dateFormatted = dateFormatter.string(from: date)
+        
+        self.db.collection("USERS").document(userID).getDocument { (document, error) in
+            var myPosts = []
+            if let document {
+                myPosts = document.data()!["myPosts"] as! [String]
+              } else {
+                print("Document does not exist")
+              }
+            let todayPostID = myPosts[myPosts.count - 1]
+            self.db.collection("POSTS").document(todayPostID as! String).getDocument { (document, error) in
+                if let document {
+                    var myCaptions = []
+                    myCaptions = document.data()!["caption"] as! [String]
+                    myCaptions.append(caption)
+                    self.db.collection("POSTS").document(todayPostID as! String).updateData(["caption": myCaptions])
+                    self.db.collection("POSTS").document(todayPostID as! String).updateData(["date": FieldValue.arrayUnion([dateFormatted])])
+                    
+                    var imagesArr = []
+                    imagesArr = document.data()!["images"] as! [String]
+                    imagesArr.append(selfie)
+                    imagesArr.append(foodPic)
+                    self.db.collection("POSTS").document(todayPostID as! String).updateData(["images": imagesArr])
+                    
+                    var locationArr = []
+                    locationArr = document.data()!["location"] as! [String]
+                    locationArr.append(location)
+                    self.db.collection("POSTS").document(todayPostID as! String).updateData(["location": locationArr])
+                    
+                    var recipeArr = []
+                    recipeArr = document.data()!["recipe"] as! [String]
+                    recipeArr.append(recipe)
+                    self.db.collection("POSTS").document(todayPostID as! String).updateData(["recipe": recipeArr])
+                } else {
+                    print("Document does not exist")
+                }
+            }
+        }
+        
+    }
+    
+
+
     
     func get_todays_posts(completion: @escaping ([String]) -> Void) {
         let date = Date()
