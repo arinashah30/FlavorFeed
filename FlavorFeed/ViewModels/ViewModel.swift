@@ -39,8 +39,7 @@ class ViewModel: ObservableObject {
 
     
     @Published var todays_posts: [Post] = [Post]()
-    
-    
+
     let db = Firestore.firestore()
     let auth = Auth.auth()
     let storageRef = Storage.storage().reference()
@@ -201,13 +200,15 @@ class ViewModel: ObservableObject {
                     for document in documents!.documents {
                         post?.append(Post(id: document.documentID,
                                           userID: document["userID"] as! String,
-                                          images: document["images"] as! [[String]],
+                                          images: document["images"] as! [String],
                                           date: document["date"] as! [String],
+                                          day: document["day"] as! String,
                                           comments: document["comments"] as? [Comment] ?? [],
                                           caption: document["caption"] as? [String] ?? [],
                                           likes: document["likes"] as? [String] ?? [],
                                           locations: document["locations"] as? [String] ?? [],
-                                          recipes: document["recipes"] as? [Recipe] ?? []))
+                                          recipes: document["recipes"] as? [Recipe] ?? [], 
+                                          friend: nil))
                         UserDefaults.standard.setValue(true, forKey: "log_Status")
                     }
                 }
@@ -362,7 +363,7 @@ class ViewModel: ObservableObject {
         dateFormatter.dateFormat = "MM-dd-yyyy HH:mm:ss"
         let dateFormatted = dateFormatter.string(from: date) // get string from date
         
-        let data = ["images" : images,
+        let data = ["images" : "\(selfie) \(foodPic)",
                     "caption" : caption,
                     "recipes" : recipe,
                     "date" : dateFormatted,
@@ -573,7 +574,7 @@ class ViewModel: ObservableObject {
             }
         }
     }
-    
+        
     //synchronous approach
     func load_image_from_url(url: String) -> Image? {
         if url == "NIL" {
@@ -586,5 +587,18 @@ class ViewModel: ObservableObject {
             return nil
         }
         return Image(uiImage: uiImage)
+    }
+    
+    func get_camera_model() -> CameraModel {
+        let model = CameraModel()
+        model.actionHandler = { [weak self] action in
+            switch action {
+            case .sendImage(let image):
+                self?.firebase_get_url_from_image(image: image) { url in
+                    print(url)
+                }
+            }
+        }
+        return model
     }
 }

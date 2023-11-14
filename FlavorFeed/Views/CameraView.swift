@@ -7,15 +7,19 @@
 
 import SwiftUI
 import AVFoundation
+import UIKit
 
 struct CameraView: View {
     @ObservedObject var camera = CameraModel()
     @Binding var showCamera: Bool
+    
 
     var body: some View {
         ZStack {
             CameraPreview(camera: camera)
-                .edgesIgnoringSafeArea(.all)
+                .clipShape(RoundedRectangle(cornerRadius: 25.0))
+                .frame(maxHeight: .infinity)
+                .edgesIgnoringSafeArea([.leading, .trailing])
             
             VStack {
                 if camera.isTaken {
@@ -76,6 +80,10 @@ struct CameraView: View {
 }
 
 class CameraModel: NSObject,ObservableObject, AVCapturePhotoCaptureDelegate {
+    enum Action {
+        case sendImage(UIImage)
+    }
+
     @Published var isTaken = false
     @Published var session = AVCaptureSession()
     @Published var alert = false
@@ -83,6 +91,9 @@ class CameraModel: NSObject,ObservableObject, AVCapturePhotoCaptureDelegate {
     @Published var preview: AVCaptureVideoPreviewLayer!
     @Published var isSaved = false
     @Published var picture_data = Data(count: 0)
+    @Published var image: UIImage?
+
+    var actionHandler: (Action) -> Void = { _ in }
     
     func check_camera_permissions() {
         switch AVCaptureDevice.authorizationStatus(for: .video) {
@@ -159,11 +170,12 @@ class CameraModel: NSObject,ObservableObject, AVCapturePhotoCaptureDelegate {
     }
     
     func savePic() {
-        let image = UIImage(data: self.picture_data)!
-        
-        UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
-        
-        self.isSaved = true
+        self.image = UIImage(data: self.picture_data)!
+        if let image = self.image {
+            print()
+            actionHandler(.sendImage(image))
+            self.isSaved = true
+        }
     }
     
     func retake_picture() {

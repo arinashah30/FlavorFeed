@@ -36,7 +36,7 @@ struct LandingPage: View {
             .animation(.easeInOut, value: self.tabSelection)
             .transition(.slide)
             .fullScreenCover(isPresented: $showCamera) {
-                CameraView(camera: CameraModel(), showCamera: $showCamera)
+                CameraView(camera: vm.get_camera_model(), showCamera: $showCamera)
             }
             .edgesIgnoringSafeArea(.bottom)
             
