@@ -8,6 +8,25 @@
 import Foundation
 
 struct Post: Identifiable, Hashable {
+        
+    init(id: String, userID: String, images: [String], date: [String], day: String, comments: [Comment], caption: [String], likes: [String], locations: [String], recipes: [Recipe], friend: Friend?) {
+        self.id = id
+        self.userID = userID
+        
+        self.images = [[String]]()
+        
+        for i in 0..<images.count {
+            self.images.append(images[i].components(separatedBy: " "))
+        }
+        self.date = date
+        self.day = day
+        self.comments = comments
+        self.caption = caption
+        self.likes = likes
+        self.locations = locations
+        self.recipes = recipes
+        self.friend = friend
+    }
     
     // REQUIRED PROPERTIES
     var id: String // post id
@@ -23,4 +42,5 @@ struct Post: Identifiable, Hashable {
     var locations: [String] //location of post, if applicable [location_1, location_2, location_3]
     var recipes: [Recipe] //Recipe, if applicable [recipe_1, recipe_2, recipe_3]
 
+    var friend: Friend?
 }
