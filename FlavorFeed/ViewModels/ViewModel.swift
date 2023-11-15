@@ -196,18 +196,20 @@ class ViewModel: ObservableObject {
         post = nil
         self.db.collection("POSTS").whereField("id", in: postIDs).getDocuments(completion: { [weak self] documents, error in
                 if let error = error {
-                    self?.errorText = "Cannot get list of posts from Firebase."
+                    self?.errorText = "Cannot get list of posts from Firebase: \(error.localizedDescription)"
                 } else {
                     for document in documents!.documents {
                         post?.append(Post(id: document.documentID,
                                           userID: document["userID"] as! String,
-                                          images: document["images"] as! [[String]],
+                                          images: document["images"] as! [String],
                                           date: document["date"] as! [String],
+                                          day: document["day"] as! String,
                                           comments: document["comments"] as? [Comment] ?? [],
                                           caption: document["caption"] as? [String] ?? [],
                                           likes: document["likes"] as? [String] ?? [],
                                           locations: document["locations"] as? [String] ?? [],
-                                          recipes: document["recipes"] as? [Recipe] ?? []))
+                                          recipes: document["recipes"] as? [Recipe] ?? [],
+                                          friend: nil))
                         UserDefaults.standard.setValue(true, forKey: "log_Status")
                     }
                 }
@@ -362,7 +364,7 @@ class ViewModel: ObservableObject {
         dateFormatter.dateFormat = "MM-dd-yyyy HH:mm:ss"
         let dateFormatted = dateFormatter.string(from: date) // get string from date
         
-        let data = ["images" : images,
+        let data = ["images" : selfie + " " + foodPic,
                     "caption" : caption,
                     "recipes" : recipe,
                     "date" : dateFormatted,
@@ -412,12 +414,27 @@ class ViewModel: ObservableObject {
                 print("Error in the get post comments: \(error.localizedDescription)")
             } else {
                 for document in documents!.documents {
-                    var data = document.data()
-                    var comment = Comment(id: data["id"] as! String, userID: data["userID"] as! String, text: data["text"] as! String, date: data["date"] as! String)
+                    let data = document.data()
+                    let comment = Comment(id: data["id"] as! String, userID: data["userID"] as! String, text: data["text"] as! String, date: data["date"] as! String)
                     comments.append(comment)
                 }
             }
             completion(comments)
+        }
+    }
+    
+    func get_friend_requests(completion: @escaping ([Friend]) -> Void) {
+        let userRef = self.db.collection("USERS").document(current_user!.id)
+        userRef.getDocument { (document, error) in
+            if let error = error {
+                print("Error in the get friend requests: \(error.localizedDescription)")
+            } else {
+                let data = document!.data()
+                let requests = data!["incomingRequests"] as? [String]
+                self.get_friends(userIDs: requests!) { friends in
+                    completion(friends)
+                }
+            }
         }
     }
 
@@ -481,7 +498,7 @@ class ViewModel: ObservableObject {
         let dateTodayString = dateFormatterSimple.string(from: date)
         
         var postList: [String] = [String]()
-        get_friends() { friends in
+        get_friends_ids() { friends in
             if friends.isEmpty {
                 // Problem getting friends, error screen
             } else {
@@ -503,7 +520,7 @@ class ViewModel: ObservableObject {
         }
     }
     
-    func get_friends(completion: @escaping ([String]) -> Void) {
+    func get_friends_ids(completion: @escaping ([String]) -> Void) {
         let userRef = self.db.collection("USERS").document(current_user!.id)
         userRef.getDocument { document, err in
             if let err = err  {
@@ -513,6 +530,27 @@ class ViewModel: ObservableObject {
                 let data = document!.data()!
                 let friends = data["friends"] as? [String]
                 completion(friends!)
+            }
+        }
+    }
+    
+    func get_friends(userIDs: [String], completion: @escaping (([Friend])-> Void)) {
+        self.db.collection("USERS").whereField("id", in: userIDs).getDocuments { (documents, error) in
+            if let error = error {
+                print("SetCurrentUserError: \(error.localizedDescription)")
+            } else {
+                var friends: [Friend] = [Friend]()
+                for document in documents!.documents {
+                    let data = document.data()
+                    friends.append(Friend(id: document.documentID,
+                          name: data["name"] as? String ?? "Name not Found",
+                          profilePicture: data["profilePicture"] as? String ?? "Profile picture not found",
+                          bio: data["bio"] as? String ?? "",
+                          mutualFriends: [],
+                          pins: data["pins"] as? [String] ?? [],
+                          todaysPosts: []))
+                }
+                completion(friends)
             }
         }
     }
