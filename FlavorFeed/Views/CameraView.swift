@@ -20,6 +20,7 @@ struct CameraView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 15.0))
                 .frame(maxHeight: .infinity)
                 .padding(.bottom, 0)
+                .background(LinearGradient(gradient: Gradient(colors: [Color.white, Color.ffTertiary]), startPoint: .top, endPoint: .bottom))
                 .edgesIgnoringSafeArea([.leading, .trailing, .bottom])
             
             VStack {
@@ -63,7 +64,6 @@ struct CameraView: View {
             .frame(maxWidth: .infinity)
             .background(Color.ffTertiary)
         }
-        .background(LinearGradient(gradient: Gradient(colors: [Color.white, Color.ffTertiary]), startPoint: .top, endPoint: .bottom))
         .onAppear() {
             camera.check_camera_permissions()
         }
