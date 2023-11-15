@@ -15,23 +15,14 @@ struct CameraView: View {
     
 
     var body: some View {
-        ZStack {
+        VStack {
             CameraPreview(camera: camera)
-                .clipShape(RoundedRectangle(cornerRadius: 25.0))
+                .clipShape(RoundedRectangle(cornerRadius: 15.0))
                 .frame(maxHeight: .infinity)
-                .edgesIgnoringSafeArea([.leading, .trailing])
+                .padding(.bottom, 0)
+                .edgesIgnoringSafeArea([.leading, .trailing, .bottom])
             
             VStack {
-                if camera.isTaken {
-                    HStack {
-                        Spacer()
-                        Button { camera.retake_picture() } label: {
-                            Image(systemName: "xmark.circle")
-                        }
-                    }
-                }
-                Spacer()
-                
                 if camera.isTaken {
                     Button {
                         camera.savePic()
@@ -62,18 +53,18 @@ struct CameraView: View {
                 } else {
                     Button { camera.take_picture() } label: {
                         Circle()
-                            .stroke(.white, lineWidth: 2)
+                            .fill(Color.ffSecondary)
                             .frame(width: 75, height: 75)
-                            .overlay(
-                                Circle()
-                                    .frame(width: 65, height: 65)
-                                    .foregroundStyle(.white)
-                            )
                     }
                     
                 }
             }
-        }.onAppear() {
+            .padding()
+            .frame(maxWidth: .infinity)
+            .background(Color.ffTertiary)
+        }
+        .background(LinearGradient(gradient: Gradient(colors: [Color.white, Color.ffTertiary]), startPoint: .top, endPoint: .bottom))
+        .onAppear() {
             camera.check_camera_permissions()
         }
     }
