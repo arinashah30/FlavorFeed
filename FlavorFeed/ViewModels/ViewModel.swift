@@ -293,13 +293,12 @@ class ViewModel: ObservableObject {
                                             images: data["images"] as! [String],
                                             date: data["date"] as! [String],
                                             day: data["day"] as! String,
-                                            comments: self.convertToComments(data["comments"] as? [String] ?? []),
+                                            comments: self.convertToComments(postID: doc.documentID, commentsString: data["comments"] as? [String] ?? []),
                                             caption: data["caption"] as? [String] ?? [],
                                             likes: data["likes"] as? [String] ?? [],
                                             locations: data["location"] as? [String] ?? [],
-                                            recipes: self.convertToRecipe(data["recipes"] as? [String] ?? []),
+                                            recipes: self.convertToRecipe(postID: doc.documentID, recipesString: data["recipes"] as? [String] ?? []),
                                             friend: nil
-                                           
                                            ))
                         }
                     }
@@ -540,10 +539,10 @@ class ViewModel: ObservableObject {
     }
     
     // needs to be done
-    func convertToRecipe(_ recipesString: [String]) -> [Recipe] {
+    func convertToRecipe(postID: String, recipesString: [String]) -> [Recipe] {
         var recipe: [Recipe]?
-        recipe = nil
-        self.db.collection("RECIPES").whereField("id", in: recipesString).getDocuments(completion: { [weak self] documents, error in
+        
+        self.db.collection("POSTS").document(postID).collection("RECIPES").whereField("id", in: recipesString).getDocuments(completion: { [weak self] documents, error in
                 if let error = error {
                     self?.errorText = "Cannot get list of recipes from Firebase."
                 } else {
@@ -562,8 +561,25 @@ class ViewModel: ObservableObject {
     }
     
     // needs to be done
-    func convertToComments(_ commentsString: [String]) -> [Comment] {
-        return [Comment]()
+    func convertToComments(postID: String, commentsString: [String]) -> [Comment] {
+        var comment: [Comment]?
+        
+        self.db.collection("POSTS").document(postID).collection("COMMENTS").whereField("id", in: commentsString).getDocuments(completion: { [weak self] documents, error in
+                if let error = error {
+                    self?.errorText = "Cannot get list of recipes from Firebase."
+                } else {
+                    for document in documents!.documents {
+                        comment?.append(Comment(id: document.documentID,
+                                          userID: document["userID"] as! String,
+                                          text: document["text"] as! String,
+                                          date: document["date"] as! String,
+                                          replies: document["directions"] as? [Comment] ?? []
+                                         ))
+                        UserDefaults.standard.setValue(true, forKey: "log_Status")
+                    }
+                }
+            })
+        return comment!
     }
     
     func firebase_get_url_from_image(image: UIImage, completion: @escaping (URL?) -> Void) {
