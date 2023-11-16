@@ -7,6 +7,7 @@
 
 import SwiftUI
 import MapKit
+import Foundation
 
 struct SelfProfileView: View {
     @Binding var tabSelection: Tabs
@@ -26,10 +27,13 @@ struct SelfProfileView: View {
                 }
                 Spacer()
             }.padding()
-            BioView(user: user)
-            PinsView(user: user)
-            CalendarView(user: user)
-            MapView(user: user, restaurants: [CLLocationCoordinate2D(latitude: 43, longitude: 100), CLLocationCoordinate2D(latitude: -10, longitude: 30), CLLocationCoordinate2D(latitude: 20, longitude: -50), CLLocationCoordinate2D(latitude: 17, longitude: -40)])
+            ScrollView{
+                BioView(user: user)
+                PinsView(user: user)
+                CalendarView(user: user)
+                MapView(user: user, restaurants: [CLLocationCoordinate2D(latitude: 43, longitude: 100), CLLocationCoordinate2D(latitude: -10, longitude: 30), CLLocationCoordinate2D(latitude: 20, longitude: -50), CLLocationCoordinate2D(latitude: 17, longitude: -40)])
+                    .frame(height: 400)
+            }
         }
     }
 }

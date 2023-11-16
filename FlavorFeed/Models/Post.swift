@@ -13,7 +13,7 @@ struct Post: Identifiable, Hashable {
     var id: String // post id
     var userID: String //username
     var images: [[String]] //2d array [[post_1.1, post_1.2], [post_2.1, post_2.2], [post_3.1, post_3.2]]
-    var date: [String] // [timestamp_1, timestamp_2, timestamp_3]
+    var date: [String] // [timestamp_1, timestamp_2, timestamp_3] 
     
     // OPTIONAL PROPERTIES (could be empty arrays)
     var comments: [Comment] //list of comments

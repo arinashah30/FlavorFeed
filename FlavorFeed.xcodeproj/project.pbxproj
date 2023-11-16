@@ -26,6 +26,7 @@
 		668CD51F2AEC205300A64DF1 /* PinsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 668CD51E2AEC205300A64DF1 /* PinsView.swift */; };
 		668CD5212AF03F2F00A64DF1 /* UserListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 668CD5202AF03F2F00A64DF1 /* UserListView.swift */; };
 		669C94B02AE98C770075BE66 /* ToolBars.swift in Sources */ = {isa = PBXBuildFile; fileRef = 669C94AF2AE98C770075BE66 /* ToolBars.swift */; };
+		A91C89B22AFEAB01002146FF /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91C89B12AFEAB01002146FF /* LocationManager.swift */; };
 		B212922E2ACD20300064AE5D /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = B212922D2ACD20300064AE5D /* FirebaseAuth */; };
 		B21292302ACD20300064AE5D /* FirebaseAuthCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = B212922F2ACD20300064AE5D /* FirebaseAuthCombine-Community */; };
 		B21292322ACD20300064AE5D /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = B21292312ACD20300064AE5D /* FirebaseDatabase */; };
@@ -98,6 +99,7 @@
 		668CD51E2AEC205300A64DF1 /* PinsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PinsView.swift; sourceTree = "<group>"; };
 		668CD5202AF03F2F00A64DF1 /* UserListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserListView.swift; sourceTree = "<group>"; };
 		669C94AF2AE98C770075BE66 /* ToolBars.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToolBars.swift; sourceTree = "<group>"; };
+		A91C89B12AFEAB01002146FF /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		B21292452ACD20480064AE5D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		B21292502ACD21500064AE5D /* ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
 		B2BACCCE2ACF132000F942A3 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -255,6 +257,7 @@
 			isa = PBXGroup;
 			children = (
 				B21292502ACD21500064AE5D /* ViewModel.swift */,
+				A91C89B12AFEAB01002146FF /* LocationManager.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -435,6 +438,7 @@
 				B2BACCCF2ACF132000F942A3 /* ContentView.swift in Sources */,
 				664B8F062AC5F1AA001E8C7F /* FlavorFeedApp.swift in Sources */,
 				B2BACCCC2ACF12B300F942A3 /* (null) in Sources */,
+				A91C89B22AFEAB01002146FF /* LocationManager.swift in Sources */,
 				BF0C62DD2ADF43A6003A7553 /* SignupView.swift in Sources */,
 				B2BACCCB2ACF12B300F942A3 /* (null) in Sources */,
 				B2C5E46E2AF2AF02000EA620 /* Recipe.swift in Sources */,
@@ -606,6 +610,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FlavorFeed/Info.plist;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = 6.0;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -638,6 +643,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FlavorFeed/Info.plist;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = 6.0;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
