@@ -210,6 +210,7 @@ class ViewModel: ObservableObject {
                                           locations: document["locations"] as? [String] ?? [],
                                           recipes: document["recipes"] as? [Recipe] ?? [],
                                           friend: nil))
+
                         UserDefaults.standard.setValue(true, forKey: "log_Status")
                     }
                 }
@@ -296,7 +297,7 @@ class ViewModel: ObservableObject {
                                             likes: data["likes"] as? [String] ?? [],
                                             locations: data["location"] as? [String] ?? [],
                                             recipes: self.convertToRecipe(data["recipes"] as? [String] ?? []),
-                                            friend: friend
+                                            friend: nil
                                            
                                            ))
                         }
@@ -364,6 +365,7 @@ class ViewModel: ObservableObject {
         dateFormatter.dateFormat = "MM-dd-yyyy HH:mm:ss"
         let dateFormatted = dateFormatter.string(from: date) // get string from date
         
+
         let data = ["images" : selfie + " " + foodPic,
                     "caption" : caption,
                     "recipes" : recipe,
