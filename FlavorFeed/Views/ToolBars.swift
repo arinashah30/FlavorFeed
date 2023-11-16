@@ -9,7 +9,8 @@ import SwiftUI
 
 struct BottomBar: View {
     @Binding var messagesRemaing: Int
-    
+    @State private var showCameraViewSheet = false
+    @ObservedObject var vm: ViewModel
     
     var body: some View {
         ZStack {
@@ -37,7 +38,7 @@ struct BottomBar: View {
                 
             }.padding()
             Button {
-                // take picture
+                showCameraViewSheet = true
             } label: {
                 Image(systemName: "circle.fill")
                     .resizable()
@@ -45,6 +46,8 @@ struct BottomBar: View {
                     .foregroundStyle(Color.ffPrimary)
             }
             
+        }.fullScreenCover(isPresented: $showCameraViewSheet) {
+            CameraView(vm: vm)
         }
     }
 }

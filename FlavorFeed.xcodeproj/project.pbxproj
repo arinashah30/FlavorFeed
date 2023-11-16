@@ -37,6 +37,9 @@
 		B212924E2ACD20850064AE5D /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */ = {isa = PBXBuildFile; productRef = B212924D2ACD20850064AE5D /* FirebaseAnalyticsWithoutAdIdSupport */; };
 		B212924F2ACD213C0064AE5D /* LandingPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6602DD8E2AC6262C008C3177 /* LandingPage.swift */; };
 		B21292512ACD21500064AE5D /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21292502ACD21500064AE5D /* ViewModel.swift */; };
+		B270544A2B06B5A300BC7174 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B27054492B06B5A300BC7174 /* CameraView.swift */; };
+		B270544D2B06BBA400BC7174 /* Camera-SwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = B270544C2B06BBA400BC7174 /* Camera-SwiftUI */; };
+		B270544F2B06BC7A00BC7174 /* CameraModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B270544E2B06BC7A00BC7174 /* CameraModel.swift */; };
 		B2BACCCB2ACF12B300F942A3 /* ContactsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6602DD8C2AC625EF008C3177 /* ContactsView.swift */; };
 		B2BACCCC2ACF12B300F942A3 /* MainScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6602DD8D2AC625EF008C3177 /* MainScrollView.swift */; };
 		B2BACCCD2ACF12B300F942A3 /* SelfProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6602DD8B2AC625EF008C3177 /* SelfProfileView.swift */; };
@@ -88,6 +91,8 @@
 		669C94AF2AE98C770075BE66 /* ToolBars.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToolBars.swift; sourceTree = "<group>"; };
 		B21292452ACD20480064AE5D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		B21292502ACD21500064AE5D /* ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
+		B27054492B06B5A300BC7174 /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
+		B270544E2B06BC7A00BC7174 /* CameraModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraModel.swift; sourceTree = "<group>"; };
 		B2BACCCE2ACF132000F942A3 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		B2BACCD22ACF15C000F942A3 /* FlavorFeed.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FlavorFeed.entitlements; sourceTree = "<group>"; };
 		B2BACCD32ACF161100F942A3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -113,6 +118,7 @@
 				B21292482ACD20850064AE5D /* FirebaseAnalytics in Frameworks */,
 				B212923C2ACD20300064AE5D /* FirebaseInAppMessaging-Beta in Frameworks */,
 				B212924E2ACD20850064AE5D /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */,
+				B270544D2B06BBA400BC7174 /* Camera-SwiftUI in Frameworks */,
 				B212923A2ACD20300064AE5D /* FirebaseFirestoreSwift in Frameworks */,
 				B21292382ACD20300064AE5D /* FirebaseFirestoreCombine-Community in Frameworks */,
 				B212924C2ACD20850064AE5D /* FirebaseAnalyticsSwift in Frameworks */,
@@ -149,6 +155,7 @@
 				B2BACCCE2ACF132000F942A3 /* ContentView.swift */,
 				BF0C62DC2ADF43A6003A7553 /* SignupView.swift */,
 				6602DD8E2AC6262C008C3177 /* LandingPage.swift */,
+				B27054492B06B5A300BC7174 /* CameraView.swift */,
 				6602DD8C2AC625EF008C3177 /* ContactsView.swift */,
 				6602DD8D2AC625EF008C3177 /* MainScrollView.swift */,
 				6602DD8B2AC625EF008C3177 /* SelfProfileView.swift */,
@@ -237,6 +244,7 @@
 			isa = PBXGroup;
 			children = (
 				B21292502ACD21500064AE5D /* ViewModel.swift */,
+				B270544E2B06BC7A00BC7174 /* CameraModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -274,6 +282,7 @@
 				B21292492ACD20850064AE5D /* FirebaseAnalyticsOnDeviceConversion */,
 				B212924B2ACD20850064AE5D /* FirebaseAnalyticsSwift */,
 				B212924D2ACD20850064AE5D /* FirebaseAnalyticsWithoutAdIdSupport */,
+				B270544C2B06BBA400BC7174 /* Camera-SwiftUI */,
 			);
 			productName = FlavorFeed;
 			productReference = 664B8F022AC5F1AA001E8C7F /* FlavorFeed.app */;
@@ -349,6 +358,7 @@
 			mainGroup = 664B8EF92AC5F1AA001E8C7F;
 			packageReferences = (
 				B212922C2ACD20300064AE5D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				B270544B2B06BBA400BC7174 /* XCRemoteSwiftPackageReference "Camera-SwiftUI" */,
 			);
 			productRefGroup = 664B8F032AC5F1AA001E8C7F /* Products */;
 			projectDirPath = "";
@@ -396,6 +406,7 @@
 				668CD5212AF03F2F00A64DF1 /* UserListView.swift in Sources */,
 				665113522AC6021800027654 /* User.swift in Sources */,
 				B212924F2ACD213C0064AE5D /* LandingPage.swift in Sources */,
+				B270544A2B06B5A300BC7174 /* CameraView.swift in Sources */,
 				B2BACCCD2ACF12B300F942A3 /* SelfProfileView.swift in Sources */,
 				B2FCB8FF2AC63AA200865FCF /* FFColors.swift in Sources */,
 				665113502AC601E900027654 /* Post.swift in Sources */,
@@ -412,6 +423,7 @@
 				BF0C62DD2ADF43A6003A7553 /* SignupView.swift in Sources */,
 				B2BACCCB2ACF12B300F942A3 /* ContactsView.swift in Sources */,
 				B2C5E46E2AF2AF02000EA620 /* Recipe.swift in Sources */,
+				B270544F2B06BC7A00BC7174 /* CameraModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -576,7 +588,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"FlavorFeed/Preview Content\"";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 3U7XP56VTS;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FlavorFeed/Info.plist;
@@ -585,6 +597,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -607,7 +620,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"FlavorFeed/Preview Content\"";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 3U7XP56VTS;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FlavorFeed/Info.plist;
@@ -616,6 +629,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -755,6 +769,14 @@
 				minimumVersion = 10.16.0;
 			};
 		};
+		B270544B2B06BBA400BC7174 /* XCRemoteSwiftPackageReference "Camera-SwiftUI" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/rorodriguez116/Camera-SwiftUI.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.5.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -837,6 +859,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B212922C2ACD20300064AE5D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseAnalyticsWithoutAdIdSupport;
+		};
+		B270544C2B06BBA400BC7174 /* Camera-SwiftUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B270544B2B06BBA400BC7174 /* XCRemoteSwiftPackageReference "Camera-SwiftUI" */;
+			productName = "Camera-SwiftUI";
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -29,7 +29,7 @@ struct MainScrollView: View {
                 }.edgesIgnoringSafeArea(.bottom)
                 VStack {
                     Spacer()
-                    BottomBar(messagesRemaing: Binding.constant(2)).frame(height: 100).edgesIgnoringSafeArea(.bottom)
+                    BottomBar(messagesRemaing: Binding.constant(2), vm: vm).frame(height: 100).edgesIgnoringSafeArea(.bottom)
                 }.edgesIgnoringSafeArea(.bottom).frame(maxHeight: .infinity)
                 
             }

@@ -41,6 +41,15 @@ class ViewModel: ObservableObject {
     @Published var todays_posts: [Post] = [Post]()
     
     
+    // camera stuff
+    @Published var photo_1: UIImage?
+    @Published var photo_2: UIImage?
+    
+    @Published var bothImagesCaptured = false
+
+    @Published private var photosUploaded = false
+    @Published private var photoURLs = ""
+    
     let db = Firestore.firestore()
     let auth = Auth.auth()
     let storageRef = Storage.storage().reference()
@@ -130,7 +139,7 @@ class ViewModel: ObservableObject {
     func firebase_sign_in(email: String, password: String) {
         Auth.auth().signIn(withEmail: email, password: password) { [weak self] authResult, error in
             if let error = error {
-                print(error._code)
+                print(error.localizedDescription)
                 let firebaseError = AuthErrorCode.Code(rawValue: error._code)
                 switch firebaseError {
                 case .wrongPassword:
