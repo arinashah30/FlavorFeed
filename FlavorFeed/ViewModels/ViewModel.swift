@@ -277,6 +277,7 @@ class ViewModel: ObservableObject {
             }
         }
     }
+    
     func firebase_get_post(postID: String, completion: @escaping ((Post) -> Void)) {
         print("Getting post...")
         db.collection("POSTS").document(postID).getDocument { document, error in
@@ -540,7 +541,24 @@ class ViewModel: ObservableObject {
     
     // needs to be done
     func convertToRecipe(_ recipesString: [String]) -> [Recipe] {
-        return [Recipe]()
+        var recipe: [Recipe]?
+        recipe = nil
+        self.db.collection("RECIPES").whereField("id", in: recipesString).getDocuments(completion: { [weak self] documents, error in
+                if let error = error {
+                    self?.errorText = "Cannot get list of recipes from Firebase."
+                } else {
+                    for document in documents!.documents {
+                        recipe?.append(Recipe(id: document.documentID,
+                                          title: document["title"] as! String,
+                                          link: document["link"] as? String ?? nil,
+                                          ingredients: document["ingredients"] as! [String],
+                                          directions: document["directions"] as! [String]
+                                         ))
+                        UserDefaults.standard.setValue(true, forKey: "log_Status")
+                    }
+                }
+            })
+        return recipe!
     }
     
     // needs to be done
@@ -591,3 +609,4 @@ class ViewModel: ObservableObject {
         return Image(uiImage: uiImage)
     }
 }
+
