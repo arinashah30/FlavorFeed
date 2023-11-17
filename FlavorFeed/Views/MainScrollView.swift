@@ -23,8 +23,10 @@ struct MainScrollView: View {
                     //                        }
                     //                    }
                     //                }.frame(maxHeight: .infinity)
+
                     List(vm.todays_posts, id: \.id) { post in
                         PostView(vm: vm, post: post).frame(width: geometry.size.width, height: 700)
+
                     }.listStyle(.plain).listRowSeparatorTint(Color.clear)
                 }.edgesIgnoringSafeArea(.bottom)
                 VStack {
