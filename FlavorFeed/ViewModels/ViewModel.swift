@@ -433,7 +433,7 @@ class ViewModel: ObservableObject {
             } else {
                 let data = document!.data()
                 let requests = data!["incomingRequests"] as? [String]
-                self.get_friends(userIDs: requests!) { friends in
+                self.get_friends(userIDs: requests ?? []) { friends in
                     completion(friends)
                 }
             }
