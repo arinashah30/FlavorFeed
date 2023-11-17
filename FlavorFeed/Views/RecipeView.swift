@@ -11,7 +11,6 @@ import SwiftUI
 
 struct RecipeView: View {
     let recipe: Recipe
-    @State private var isSaveButtonTapped = false
     @State private var isShowingSheet = false
     var body: some View {
         Button(action: { isShowingSheet.toggle()})
@@ -22,80 +21,11 @@ struct RecipeView: View {
                 .frame(width: 35)
                 .foregroundColor(.ffSecondary)
         }
-        .sheet(isPresented: $isShowingSheet, onDismiss: didCancel) {
-            ScrollView {
-                VStack {
-                    HStack {
-                        
-                        Button(action: {
-                            // Handle save button action
-                            isSaveButtonTapped = true
-                        }) {
-                            Image(systemName: "bookmark")
-                                .foregroundColor(Color.ffSecondary)
-                                .padding()
-                                .font(.system(size: 30)).padding(5)
-                        }
-                        Spacer()
-                        Text(recipe.title)
-                            .font(.title)
-                            .bold()
-                            .foregroundColor(Color.ffSecondary)
-                        Spacer()
-                        Button(action: {
-                            // Handle save button action
-                            isSaveButtonTapped = true
-                            isShowingSheet.toggle()
-                        }) {
-                            Image(systemName: "xmark.circle")
-                                .foregroundColor(Color.ffSecondary)
-                                .padding()
-                                .font(.system(size: 30)).padding(5)
-                        }
-                        
-                    }
-                    VStack{
-                        if(recipe.link != nil) {
-                            Text("Link to Recipe: ")
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding(.leading, 30)
-                                .foregroundColor(Color.ffSecondary)
-                                .font(.system(size: 25))
-                            Text(recipe.link!)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding(.leading, 30)
-                        } else {
-                            let formattedIngredients = recipe.ingredients.map { "• \($0)" }
-                            let ingredientsText = formattedIngredients.joined(separator: "\n")
-                            Text("Ingredients: ")
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding(.leading, 30)
-                                .foregroundColor(Color.ffSecondary)
-                                .font(.system(size: 25))
-                            Text(ingredientsText)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding(.leading, 30)
-                            Text("")
-                            Text("Directions: ")
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding(.leading, 30)
-                                .foregroundColor(Color.ffSecondary)
-                                .font(.system(size: 25))
-                            Text(recipe.directions)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding(.leading, 30)
-                                .padding(.trailing, 30)
-                        }
-                    }
-                }
-            }
+        .sheet(isPresented: $isShowingSheet) {
+            RecipeSheetView(recipe: recipe, isShowingSheet: $isShowingSheet)
         }
     }
-    func didCancel() {
-        }
-    }
-    
-
+}
 
 struct RecipeView_Previews: PreviewProvider {
     static var previews: some View {
@@ -103,3 +33,7 @@ struct RecipeView_Previews: PreviewProvider {
         RecipeView(recipe: sampleRecipe)
     }
 }
+    
+
+
+
