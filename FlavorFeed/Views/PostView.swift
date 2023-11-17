@@ -12,7 +12,6 @@ struct PostView: View {
     @ObservedObject var vm: ViewModel
     @State private var tabSelection = 0
     var post: Post
-//    var userID: String
     var gold = Color(red:255/255, green:211/255, blue:122/255)
     var salmon = Color(red: 255/255, green: 112/255, blue: 112/255)
     var teal = Color(red: 0/255, green: 82/255, blue: 79/255)
@@ -44,7 +43,6 @@ struct PostView: View {
         }
     }
 
-    let recipe: Recipe
     @State private var isShowingSheet = false
 
     
@@ -82,9 +80,7 @@ struct PostView: View {
                 TabView(selection: $tabSelection) {
                     ForEach(0..<post_images.count) { index in
                         
-                        //                ForEach(1...3, id: \.self) { pic in
                         ZStack (){
-                            //
                             bigImage(index)
                                 .resizable()
                                 .aspectRatio(contentMode: .fill)
@@ -153,6 +149,9 @@ struct PostView: View {
                             .padding(.bottom, 55)
                             .padding([.leading, .trailing] , 20)
                             .tag(index)
+                            .sheet(isPresented: $isShowingSheet) {
+                                RecipeSheetView(recipe: post.recipes[index], isShowingSheet: $isShowingSheet)
+                            }
 
                     }.frame(height: geo.size.height * 0.69)
                     
@@ -218,9 +217,6 @@ struct PostView: View {
                 }
                 Spacer()
             }.frame(maxHeight: .infinity)
-                .sheet(isPresented: $isShowingSheet) {
-                    RecipeSheetView(recipe: recipe, isShowingSheet: $isShowingSheet)
-                }
         }
     }
     
