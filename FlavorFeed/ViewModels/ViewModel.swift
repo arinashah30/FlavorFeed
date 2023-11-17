@@ -537,22 +537,26 @@ class ViewModel: ObservableObject {
     }
     
     func get_friends(userIDs: [String], completion: @escaping (([Friend])-> Void)) {
-        self.db.collection("USERS").whereField("id", in: userIDs).getDocuments { (documents, error) in
-            if let error = error {
-                print("SetCurrentUserError: \(error.localizedDescription)")
-            } else {
-                var friends: [Friend] = [Friend]()
-                for document in documents!.documents {
-                    let data = document.data()
-                    friends.append(Friend(id: document.documentID,
-                          name: data["name"] as? String ?? "Name not Found",
-                          profilePicture: data["profilePicture"] as? String ?? "Profile picture not found",
-                          bio: data["bio"] as? String ?? "",
-                          mutualFriends: [],
-                          pins: data["pins"] as? [String] ?? [],
-                          todaysPosts: []))
+        if userIDs.isEmpty {
+            completion([Friend]())
+        } else {
+            self.db.collection("USERS").whereField("id", in: userIDs).getDocuments { (documents, error) in
+                if let error = error {
+                    print("SetCurrentUserError: \(error.localizedDescription)")
+                } else {
+                    var friends: [Friend] = [Friend]()
+                    for document in documents!.documents {
+                        let data = document.data()
+                        friends.append(Friend(id: document.documentID,
+                                              name: data["name"] as? String ?? "Name not Found",
+                                              profilePicture: data["profilePicture"] as? String ?? "Profile picture not found",
+                                              bio: data["bio"] as? String ?? "",
+                                              mutualFriends: [],
+                                              pins: data["pins"] as? [String] ?? [],
+                                              todaysPosts: []))
+                    }
+                    completion(friends)
                 }
-                completion(friends)
             }
         }
     }
@@ -572,6 +576,33 @@ class ViewModel: ObservableObject {
                                     todaysPosts: []))
                 }
             }
+        }
+    }
+    
+    func get_friend_suggestions(completion: @escaping ([Friend]) -> Void) {
+        get_friends_ids() { friends in
+            if friends.isEmpty {
+                completion([Friend]())
+            } else {
+                self.db.collection("USERS").whereField("id", in: friends).getDocuments() {documents, err in
+                    if let err = err {
+                        // Unable to get posts, error screen
+                        print("In Get Friend Suggestions: \(err.localizedDescription)")
+                    } else {
+                        var suggestions = Set<String>()
+                        for document in documents!.documents {
+                            let data = document.data()
+                            let friends = data["friends"] as? [String]
+                            suggestions.formUnion(friends!)
+                        }
+                        suggestions.subtract(friends)
+                        self.get_friends(userIDs: Array(suggestions)) { friends in
+                            completion(friends)
+                        }
+                    }
+                }
+            }
+            
         }
     }
     
