@@ -12,6 +12,7 @@ import UIKit
 struct CameraView: View {
     @ObservedObject var camera = CameraModel()
     @Binding var showCamera: Bool
+    @State var flash = false
     
 
     var body: some View {
@@ -52,12 +53,20 @@ struct CameraView: View {
                             .padding()
                     }
                 } else {
-                    Button { camera.take_picture() } label: {
-                        Circle()
-                            .fill(Color.ffSecondary)
-                            .frame(width: 75, height: 75)
+                    VStack {
+                        Button { camera.take_picture(flashIsEnabled: flash) } label: {
+                            Circle()
+                                .fill(Color.ffSecondary)
+                                .frame(width: 75, height: 75)
+                        }
+                        
+                        Button { flash.toggle() } label: {
+                            flash ?
+                            Image(systemName: "flashlight.on.circle.fill").resizable().foregroundStyle(Color.ffPrimary).frame(width: 35, height: 35)
+                            : Image(systemName: "flashlight.slash.circle.fill").resizable().foregroundStyle(Color.ffPrimary).frame(width: 35, height: 35)
+                        }
                     }
-                    
+                    .background(Color.ffTertiary)
                 }
             }
             .padding()
@@ -132,9 +141,12 @@ class CameraModel: NSObject,ObservableObject, AVCapturePhotoCaptureDelegate {
         }
     }
     
-    func take_picture() {
+    func take_picture(flashIsEnabled: Bool) {
         DispatchQueue.global(qos: .background).async {
-            self.output.capturePhoto(with: AVCapturePhotoSettings(), delegate: self)
+            var settings = AVCapturePhotoSettings()
+            settings.flashMode = flashIsEnabled ? AVCaptureDevice.FlashMode.on : AVCaptureDevice.FlashMode.off
+            
+            self.output.capturePhoto(with: settings, delegate: self)
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 self.session.stopRunning()
