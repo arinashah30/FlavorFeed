@@ -25,16 +25,108 @@ struct FriendProfileView: View {
                         .foregroundColor(.black)
                         .font(.system(size: 40))
                 }
+                Button{
+                                self.tabSelection = .mainScrollView
+                                } label: {
+                                    Image(systemName: "arrow.left")
+                                        .foregroundColor(.red)
+                                        .font(.system(size: 40))
+                                }
+                                Spacer()
+                                
+                                Text(friendData.name)
+                                    .font(.system(size: 40))
+                                    .frame(alignment: .center)
+                                
+                                Spacer()
+                                
+                                Button{
+                                    self.tabSelection = .selfProfileView // need to change this
+                                } label: {
+                                    Image(systemName: "person.fill")
+                                        .foregroundColor(.red)
+                                        .font(.system(size: 40))
+                                }
+                                .frame(alignment: .trailing)
+                            }
                 Spacer()
+            VStack {
+                        ZStack{
+                            RoundedRectangle(cornerRadius: /*@START_MENU_TOKEN@*/25.0/*@END_MENU_TOKEN@*/)
+                                .fill(Color(.systemGray6))
+                        HStack {
+                            ZStack{
+                                Image("food_example")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 120)
+                                    .border(Color.yellow)
+                                    .cornerRadius(20)
+                                Image("person_example")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 40, alignment: .leading)
+                                    .border(Color.red)
+                                    .cornerRadius(10)
+                                    .offset(x:-30,y:-50)
+                            }
+                                VStack {
+                                    Text("Today's Flavor Feed")
+                                        .font(.system(size:20)).bold()
+                                    Text("Washington, Georgetown - 5 hrs late").lineLimit(1)
+                                    Spacer()
+                                    Button(action: {
+                                    }) {
+                                        Text("Add a comment...")
+                                            .padding()
+                                            .background(Color.red)
+                                            .foregroundColor(.white)
+                                            .font(.system(size:15))
+                                            .cornerRadius(20)
+                                    }
+                                }
+                            }
+                        }
             }.padding()
+            struct ContentView: View {
+                    var body: some View {
+                        
+                        HStack{
+                            ZStack {
+                                       Circle()
+                                           .fill(Color.blue)
+                                           .frame(width: 100, height: 50) // Adjust width and height as needed
+                                           .offset(x: -150, y: 0) // Offset the first ellipse up by half its height
+                                       
+                                       Circle()
+                                           .fill(Color.green)
+                                           .frame(width: 100, height: 50)
+                                           .offset(x: -120, y: 0)
+                                       
+                                        Circle()
+                                            .fill(Color.red)
+                                            .frame(width: 100, height: 50)
+                                            .offset(x: -90, y: 0)
+                                
+                                Text("Friend with Yul, Shan and 31 more")
+                                    .offset(x: 40)
+                                    .frame(maxWidth: 200)
+                                    .background(Color.clear)
+                                    .foregroundColor(.gray)
+                            }.offset(x:0)
+                            
+                        }
+                        .padding()
+                    }
+                }
             ScrollView{
                 BioView(user: user)
                 PinsView(user: user)
-                CalendarView(user: user)
                 MapView(user: user, restaurants: [CLLocationCoordinate2D(latitude: 43, longitude: 100), CLLocationCoordinate2D(latitude: -10, longitude: 30), CLLocationCoordinate2D(latitude: 20, longitude: -50), CLLocationCoordinate2D(latitude: 17, longitude: -40)])
                     .frame(height: 400)
             }
         }
+        
     }
 }
 
