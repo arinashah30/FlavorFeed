@@ -14,137 +14,172 @@ struct RecipeFormView: View {
     var options = ["Your Own", "Online"]
     var body: some View {
         GeometryReader { geometry in
-            VStack {
-                HStack {
-                    Spacer()
-                    Text("Add Recipe")
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-                        .foregroundColor(Color.ffSecondary)
-                        .frame(maxWidth: .infinity)
-                        //.background(Color.lightGray)
-                    Button(action: {
-                        resetForm()
-                        toggle()
-                    }) {
-                        Image(systemName: "xmark.circle")
-                            .foregroundColor(Color.ffSecondary)
-                            .padding()
-                            .font(.system(size: 30)).padding(5)
-                    }
-                }
-                Picker("Tabs", selection: $recipeType) {
-                    Text(options[0]).tag(options[0])
-                    Text(options[1]).tag(options[1])
-                }
-                .pickerStyle(.segmented)
-                .padding(.bottom, 30)
-                .menuStyle(.borderlessButton)
-                .frame(width: geometry.size.width - 51)
-                if recipeType == "Your Own" {
-                    Text("ENTER RECIPE NAME")
-                    TextField("Title", text: $title)
-                        //.textFieldStyle(RoundedBorderTextFieldStyle())
-                        //.foregroundColor(.yellow)
-                        .padding()
-                    Text("ENTER COMMA SEPERATED INGREDIENTS")
-                    TextField("Ingredients", text: $ingredients, axis: .vertical)
-                        //.background(.yellow)
-                        //textFieldStyle(RoundedBorderTextFieldStyle())
-                        .lineLimit(7)
-                        .padding()
-                        //.frame(height: 300)
-                    Spacer(minLength: 10)
-                    Text("ENTER DIRECTIONS")
-                    TextField("Instructions", text: $instructions, axis: .vertical)
-                        //.textFieldStyle(RoundedBorderTextFieldStyle())
-                        //.background(Color.ffSecondary)
-                        .lineLimit(7)
-                        .padding()
-                    Spacer(minLength: 10)
-                    HStack {
-                        Button("ADD") {
-                            validSubmitYourOwn()
-                        }
-                        .font(.system(size: 16))
-                        .bold()
-                        .foregroundColor(.white)
-                        .buttonStyle(BorderedButtonStyle())
-                        .background(Color.ffPrimary)
-                        .cornerRadius(25)
-                        .alert(isPresented: $invalid) {
-                            Alert(
-                                title: Text("Cannot submit incomplete recipe."),
-                                message: Text("Enter valid Title, Ingredients, and Instructions.")
-                            )
-                        }
-                    }
-                    .padding()
-                    .padding()
-                    if !submittedRecipes.isEmpty {
-                        VStack(alignment: .leading, spacing: 10) {
-                            Text("Submitted Recipes:")
-                                .font(.headline)
-                                .padding(.top, 10)
-                            ForEach(submittedRecipes, id: \.id) { submittedRecipe in
-                                Text(submittedRecipe.title)
-                                let formattedIngredients = submittedRecipe.ingredients!.map { "• \($0)" }
-                                let ingredientsText = formattedIngredients.joined(separator: "\n")
-                                Text(ingredientsText)
+
+            RoundedRectangle(cornerRadius: 25.0)
+                .foregroundColor(Color(.systemGray6))
+                .overlay(
+                    VStack {
+                            ZStack {
+                                Button(action: {
+                                    resetForm()
+                                    toggle()
+                                }) {
+                                    Image(systemName: "xmark.circle")
+                                        .foregroundColor(Color.ffSecondary)
+                                        .padding()
+                                        .font(.system(size: 30)).padding(5)
+                                }
+                                .frame(width: geometry.size.width - 51, alignment: .trailing)
+                                Spacer()
+                                Text("Add Recipe")
+                                    .font(.system(size: 25))
+                                    .fontWeight(.bold)
+                                    .foregroundColor(Color.ffSecondary)
+                                    .frame(width: geometry.size.width - 51, alignment: .center)
+                                
+                            }
+                            Picker("Tabs", selection: $recipeType) {
+                                Text(options[0]).tag(options[0])
+                                Text(options[1]).tag(options[1])
+                            }
+                            .pickerStyle(.segmented)
+                            .padding(.bottom, 30)
+                            .menuStyle(.borderlessButton)
+                            .frame(width: geometry.size.width - 51)
+                            if recipeType == "Your Own" {
+                                Text("ENTER RECIPE NAME")
+                                    .frame(width: geometry.size.width - 51, alignment: .leading)
+                                RoundedRectangle(cornerRadius: 25.0)
+                                    .foregroundColor(Color.ffTertiary)
+                                    .overlay(
+                                        TextField("Title", text: $title)
+                                            .padding(.horizontal, 10)
+                                    )
+                                    .frame(width: geometry.size.width - 51, height: 40)
+                                    .padding(.horizontal, 10)
+                                Text("ENTER COMMA SEPERATED INGREDIENTS")
+                                    .frame(width: geometry.size.width - 51, alignment: .leading)
+                                RoundedRectangle(cornerRadius: 25.0)
+                                    .foregroundColor(Color.ffTertiary)
+                                    .overlay(
+                                        TextField("Ingredients", text: $ingredients, axis: .vertical)
+                                            .frame(minHeight: 100)
+                                            .lineLimit(5, reservesSpace: true)
+                                            .padding(.horizontal, 10)
+                                            .padding(.vertical, 10)
+                                    )
+                                    .frame(width: geometry.size.width - 51, height: 120)
+                                    .padding(.horizontal, 10)
+                                Text("ENTER DIRECTIONS")
+                                    .frame(width: geometry.size.width - 51, alignment: .leading)
+                                RoundedRectangle(cornerRadius: 25.0)
+                                    .foregroundColor(Color.ffTertiary)
+                                    .overlay(
+                                        TextField("Instructions", text: $instructions, axis: .vertical)
+                                            .frame(minHeight: 100)
+                                            .lineLimit(5, reservesSpace: true)
+                                            .padding(.horizontal, 10)
+                                            .padding(.vertical, 10)
+                                    )
+                                    .frame(width: geometry.size.width - 51, height: 120)
+                                    .padding(.horizontal, 10)
+                                HStack {
+                                    Button("ADD") {
+                                        validSubmitYourOwn()
+                                    }
+                                    .font(.system(size: 16))
+                                    .bold()
+                                    .foregroundColor(.white)
+                                    .buttonStyle(BorderedButtonStyle())
+                                    .background(Color.ffPrimary)
+                                    .cornerRadius(25)
+                                    .alert(isPresented: $invalid) {
+                                        Alert(
+                                            title: Text("Cannot submit incomplete recipe."),
+                                            message: Text("Enter valid Title, Ingredients, and Instructions.")
+                                        )
+                                    }
+                                }
+                                .padding()
+                                .padding()
+                                if !submittedRecipes.isEmpty {
+                                    VStack(alignment: .leading, spacing: 10) {
+                                        Text("Submitted Recipes:")
+                                            .font(.headline)
+                                            .padding(.top, 10)
+                                        ForEach(submittedRecipes, id: \.id) { submittedRecipe in
+                                            Text(submittedRecipe.title)
+                                            let formattedIngredients = submittedRecipe.ingredients!.map { "• \($0)" }
+                                            let ingredientsText = formattedIngredients.joined(separator: "\n")
+                                            Text(ingredientsText)
+                                        }
+                                    }
+                                    .padding()
+                                }
+                            }
+                            if recipeType == "Online" {
+                                Text("ENTER RECIPE NAME")
+                                    .frame(width: geometry.size.width - 51, alignment: .leading)
+                                RoundedRectangle(cornerRadius: 25.0)
+                                    .foregroundColor(Color.ffTertiary)
+                                    .overlay(
+                                        TextField("Title", text: $title)
+                                            .padding(.horizontal, 10)
+                                    )
+                                    .frame(width: geometry.size.width - 51, height: 40)
+                                    .padding(.horizontal, 10)
+                                Text("ENTER LINK")
+                                    .frame(width: geometry.size.width - 51, alignment: .leading)
+                                RoundedRectangle(cornerRadius: 25.0)
+                                    .foregroundColor(Color.ffTertiary)
+                                    .overlay(
+                                        TextField("Link", text: $link)
+                                            .padding(.horizontal, 10)
+                                    )
+                                    .frame(width: geometry.size.width - 51, height: 40)
+                                    .padding(.horizontal, 10)
+                                HStack {
+                                    Button("ADD") {
+                                        validSubmitYourOwn()
+                                    }
+                                    .font(.system(size: 16))
+                                    .bold()
+                                    .foregroundColor(.white)
+                                    .buttonStyle(BorderedButtonStyle())
+                                    .background(Color.ffPrimary)
+                                    .cornerRadius(25)
+                                    .alert(isPresented: $invalid) {
+                                        Alert(
+                                            title: Text("Cannot submit incomplete recipe."),
+                                            message: Text("Enter valid Title, and Link.")
+                                        )
+                                    }
+                                }
+                                .padding(.bottom, geometry.size.width - 125)
+                                .padding()
+                                if !submittedRecipes.isEmpty {
+                                    VStack(alignment: .leading, spacing: 10) {
+                                        Text("Submitted Recipes:")
+                                            .font(.headline)
+                                            .padding(.top, 10)
+                                        ForEach(submittedRecipes, id: \.id) { submittedRecipe in
+                                            Text(submittedRecipe.title)
+                                            let formattedIngredients = submittedRecipe.ingredients!.map { "• \($0)" }
+                                            let ingredientsText = formattedIngredients.joined(separator: "\n")
+                                            Text(ingredientsText)
+                                        }
+                                    }
+                                    .padding()
+                                }
                             }
                         }
                         .padding()
-                    }
-                }
-                if recipeType == "Online" {
-                    Text("ENTER RECIPE NAME")
-                    TextField("Title", text: $title)
-                        //.textFieldStyle(RoundedBorderTextFieldStyle())
-                        //.foregroundColor(Color.ffSecondary)
-                        .padding()
-                    Text("ENTER LINK")
-                    TextField("Link", text: $link)
-                        //.textFieldStyle(RoundedBorderTextFieldStyle())
-                        //.background(Color.ffSecondary)
-                        .padding()
-                    HStack {
-                        Button("ADD") {
-                            validSubmitYourOwn()
-                        }
-                        .font(.system(size: 16))
-                        .bold()
-                        .foregroundColor(.white)
-                        .buttonStyle(BorderedButtonStyle())
-                        .background(Color.ffPrimary)
-                        .cornerRadius(25)
-                        .alert(isPresented: $invalid) {
-                            Alert(
-                                title: Text("Cannot submit incomplete recipe."),
-                                message: Text("Enter valid Title, and Link.")
-                            )
-                        }
-                    }
-                    .padding()
-                    .padding()
-                    if !submittedRecipes.isEmpty {
-                        VStack(alignment: .leading, spacing: 10) {
-                            Text("Submitted Recipes:")
-                                .font(.headline)
-                                .padding(.top, 10)
-                            ForEach(submittedRecipes, id: \.id) { submittedRecipe in
-                                Text(submittedRecipe.title)
-                                let formattedIngredients = submittedRecipe.ingredients!.map { "• \($0)" }
-                                let ingredientsText = formattedIngredients.joined(separator: "\n")
-                                Text(ingredientsText)
-                            }
-                        }
-                        .padding()
-                    }
-                }
-                
-            }
-            .background(Color(.systemGray6))
-            .padding()
+                )
+                .frame(width: geometry.size.width - 20 , height: geometry.size.height - 20)
+                .padding(.horizontal, 10)
+                .padding(.vertical, 10)
+            
+
         }
     }
     
@@ -166,14 +201,6 @@ struct RecipeFormView: View {
         resetForm()
     }
     private func validSubmitOnline(){
-        if title.isEmpty || ingredients.isEmpty || instructions.isEmpty {
-            invalid = true
-        } else {
-            saveRecipe()
-            toggle()
-        }
-    }
-    private func validSubmitYourOwn(){
         if title.isEmpty || link.isEmpty {
             invalid = true
         } else {
@@ -181,8 +208,13 @@ struct RecipeFormView: View {
             toggle()
         }
     }
-    private func errorMessage(){
-        
+    private func validSubmitYourOwn(){
+        if title.isEmpty || ingredients.isEmpty || instructions.isEmpty {
+            invalid = true
+        } else {
+            saveRecipe()
+            toggle()
+        }
     }
 }
 
