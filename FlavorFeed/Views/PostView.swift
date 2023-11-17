@@ -55,7 +55,7 @@ struct PostView: View {
                         .clipShape(.circle)
                     
                     VStack (alignment: .leading) {
-                        Text(post.friend!.name)
+                        Text(post.userID)
                             .font(.system(size: 18))
                             .foregroundColor(.ffSecondary)
                             .fontWeight(.semibold)
