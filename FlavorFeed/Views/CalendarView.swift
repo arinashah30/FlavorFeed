@@ -34,7 +34,12 @@ struct CalendarView: View {
                     Text("Your Memories")
                         .font(.title2)
                     Spacer()
-                    Image(systemName: "person.2.fill")
+                    Image(systemName: "lock.fill")
+                        .foregroundColor(.gray)
+                        .font(.system(size: 13))
+                    Text("Only visible to you")
+                        .foregroundColor(.gray)
+                        .font(.system(size: 15))
                 }
                 HStack (alignment: .top) {
                     VStack {
@@ -74,10 +79,12 @@ struct CalendarCollectionViewCell: View {
                 CalendarImage(post: post)
                 Text(formatDate(date: post.date))
                     .font(.system(size: 16)).bold()
+                    .foregroundColor(.white)
                     .padding(2)
             } else {
                 Text(formatDate(date: post.date))
                     .font(.system(size: 16)).bold()
+                    .foregroundColor(.ffPrimary)
                     .padding(2)
                     .frame(width: 45, height: 55)
             }
@@ -91,7 +98,12 @@ struct CalendarImage: View {
         Image(self.post.image!)
             .resizable()
             .scaledToFit()
-            .frame(width: 45, height: 55).opacity(0.6)
+            .frame(width: 45, height: 55)
+            .overlay(
+                RoundedRectangle(cornerRadius: 7)
+                    .stroke(Color.ffTertiary, lineWidth: 1)
+                    .frame(width: 42, height: 55)
+            )
             .cornerRadius(9)
     }
 }

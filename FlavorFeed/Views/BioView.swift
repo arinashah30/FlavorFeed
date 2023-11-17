@@ -19,8 +19,9 @@ struct BioView: View {
                 
             Text(user.name)
                 .font(.title)
-            Text(user.id)
-                .font(.title2)
+            Text("@" + user.id)
+                .font(.system(size: 15))
+                .foregroundColor(.gray)
         }
     }
 }

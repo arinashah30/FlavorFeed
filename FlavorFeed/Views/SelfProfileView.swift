@@ -24,10 +24,22 @@ struct SelfProfileView: View {
                     } label: {
                         Image(systemName: "arrow.left")
                             .foregroundColor(.black)
-                            .font(.system(size: 40))
+                            .font(.system(size: 30))
                     }
                     Spacer()
+                    Text("Profile")
+                        .font(.title2)
+                        .foregroundColor(.ffSecondary)
+                    Spacer()
+                    NavigationLink {
+                        BioView(user: user) //change to SettingsView
+                    } label: {
+                        Image(systemName: "ellipsis")
+                            .foregroundColor(.black)
+                            .font(.system(size: 30))
+                    }
                 }.padding()
+                
                 ScrollView{
                     BioView(user: user)
                     PinsView(user: user)
