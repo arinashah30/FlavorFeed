@@ -16,7 +16,7 @@ struct CameraView: View {
     
 
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
             CameraPreview(camera: camera)
                 .clipShape(RoundedRectangle(cornerRadius: 15.0))
                 .frame(maxHeight: .infinity)
@@ -53,20 +53,17 @@ struct CameraView: View {
                             .padding()
                     }
                 } else {
-                    VStack {
-                        Button { camera.take_picture(flashIsEnabled: flash) } label: {
-                            Circle()
-                                .fill(Color.ffSecondary)
-                                .frame(width: 75, height: 75)
-                        }
-                        
-                        Button { flash.toggle() } label: {
-                            flash ?
-                            Image(systemName: "flashlight.on.circle.fill").resizable().foregroundStyle(Color.ffPrimary).frame(width: 35, height: 35)
-                            : Image(systemName: "flashlight.slash.circle.fill").resizable().foregroundStyle(Color.ffPrimary).frame(width: 35, height: 35)
-                        }
+                    Button { camera.take_picture(flashIsEnabled: flash) } label: {
+                        Circle()
+                            .fill(Color.ffSecondary)
+                            .frame(width: 75, height: 75)
                     }
-                    .background(Color.ffTertiary)
+                    
+                    Button { flash.toggle() } label: {
+                        flash ?
+                        Image(systemName: "flashlight.on.circle.fill").resizable().foregroundStyle(Color.ffPrimary).frame(width: 35, height: 35)
+                        : Image(systemName: "flashlight.slash.circle.fill").resizable().foregroundStyle(Color.ffPrimary).frame(width: 35, height: 35)
+                    }
                 }
             }
             .padding()
