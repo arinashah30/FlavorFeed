@@ -11,7 +11,7 @@ import Foundation
 struct CalendarView: View {
     var user : User
     let posts: [Post] = [Post(id: UUID().uuidString, userID: "champagnepapi", images: [["drake_selfie", "food_pic_1"], ["drake_selfie2", "food_pic_2"], ["drake_selfie3", "food_pic_3"]], date: ["10-24-2023 09:14:35", "10-24-2022 12:49:22", "10-24-2022 19:40:12"], comments: [Comment(id: UUID().uuidString, userID: "adonis", text: "Looking fresh Drake!", date: "October 24, 2023", replies: []), Comment(id: UUID().uuidString, userID: "travisscott", text: "She said do you love me I told her only partly.", date: "October 24, 2022", replies: [])], caption: ["That was yummy in my tummy", "", "Let's dig in"], likes: [], locations: [], recipes: []),
-                         Post(id: UUID().uuidString, userID: "champagnepapi", images: [["drake_selfie", "food_pic_1"], ["drake_selfie2", "food_pic_2"], ["drake_selfie3", "food_pic_3"]], date: ["10-25-2022 09:14:35", "10-25-2023 12:49:22", "10-25-2022 19:40:12"], comments: [Comment(id: UUID().uuidString, userID: "adonis", text: "Looking fresh Drake!", date: "October 25, 2022", replies: []), Comment(id: UUID().uuidString, userID: "travisscott", text: "She said do you love me I told her only partly.", date: "October 25, 2023", replies: [])], caption: ["That was yummy in my tummy", "", "Let's dig in"], likes: [], locations: [], recipes: []),
+                         Post(id: UUID().uuidString, userID: "champagnepapi", images: [["drake_selfie", "food_pic_1"], ["drake_selfie2", "food_pic_2"], ["drake_selfie3", "food_pic_3"]], date: ["11-13-2023 09:14:35", "10-25-2023 12:49:22", "10-25-2022 19:40:12"], comments: [Comment(id: UUID().uuidString, userID: "adonis", text: "Looking fresh Drake!", date: "October 25, 2022", replies: []), Comment(id: UUID().uuidString, userID: "travisscott", text: "She said do you love me I told her only partly.", date: "October 25, 2023", replies: [])], caption: ["That was yummy in my tummy", "", "Let's dig in"], likes: [], locations: [], recipes: []),
                          Post(id: UUID().uuidString, userID: "champagnepapi", images: [["drake_selfie", "food_pic_1"], ["drake_selfie2", "food_pic_2"], ["drake_selfie3", "food_pic_3"]], date: ["10-26-2023 09:14:35", "10-26-2022 12:49:22", "10-26-2022 19:40:12"], comments: [Comment(id: UUID().uuidString, userID: "adonis", text: "Looking fresh Drake!", date: "October 25, 2023", replies: []), Comment(id: UUID().uuidString, userID: "travisscott", text: "She said do you love me I told her only partly.", date: "October 26, 2022", replies: [])], caption: ["That was yummy in my tummy", "", "Let's dig in"], likes: [], locations: [], recipes: []),
                          Post(id: UUID().uuidString, userID: "champagnepapi", images: [["drake_selfie", "food_pic_1"], ["drake_selfie2", "food_pic_2"], ["drake_selfie3", "food_pic_3"]], date: ["10-27-2023 09:14:35", "10-27-2022 12:49:22", "10-27-2022 19:40:12"], comments: [Comment(id: UUID().uuidString, userID: "adonis", text: "Looking fresh Drake!", date: "October 27, 2023", replies: [])], caption: ["That was yummy in my tummy", "", "Let's dig in"], likes: [], locations: [], recipes: []),
                          Post(id: UUID().uuidString, userID: "champagnepapi", images: [["drake_selfie", "food_pic_1"], ["drake_selfie2", "food_pic_2"], ["drake_selfie3", "food_pic_3"]], date: ["10-28-2023 09:14:35", "10-28-2022 12:49:22", "10-28-2022 19:40:12"], comments: [Comment(id: UUID().uuidString, userID: "adonis", text: "Looking fresh Drake!", date: "October 28, 2023", replies: [])], caption: ["That was yummy in my tummy", "", "Let's dig in"], likes: [], locations: [], recipes: []),
@@ -28,36 +28,42 @@ struct CalendarView: View {
                          Post(id: UUID().uuidString, userID: "champagnepapi", images: [["drake_selfie", "food_pic_1"], ["drake_selfie2", "food_pic_2"], ["drake_selfie3", "food_pic_3"]], date: ["11-22-2023 09:14:35", "11-06-2022 12:49:22", "11-06-2022 19:40:12"], comments: [Comment(id: UUID().uuidString, userID: "adonis", text: "Looking fresh Drake!", date: "November 6, 2022", replies: [])], caption: ["That was yummy in my tummy", "", "Let's dig in"], likes: [], locations: [], recipes: [])] //this is going to be replaced with calls to firebase to fetch posts
     
     var body: some View {
-        VStack {
-            HStack {
-                Text("Your Memories")
-                    .font(.title2)
-                Spacer()
-                Image(systemName: "person.2.fill")
-            }
-            HStack (alignment: .top) {
-                VStack {
-                    LazyVGrid(columns: Array(repeating: GridItem(), count: 7)){
-                        ForEach(getLast14DaysViews(posts: posts), id: \.self) { post in
-                            HStack {
+//        NavigationStack {
+            VStack {
+                HStack {
+                    Text("Your Memories")
+                        .font(.title2)
+                    Spacer()
+                    Image(systemName: "person.2.fill")
+                }
+                HStack (alignment: .top) {
+                    VStack {
+                        LazyVGrid(columns: Array(repeating: GridItem(), count: 7)){
+                            ForEach(getLast14DaysViews(posts: posts), id: \.self) { post in
+                                HStack {
                                     CalendarCollectionViewCell(post:post)
+                                }
                             }
                         }
                     }
                 }
+                
+//                NavigationLink {
+//                    BioView(user: user)
+//                } label: {
+//                    ZStack {
+//                        RoundedRectangle(cornerRadius: 9)
+//                            .stroke(Color.black, lineWidth: 2)
+//                            .frame(width: 200, height: 35)
+//                            .padding()
+//                        Text("View All My Memories")
+//                    }
+//                }
+//                .buttonStyle(PlainButtonStyle())
             }
-            
-            //NavigationLink(destination: AllMemoriesView()) {
-            ZStack {
-                RoundedRectangle(cornerRadius: 9)
-                    .stroke(Color.black, lineWidth: 2)
-                    .frame(width: 200, height: 35)
-                    .padding()
-                Text("View All My Memories")
-            }
+            .padding([.leading, .trailing, .top], 20)
         }
-        .padding()
-    }
+//    }
 }
 
 struct CalendarCollectionViewCell: View {
@@ -73,6 +79,7 @@ struct CalendarCollectionViewCell: View {
                 Text(formatDate(date: post.date))
                     .font(.system(size: 16)).bold()
                     .padding(2)
+                    .frame(width: 45, height: 55)
             }
         }
     }
@@ -107,27 +114,16 @@ func getLast14DaysViews(posts: [Post]) -> [MaybePost] {
             maybePosts.append(contentsOf: [MaybePost(date: date, image: nil)])
         }
     }
+    maybePosts.reverse()
     return maybePosts
 }
 
 func postForDate(posts: [Post], dateToCheck: Date) -> Post? {
-//    print(posts)
     for post in posts {
-        print("post date: \(findDateFromPost(post: post))")
-        print("date to check: \(dateToCheck)")
-        
         let calendar = Calendar.current
-        print(calendar.isDate(findDateFromPost(post: post), inSameDayAs: dateToCheck))
-        
         if (calendar.isDate(findDateFromPost(post: post), inSameDayAs: dateToCheck)) {
             return post
         }
-        //    let postForDate = posts.first { post in
-        //        let calendar = Calendar.current
-        //        ifcalendar.isDate(findDateFromPost(post: post), inSameDayAs: dateToCheck)
-        //    }
-        //    print(postForDate)
-        //    return postForDate
     }
     return nil
 }

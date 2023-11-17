@@ -31,17 +31,19 @@ struct PinsView: View {
             }
             ScrollView(.horizontal) {
                 HStack {
-                    ZStack {
+                    ZStack(alignment: .center) {
                         RoundedRectangle(cornerRadius: 10)
                             .stroke(style: .init(dash: [5]))
                             .foregroundColor(.gray)
                             .frame(width: 102, height: 136)
-                            .padding(.leading)
+//                            .padding(.leading)
                         Image(systemName: "plus")
                             .resizable()
                             //.padding(.leading)
                             .frame(width: 30, height: 30)
                     }
+                    .padding(.leading)
+                    
                     ForEach(posts) { post in
                         Image(post.images[0][1])
                             .resizable()

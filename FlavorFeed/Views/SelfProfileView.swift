@@ -16,27 +16,45 @@ struct SelfProfileView: View {
     
     
     var body: some View {
-        VStack {
-            HStack {
-                Button {
-                    self.tabSelection = .mainScrollView
-                } label: {
-                    Image(systemName: "arrow.left")
-                        .foregroundColor(.black)
-                        .font(.system(size: 40))
+        NavigationStack {
+            VStack {
+                HStack {
+                    Button {
+                        self.tabSelection = .mainScrollView
+                    } label: {
+                        Image(systemName: "arrow.left")
+                            .foregroundColor(.black)
+                            .font(.system(size: 40))
+                    }
+                    Spacer()
+                }.padding()
+                ScrollView{
+                    BioView(user: user)
+                    PinsView(user: user)
+                    CalendarView(user: user)
+                    
+                    NavigationLink {
+                        BioView(user: user)
+                    } label: {
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 9)
+                                .stroke(Color.black, lineWidth: 2)
+                                .frame(width: 200, height: 35)
+                                .padding()
+                            Text("View All My Memories")
+                        }
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                    
+                    MapView(user: user, restaurants: [CLLocationCoordinate2D(latitude: 43, longitude: 100), CLLocationCoordinate2D(latitude: -10, longitude: 30), CLLocationCoordinate2D(latitude: 20, longitude: -50), CLLocationCoordinate2D(latitude: 17, longitude: -40)])
+                        .frame(minHeight: 400)
                 }
-                Spacer()
-            }.padding()
-            ScrollView{
-                BioView(user: user)
-                PinsView(user: user)
-                CalendarView(user: user)
-                MapView(user: user, restaurants: [CLLocationCoordinate2D(latitude: 43, longitude: 100), CLLocationCoordinate2D(latitude: -10, longitude: 30), CLLocationCoordinate2D(latitude: 20, longitude: -50), CLLocationCoordinate2D(latitude: 17, longitude: -40)])
-                    .frame(height: 400)
             }
         }
+        .ignoresSafeArea()
     }
 }
+
 
 struct ContentView_Previews: PreviewProvider {
     @State static var tabSelection: Tabs = .selfProfileView
