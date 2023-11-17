@@ -42,11 +42,6 @@ class ViewModel: ObservableObject {
     let auth = Auth.auth()
     
     
-    // DELETE THIS
-    init(user: User) {
-        self.current_user = user
-    }
-    
     init() {
         _ = Auth.auth().addStateDidChangeListener { [weak self] auth, user in
             if let user = user {
@@ -351,36 +346,6 @@ class ViewModel: ObservableObject {
                 } else {
                     self.setCurrentUser(userId: self.current_user!.id)
                 }
-        }
-    }
-    
-    func getInformation(){
-        if let user = current_user {
-            db.collection("USERS").document(user.id).getDocument { document, error in
-                if let error = error {
-                    print("Error getting user information: \(error.localizedDescription)")
-                } else if let document = document, document.exists {
-                    if let data = document.data() {
-                        
-                        if let bio = data["bio"] as? String {
-                            self.current_user!.bio = bio
-                        }
-                        if let email = data["email"] as? String {
-                            self.current_user!.email = email
-                        }
-                        if let name = data["name"] as? String {
-                            self.current_user!.name = name
-                        }
-                        if let phoneNumber = data["phone_number"] as? String {
-                            self.current_user!.phoneNumber = phoneNumber
-                        }
-                        if let username = data["username"] as? String {
-                            self.current_user!.id = username
-                        }
-                        
-                    }
-                }
-            }
         }
     }
 }
