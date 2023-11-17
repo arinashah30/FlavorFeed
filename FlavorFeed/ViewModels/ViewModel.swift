@@ -28,16 +28,24 @@ Firebase Methods:
  
  **/
 
+import SwiftUI
+
 class ViewModel: ObservableObject {
     
     @Published var current_user: User? = nil 
     @Published var errorText: String? = nil
+    
+    @Published var new_profile_image: Image?
     
     
     let db = Firestore.firestore()
     let auth = Auth.auth()
     
     
+    // DELETE THIS
+    init(user: User) {
+        self.current_user = user
+    }
     
     init() {
         _ = Auth.auth().addStateDidChangeListener { [weak self] auth, user in
@@ -338,6 +346,11 @@ class ViewModel: ObservableObject {
     func updateUserField(field: String, value: String) {
         db.collection("USERS").document(current_user!.id).updateData(
             [field: value]) { err in
+                if let err = err {
+                    print(err.localizedDescription)
+                } else {
+                    self.setCurrentUser(userId: self.current_user!.id)
+                }
         }
     }
     
