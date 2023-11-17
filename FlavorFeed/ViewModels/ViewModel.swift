@@ -38,23 +38,25 @@ class ViewModel: ObservableObject {
     @Published var usernameSearchResults: [String] = [String]()
 
     
-    @Published var todays_posts: [Post] = [Post]()
+    // POSTS
+    @Published var my_post_today: Post?
+    @Published var todays_posts: [Post] = [Post]() // EVERYONE ON YOUR FEED
     
     
-    // camera stuff
+    // camera stuff (DONT USE)
     @Published var photo_1: UIImage?
     @Published var photo_2: UIImage?
-    
     @Published var bothImagesCaptured = false
-
-    @Published private var photosUploaded = false
-    @Published private var photoURLs = ""
     
     let db = Firestore.firestore()
     let auth = Auth.auth()
     let storageRef = Storage.storage().reference()
     
-    
+    // remove later
+    init(photo1: UIImage? = nil, photo2: UIImage? = nil) {
+            self.photo_1 = photo1
+            self.photo_2 = photo2
+        }
     
     init() {
         _ = Auth.auth().addStateDidChangeListener { [weak self] auth, user in
@@ -394,6 +396,53 @@ class ViewModel: ObservableObject {
         }
     }
     
+    func publish_post(caption: String, location: String, recipe: Recipe, completion: @escaping (Bool) -> Void) {
+        let date = Date()
+        // add logic to check if first post of today
+        // for now just create new document
+        
+        let dateFormatter = DateFormatter()
+        let dayFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MM-dd-yyyy HH:mm:ss"
+        dayFormatter.dateFormat = "MM-dd-yyyy"
+
+        let dateFormatted = dateFormatter.string(from: date) // get string from date
+        let dayFormatted = dayFormatter.string(from: date) // get string from date
+
+        self.firebase_get_url_from_image(image: self.photo_1!) { url_1 in
+            self.firebase_get_url_from_image(image: self.photo_2!) { url_2 in
+                if let foodPic = url_1 {
+                    if let selfie = url_2 {
+                        let data = ["userID" : self.current_user!.id,
+                                    "images" : ["\(foodPic) \(selfie)"],
+                                    "caption" : [caption],
+                                    "recipes" : [""],
+                                    "date" : [dateFormatted],
+                                    "day" : dayFormatted,
+                                    "likes" : [],
+                                    "comments" : [],
+                                    "location" : [location]]
+                        as [String : Any]
+                        
+                        let docId = UUID()
+                        self.db.collection("POSTS").document(docId.uuidString).setData(data) { error in
+                            if let error = error {
+                                print("Error: \(error.localizedDescription) ")
+                                completion(true)
+                            } else {
+                                self.db.collection("USERS").document(self.current_user!.id).updateData(["myPosts": FieldValue.arrayUnion([docId.uuidString])])
+                                completion(false)
+                            }
+                            
+                        }
+                    }
+                    completion(true)
+                }
+                completion(true)
+
+            }
+        }
+    }
 
             
     func firebase_search_for_username(username: String, completionHandler: @escaping (([String]) -> Void)) {

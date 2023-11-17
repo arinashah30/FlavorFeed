@@ -14,6 +14,8 @@ struct CameraView: View {
     @StateObject var model = CameraModel()
     @ObservedObject var vm: ViewModel
     
+    @Binding var showCameraViewSheet: Bool
+    
     @State var currentZoomFactor: CGFloat = 1.0
     
     
@@ -24,13 +26,8 @@ struct CameraView: View {
             }
         }, label: {
             Circle()
-                .foregroundColor(.white)
-                .frame(width: 80, height: 80, alignment: .center)
-                .overlay(
-                    Circle()
-                        .stroke(Color.black.opacity(0.8), lineWidth: 2)
-                        .frame(width: 65, height: 65, alignment: .center)
-                )
+                .foregroundColor(.ffSecondary)
+                .frame(width: 75, height: 75, alignment: .center)
         })
     }
     
@@ -56,91 +53,103 @@ struct CameraView: View {
         Button(action: {
             model.flipCamera()
         }, label: {
-            Circle()
-                .foregroundColor(Color.gray.opacity(0.2))
-                .frame(width: 45, height: 45, alignment: .center)
-                .overlay(
-                    Image(systemName: "camera.rotate.fill")
-                        .foregroundColor(.white))
+            Image("flip_camera")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 35)
         })
     }
     
     var body: some View {
         if vm.bothImagesCaptured {
-            VStack {
-                Image(uiImage: vm.photo_1!)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                Image(uiImage: vm.photo_2!)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-            }
+            PublishPostView(vm: vm, showCameraViewSheet: $showCameraViewSheet)
         } else {
             NavigationView {
-                GeometryReader { reader in
+                GeometryReader { geo in
                     ZStack {
-                        Color.black.edgesIgnoringSafeArea(.all)
+                        Color.white.edgesIgnoringSafeArea(.all)
                         
                         VStack {
-                            Button(action: {
-                                model.switchFlash()
-                            }, label: {
-                                Image(systemName: model.isFlashOn ? "bolt.fill" : "bolt.slash.fill")
-                                    .font(.system(size: 20, weight: .medium, design: .default))
-                            })
-                            .accentColor(model.isFlashOn ? .yellow : .white)
                             
-                            CameraPreview(session: model.session)
-                                .gesture(
-                                    DragGesture().onChanged({ (val) in
-                                        //  Only accept vertical drag
-                                        if abs(val.translation.height) > abs(val.translation.width) {
-                                            //  Get the percentage of vertical screen space covered by drag
-                                            let percentage: CGFloat = -(val.translation.height / reader.size.height)
-                                            //  Calculate new zoom factor
-                                            let calc = currentZoomFactor + percentage
-                                            //  Limit zoom factor to a maximum of 5x and a minimum of 1x
-                                            let zoomFactor: CGFloat = min(max(calc, 1), 5)
-                                            //  Store the newly calculated zoom factor
-                                            currentZoomFactor = zoomFactor
-                                            //  Sets the zoom factor to the capture device session
-                                            model.zoom(with: zoomFactor)
+                            ZStack {
+                                VStack {
+                                    CameraPreview(session: model.session)
+                                        .gesture(
+                                            DragGesture().onChanged({ (val) in
+                                                //  Only accept vertical drag
+                                                if abs(val.translation.height) > abs(val.translation.width) {
+                                                    //  Get the percentage of vertical screen space covered by drag
+                                                    let percentage: CGFloat = -(val.translation.height / geo.size.height)
+                                                    //  Calculate new zoom factor
+                                                    let calc = currentZoomFactor + percentage
+                                                    //  Limit zoom factor to a maximum of 5x and a minimum of 1x
+                                                    let zoomFactor: CGFloat = min(max(calc, 1), 5)
+                                                    //  Store the newly calculated zoom factor
+                                                    currentZoomFactor = zoomFactor
+                                                    //  Sets the zoom factor to the capture device session
+                                                    model.zoom(with: zoomFactor)
+                                                }
+                                            })
+                                        )
+                                        .onAppear {
+                                            model.configure()
                                         }
-                                    })
-                                )
-                                .onAppear {
-                                    model.configure()
-                                }
-                                .alert(isPresented: $model.showAlertError, content: {
-                                    Alert(title: Text(model.alertError.title), message: Text(model.alertError.message), dismissButton: .default(Text(model.alertError.primaryButtonTitle), action: {
-                                        model.alertError.primaryAction?()
-                                    }))
-                                })
-                                .overlay(
-                                    Group {
-                                        if model.willCapturePhoto {
-                                            Color.black
-                                        }
-                                    }
-                                )
-                                .animation(.easeInOut)
-                            
-                            
-                            HStack {
-                                NavigationLink(destination: Text("Detail photo")) {
-                                    capturedPhotoThumbnail
+                                        .alert(isPresented: $model.showAlertError, content: {
+                                            Alert(title: Text(model.alertError.title), message: Text(model.alertError.message), dismissButton: .default(Text(model.alertError.primaryButtonTitle), action: {
+                                                model.alertError.primaryAction?()
+                                            }))
+                                        })
+                                        .frame(width: geo.size.width, height: geo.size.height * 0.75)
+                                        .clipShape(RoundedRectangle(cornerRadius: 20))
+                                        .animation(.easeInOut)
+                                    
                                 }
                                 
-                                Spacer()
-                                
-                                captureButton
-                                
-                                Spacer()
-                                
-                                flipCameraButton
-                                
+                                VStack {
+                                    ZStack(alignment: .center) {
+                                        HStack {
+                                            Button(action: {
+                                                self.showCameraViewSheet = false
+                                            }, label: {
+                                                Image(systemName: "chevron.left")
+                                                    .frame(width: 15.07, height: 8.64)
+                                                    .foregroundColor(.ffPrimary)
+                                            })
+                                            Spacer()
+                                        }
+                                        Image("flavorfeed_logo")
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fit)
+                                            .frame(height: 18.32)
+                                    }.padding()
+                                    .frame(width: geo.size.width, height: geo.size.height * 0.15)
+                                    .background(.white)
+
+                                    
+                                    Spacer()
+                                    HStack {
+                                        Button(action: {
+                                            model.switchFlash()
+                                        }, label: {
+                                            Image(model.isFlashOn ? "flash_on" : "flash_off")
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fit)
+                                                .frame(width: 35)
+                                                .foregroundColor(.ffPrimary)
+                                        })
+                                        Spacer()
+                                        
+                                        captureButton
+                                        
+                                        Spacer()
+                                        
+                                        flipCameraButton
+                                        
+                                    }.padding(.horizontal, 20)
+                                        .frame(width: geo.size.width, height: geo.size.height * 0.2)
+                                        .background(Color.ffTertiary)
+                                }
                             }
-                            .padding(.horizontal, 20)
                         }
                     }
                 }

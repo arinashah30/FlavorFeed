@@ -13,17 +13,7 @@ import AVFoundation
 final class CameraModel: ObservableObject {
     private let service = CameraService()
     
-    // Define a closure type that takes a Photo parameter and returns Void
-    typealias PhotoUpdateHandler = (Photo?) -> Void
-    
-    // Closure property to hold the listener
-    var photoUpdateHandler: PhotoUpdateHandler?
-    
-    @Published var photo: Photo? {
-        didSet {
-            photoUpdateHandler?(photo)
-        }
-    }
+    @Published var photo: Photo?
     
     @Published var showAlertError = false
     
@@ -63,9 +53,6 @@ final class CameraModel: ObservableObject {
         .store(in: &self.subscriptions)
     }
     
-    func addPhotoUpdateListener(handler: @escaping PhotoUpdateHandler) {
-            photoUpdateHandler = handler
-        }
     
     func configure() {
         service.checkForPermissions()

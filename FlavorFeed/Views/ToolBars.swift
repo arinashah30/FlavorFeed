@@ -47,7 +47,7 @@ struct BottomBar: View {
             }
             
         }.fullScreenCover(isPresented: $showCameraViewSheet) {
-            CameraView(vm: vm)
+            CameraView(vm: vm, showCameraViewSheet: $showCameraViewSheet)
         }
     }
 }

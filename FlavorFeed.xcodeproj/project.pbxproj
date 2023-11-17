@@ -40,6 +40,7 @@
 		B270544A2B06B5A300BC7174 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B27054492B06B5A300BC7174 /* CameraView.swift */; };
 		B270544D2B06BBA400BC7174 /* Camera-SwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = B270544C2B06BBA400BC7174 /* Camera-SwiftUI */; };
 		B270544F2B06BC7A00BC7174 /* CameraModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B270544E2B06BC7A00BC7174 /* CameraModel.swift */; };
+		B27054512B06CFBD00BC7174 /* PublishPostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B27054502B06CFBD00BC7174 /* PublishPostView.swift */; };
 		B2BACCCB2ACF12B300F942A3 /* ContactsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6602DD8C2AC625EF008C3177 /* ContactsView.swift */; };
 		B2BACCCC2ACF12B300F942A3 /* MainScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6602DD8D2AC625EF008C3177 /* MainScrollView.swift */; };
 		B2BACCCD2ACF12B300F942A3 /* SelfProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6602DD8B2AC625EF008C3177 /* SelfProfileView.swift */; };
@@ -93,6 +94,7 @@
 		B21292502ACD21500064AE5D /* ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
 		B27054492B06B5A300BC7174 /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
 		B270544E2B06BC7A00BC7174 /* CameraModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraModel.swift; sourceTree = "<group>"; };
+		B27054502B06CFBD00BC7174 /* PublishPostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublishPostView.swift; sourceTree = "<group>"; };
 		B2BACCCE2ACF132000F942A3 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		B2BACCD22ACF15C000F942A3 /* FlavorFeed.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FlavorFeed.entitlements; sourceTree = "<group>"; };
 		B2BACCD32ACF161100F942A3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -155,6 +157,7 @@
 				B2BACCCE2ACF132000F942A3 /* ContentView.swift */,
 				BF0C62DC2ADF43A6003A7553 /* SignupView.swift */,
 				6602DD8E2AC6262C008C3177 /* LandingPage.swift */,
+				B27054502B06CFBD00BC7174 /* PublishPostView.swift */,
 				B27054492B06B5A300BC7174 /* CameraView.swift */,
 				6602DD8C2AC625EF008C3177 /* ContactsView.swift */,
 				6602DD8D2AC625EF008C3177 /* MainScrollView.swift */,
@@ -421,6 +424,7 @@
 				664B8F062AC5F1AA001E8C7F /* FlavorFeedApp.swift in Sources */,
 				B2BACCCC2ACF12B300F942A3 /* MainScrollView.swift in Sources */,
 				BF0C62DD2ADF43A6003A7553 /* SignupView.swift in Sources */,
+				B27054512B06CFBD00BC7174 /* PublishPostView.swift in Sources */,
 				B2BACCCB2ACF12B300F942A3 /* ContactsView.swift in Sources */,
 				B2C5E46E2AF2AF02000EA620 /* Recipe.swift in Sources */,
 				B270544F2B06BC7A00BC7174 /* CameraModel.swift in Sources */,
