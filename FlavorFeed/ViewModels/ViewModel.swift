@@ -293,11 +293,11 @@ class ViewModel: ObservableObject {
                                             images: data["images"] as! [String],
                                             date: data["date"] as! [String],
                                             day: data["day"] as! String,
-                                            comments: self.convertToComments(postID: doc.documentID, commentsString: data["comments"] as? [String] ?? []),
+                                            comments: self.convertToComments(postID: doc.documentID),
                                             caption: data["caption"] as? [String] ?? [],
                                             likes: data["likes"] as? [String] ?? [],
                                             locations: data["location"] as? [String] ?? [],
-                                            recipes: self.convertToRecipe(postID: doc.documentID, recipesString: data["recipes"] as? [String] ?? []),
+                                            recipes: self.convertToRecipe(postID: doc.documentID),
                                             friend: nil
                                            ))
                         }
@@ -539,10 +539,10 @@ class ViewModel: ObservableObject {
     }
     
     // needs to be done
-    func convertToRecipe(postID: String, recipesString: [String]) -> [Recipe] {
+    func convertToRecipe(postID: String) -> [Recipe] {
         var recipe: [Recipe]?
         
-        self.db.collection("POSTS").document(postID).collection("RECIPES").whereField("id", in: recipesString).getDocuments(completion: { [weak self] documents, error in
+        self.db.collection("POSTS").document(postID).collection("RECIPES").getDocuments(completion: { [weak self] documents, error in
                 if let error = error {
                     self?.errorText = "Cannot get list of recipes from Firebase."
                 } else {
@@ -561,10 +561,10 @@ class ViewModel: ObservableObject {
     }
     
     // needs to be done
-    func convertToComments(postID: String, commentsString: [String]) -> [Comment] {
+    func convertToComments(postID: String) -> [Comment] {
         var comment: [Comment]?
         
-        self.db.collection("POSTS").document(postID).collection("COMMENTS").whereField("id", in: commentsString).getDocuments(completion: { [weak self] documents, error in
+        self.db.collection("POSTS").document(postID).collection("COMMENTS").getDocuments(completion: { [weak self] documents, error in
                 if let error = error {
                     self?.errorText = "Cannot get list of recipes from Firebase."
                 } else {
