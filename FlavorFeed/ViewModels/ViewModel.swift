@@ -9,37 +9,43 @@ import Foundation
 import Firebase
 import FirebaseAuth
 import FirebaseFirestore
+import FirebaseStorage
+import SwiftUI
 
 
 /**
  View Model Directory:
  
-Firebase Methods:
-1. firebase_sign_out
-2. firebase_email_password_sign_up
-3. firebase_sign_in
-4. send_friend_request
-5. setCurrentUser
-6. accept_friend_request
-7. reject_friend_request
-8. firebase_delete_comment
-9. firebase_add_comment
+ Firebase Methods:
+ 1. firebase_sign_out
+ 2. firebase_email_password_sign_up
+ 3. firebase_sign_in
+ 4. send_friend_request
+ 5. setCurrentUser
+ 6. accept_friend_request
+ 7. reject_friend_request
+ 8. firebase_delete_comment
+ 9. firebase_add_comment
  
  
  **/
 
 class ViewModel: ObservableObject {
     
-    @Published var current_user: User? = nil 
+    @Published var current_user: User? = nil
     @Published var errorText: String? = nil
+    @Published var comments: [Comment] = [Comment]()
+    @Published var usernameSearchResults: [String] = [String]()
+
     
     @Published var todays_posts: [Post] = [Post]()
     
     
     let db = Firestore.firestore()
     let auth = Auth.auth()
+    let storageRef = Storage.storage().reference()
     
-
+    
     
     init() {
         _ = Auth.auth().addStateDidChangeListener { [weak self] auth, user in
@@ -51,6 +57,14 @@ class ViewModel: ObservableObject {
                         UserDefaults.standard.setValue(true, forKey: "log_Status")
                         self?.get_todays_posts() { postIDs in
                             // Create post models
+                            
+                            for id in postIDs {
+                                print("get post object for \(id)")
+                                self?.firebase_get_post(postID: id) { post in
+                                    self?.todays_posts.append(post)
+                                }
+                            }
+                            
                         }
                     }
                 }
@@ -100,6 +114,8 @@ class ViewModel: ObservableObject {
                      "bio" : "",
                      "phone_number" : phoneNumber,
                      "friends" : [],
+                     "incomingRequests": [],
+                     "outgoingRequests": [],
                      "pins" : [],
                      "myPosts" : []
                     ] as [String : Any]) { error in
@@ -175,6 +191,33 @@ class ViewModel: ObservableObject {
         })
     }
     
+    func fetchPosts(postIDs: [String]) -> [Post]{
+        var post: [Post]?
+        post = nil
+        self.db.collection("POSTS").whereField("id", in: postIDs).getDocuments(completion: { [weak self] documents, error in
+                if let error = error {
+                    self?.errorText = "Cannot get list of posts from Firebase: \(error.localizedDescription)"
+                } else {
+                    for document in documents!.documents {
+                        post?.append(Post(id: document.documentID,
+                                          userID: document["userID"] as! String,
+                                          images: document["images"] as! [String],
+                                          date: document["date"] as! [String],
+                                          day: document["day"] as! String,
+                                          comments: document["comments"] as? [Comment] ?? [],
+                                          caption: document["caption"] as? [String] ?? [],
+                                          likes: document["likes"] as? [String] ?? [],
+                                          locations: document["locations"] as? [String] ?? [],
+                                          recipes: document["recipes"] as? [Recipe] ?? [],
+                                          friend: nil))
+
+                        UserDefaults.standard.setValue(true, forKey: "log_Status")
+                    }
+                }
+            })
+        return post!
+    }
+    
     func accept_friend_request(from: String, to: String) {
         let fromRef = self.db.collection("USERS").document(from)
         let toRef = self.db.collection("USERS").document(to)
@@ -233,32 +276,60 @@ class ViewModel: ObservableObject {
                 
             }
         }
-        
-        
     }
-    
-    func firebase_add_comment(post: Post, text: String, date: String) {
-
-            let id = UUID()
-
-            self.db.collection("POSTS").document(post.id).collection("COMMENTS").document(id.uuidString).setData(
-                ["id": id.uuidString,
-                 "user_id" : current_user!.id,
-                 "text": text,
-                 "date": date,
-                 "replies": []
-                ] as [String : Any]
-            ) { error in
-                if let error = error {
-                    print("Error: \(error.localizedDescription)")
-                } else {
-
-
-
+    func firebase_get_post(postID: String, completion: @escaping ((Post) -> Void)) {
+        print("Getting post...")
+        db.collection("POSTS").document(postID).getDocument { document, error in
+            if let err = error {
+                print(err.localizedDescription)
+                return
+            } else {
+                if let doc = document {
+                    if let data = doc.data() {
+                        self.getFriend(userID: data["userID"] as! String) { friend in
+                            completion(Post(id: doc.documentID,
+                                            userID: data["userID"] as! String,
+                                            images: data["images"] as! [String],
+                                            date: data["date"] as! [String],
+                                            day: data["day"] as! String,
+                                            comments: self.convertToComments(data["comments"] as? [String] ?? []),
+                                            caption: data["caption"] as? [String] ?? [],
+                                            likes: data["likes"] as? [String] ?? [],
+                                            locations: data["location"] as? [String] ?? [],
+                                            recipes: self.convertToRecipe(data["recipes"] as? [String] ?? []),
+                                            friend: nil
+                                           
+                                           ))
+                        }
+                    }
                 }
             }
-
         }
+    }
+    
+    
+    func firebase_add_comment(post: Post, text: String, date: String) {
+        
+        let id = UUID()
+        
+        self.db.collection("POSTS").document(post.id).collection("COMMENTS").document(id.uuidString).setData(
+            ["id": id.uuidString,
+             "user_id" : current_user!.id,
+             "text": text,
+             "date": date,
+             "replies": []
+            ] as [String : Any]
+        ) { error in
+            if let error = error {
+                print("Error: \(error.localizedDescription)")
+            } else {
+                
+                
+                
+            }
+        }
+        
+    }
     
     func firebase_like_post(post: inout Post, user: String) {
         let postRef = self.db.collection("POSTS").document(post.id)
@@ -285,7 +356,7 @@ class ViewModel: ObservableObject {
             }
         }
     }
-  
+    
     func firebase_create_post(userID: String, selfie: String, foodPic: String, caption: String, recipe: String, location: String) {
         
         let date = Date()
@@ -294,30 +365,29 @@ class ViewModel: ObservableObject {
         dateFormatter.dateFormat = "MM-dd-yyyy HH:mm:ss"
         let dateFormatted = dateFormatter.string(from: date) // get string from date
         
-        
-        let docId = UUID()
-    
-        
-        let data = ["id" : docId.uuidString,
-                    "userID" : userID,
-                    "images" : [selfie, foodPic],
-                    "caption" : [caption],
-                    "recipe" : [recipe],
-                    "date" : [dateFormatted],
+
+        let data = ["images" : selfie + " " + foodPic,
+                    "caption" : caption,
+                    "recipes" : recipe,
+                    "date" : dateFormatted,
                     "likes" : [],
-                    "location" : [location]]
+                    "location" : location]
         as [String : Any]
-        
+      
+        let docId = UUID()
         self.db.collection("POSTS").document(docId.uuidString).setData(data) { error in
             if let error = error {
-                print("Error: \(error.localizedDescription)")
+                print("Error: \(error.localizedDescription) ")
                 return
             } else {
                 self.db.collection("USERS").document(userID).updateData(["myPosts": FieldValue.arrayUnion([docId.uuidString])])
             }
-        
+            
         }
     }
+    
+
+            
     func firebase_search_for_username(username: String, completionHandler: @escaping (([String]) -> Void)) {
         var arr: [String] = []
         self.db.collection("USERS").whereField("id", isGreaterThanOrEqualTo: username).whereField("id", isLessThanOrEqualTo: username + "\u{f7ff}")
@@ -333,8 +403,92 @@ class ViewModel: ObservableObject {
                 }
                 completionHandler(arr)
             }
-            
+        
     }
+
+    
+    func get_post_comments(postID: String, completion: @escaping ([Comment]) -> Void) {
+        let commentsRef = self.db.collection("POSTS").document(postID).collection("COMMENTS")
+        commentsRef.getDocuments() { (documents, error) in
+            var comments: [Comment] = [Comment]()
+            if let error = error {
+                // Error getting comments
+                print("Error in the get post comments: \(error.localizedDescription)")
+            } else {
+                for document in documents!.documents {
+                    let data = document.data()
+                    let comment = Comment(id: data["id"] as! String, userID: data["userID"] as! String, text: data["text"] as! String, date: data["date"] as! String)
+                    comments.append(comment)
+                }
+            }
+            completion(comments)
+        }
+    }
+    
+    func get_friend_requests(completion: @escaping ([Friend]) -> Void) {
+        let userRef = self.db.collection("USERS").document(current_user!.id)
+        userRef.getDocument { (document, error) in
+            if let error = error {
+                print("Error in the get friend requests: \(error.localizedDescription)")
+            } else {
+                let data = document!.data()
+                let requests = data!["incomingRequests"] as? [String]
+                self.get_friends(userIDs: requests ?? []) { friends in
+                    completion(friends)
+                }
+            }
+        }
+    }
+
+
+    
+    func firebase_add_entry_post(userID: String, selfie: String, foodPic: String, caption: String, recipe: String, location: String) {
+        let date = Date()
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MM-dd-yyyy HH:mm:ss"
+        let dateFormatted = dateFormatter.string(from: date)
+        
+        self.db.collection("USERS").document(userID).getDocument { (document, error) in
+            var myPosts = []
+            if let document {
+                myPosts = document.data()!["myPosts"] as! [String]
+              } else {
+                print("Document does not exist")
+              }
+            let todayPostID = myPosts[myPosts.count - 1]
+            self.db.collection("POSTS").document(todayPostID as! String).getDocument { (document, error) in
+                if let document {
+                    var myCaptions = []
+                    myCaptions = document.data()!["caption"] as! [String]
+                    myCaptions.append(caption)
+                    self.db.collection("POSTS").document(todayPostID as! String).updateData(["caption": myCaptions])
+                    self.db.collection("POSTS").document(todayPostID as! String).updateData(["date": FieldValue.arrayUnion([dateFormatted])])
+                    
+                    var imagesArr = []
+                    imagesArr = document.data()!["images"] as! [String]
+                    imagesArr.append(selfie)
+                    imagesArr.append(foodPic)
+                    self.db.collection("POSTS").document(todayPostID as! String).updateData(["images": imagesArr])
+                    
+                    var locationArr = []
+                    locationArr = document.data()!["location"] as! [String]
+                    locationArr.append(location)
+                    self.db.collection("POSTS").document(todayPostID as! String).updateData(["location": locationArr])
+                    
+                    var recipeArr = []
+                    recipeArr = document.data()!["recipe"] as! [String]
+                    recipeArr.append(recipe)
+                    self.db.collection("POSTS").document(todayPostID as! String).updateData(["recipe": recipeArr])
+                } else {
+                    print("Document does not exist")
+                }
+            }
+        }
+        
+    }
+    
+
 
     
     func get_todays_posts(completion: @escaping ([String]) -> Void) {
@@ -346,7 +500,7 @@ class ViewModel: ObservableObject {
         let dateTodayString = dateFormatterSimple.string(from: date)
         
         var postList: [String] = [String]()
-        get_friends() { friends in
+        get_friends_ids() { friends in
             if friends.isEmpty {
                 // Problem getting friends, error screen
             } else {
@@ -359,15 +513,16 @@ class ViewModel: ObservableObject {
                             postList.append(document.documentID)
                             print(document.documentID)
                         }
+                        completion(postList)
+                        
                     }
                 }
             }
             
         }
-        completion(postList)
     }
     
-    func get_friends(completion: @escaping ([String]) -> Void) {
+    func get_friends_ids(completion: @escaping ([String]) -> Void) {
         let userRef = self.db.collection("USERS").document(current_user!.id)
         userRef.getDocument { document, err in
             if let err = err  {
@@ -381,5 +536,126 @@ class ViewModel: ObservableObject {
         }
     }
     
-
+    func get_friends(userIDs: [String], completion: @escaping (([Friend])-> Void)) {
+        if userIDs.isEmpty {
+            completion([Friend]())
+        } else {
+            self.db.collection("USERS").whereField("id", in: userIDs).getDocuments { (documents, error) in
+                if let error = error {
+                    print("SetCurrentUserError: \(error.localizedDescription)")
+                } else {
+                    var friends: [Friend] = [Friend]()
+                    for document in documents!.documents {
+                        let data = document.data()
+                        friends.append(Friend(id: document.documentID,
+                                              name: data["name"] as? String ?? "Name not Found",
+                                              profilePicture: data["profilePicture"] as? String ?? "Profile picture not found",
+                                              bio: data["bio"] as? String ?? "",
+                                              mutualFriends: [],
+                                              pins: data["pins"] as? [String] ?? [],
+                                              todaysPosts: []))
+                    }
+                    completion(friends)
+                }
+            }
+        }
+    }
+    
+    func getFriend(userID: String, completion: @escaping ((Friend)-> Void)) {
+        self.db.collection("USERS").document(userID).getDocument { document, error in
+            if let error = error {
+                print("SetCurrentUserError: \(error.localizedDescription)")
+            } else if let document = document {
+                if let data = document.data() {
+                    completion(Friend(id: document.documentID,
+                                    name: data["name"] as? String ?? "Name not Found",
+                                    profilePicture: data["profilePicture"] as? String ?? "Profile picture not found",
+                                    bio: data["bio"] as? String ?? "",
+                                    mutualFriends: [],
+                                    pins: data["pins"] as? [String] ?? [],
+                                    todaysPosts: []))
+                }
+            }
+        }
+    }
+    
+    func get_friend_suggestions(completion: @escaping ([Friend]) -> Void) {
+        get_friends_ids() { friends in
+            if friends.isEmpty {
+                completion([Friend]())
+            } else {
+                self.db.collection("USERS").whereField("id", in: friends).getDocuments() {documents, err in
+                    if let err = err {
+                        // Unable to get posts, error screen
+                        print("In Get Friend Suggestions: \(err.localizedDescription)")
+                    } else {
+                        var suggestions = Set<String>()
+                        for document in documents!.documents {
+                            let data = document.data()
+                            let friends = data["friends"] as? [String]
+                            suggestions.formUnion(friends!)
+                        }
+                        suggestions.subtract(friends)
+                        self.get_friends(userIDs: Array(suggestions)) { friends in
+                            completion(friends)
+                        }
+                    }
+                }
+            }
+            
+        }
+    }
+    
+    // needs to be done
+    func convertToRecipe(_ recipesString: [String]) -> [Recipe] {
+        return [Recipe]()
+    }
+    
+    // needs to be done
+    func convertToComments(_ commentsString: [String]) -> [Comment] {
+        return [Comment]()
+    }
+    
+    func firebase_get_url_from_image(image: UIImage, completion: @escaping (URL?) -> Void) {
+        guard let imageData = image.jpegData(compressionQuality: 0.8) else {
+            completion(nil)
+            return
+        }
+        // create random image path
+        let imagePath = "images/\(UUID()).jpg"
+        
+        // create reference to file you want to upload
+        let imageRef = storageRef.child(imagePath)
+        
+        //upload image
+        let uploadTask = imageRef.putData(imageData, metadata: nil) { (metadata, error) in
+            if let error = error {
+                print("Error uploading image: \(error.localizedDescription)")
+                completion(nil)
+            } else {
+                // Image successfully uploaded
+                imageRef.downloadURL { url, error in
+                    if let downloadURL = url {
+                        completion(downloadURL)
+                    } else {
+                        print("Error getting download URL: \(String(describing: error?.localizedDescription))")
+                    }
+                }
+            }
+        }
+    }
+    
+    //synchronous approach
+    func load_image_from_url(url: String) -> Image? {
+        if url == "NIL" {
+            return nil
+        }
+        let url = URL(string: url)!
+        
+        guard let imageData = try? Data(contentsOf: url),
+              let uiImage = UIImage(data: imageData) else {
+            return nil
+        }
+        return Image(uiImage: uiImage)
+    }
 }
