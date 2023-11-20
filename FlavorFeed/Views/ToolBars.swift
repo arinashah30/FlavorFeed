@@ -9,7 +9,7 @@ import SwiftUI
 
 struct BottomBar: View {
     @Binding var messagesRemaing: Int
-    @State private var showCameraViewSheet = false
+    @State var showCameraViewSheet = false
     @ObservedObject var vm: ViewModel
     
     var body: some View {

@@ -40,7 +40,18 @@ class ViewModel: ObservableObject {
     
     // POSTS
     @Published var my_post_today: Post?
-    @Published var todays_posts: [Post] = [Post]() // EVERYONE ON YOUR FEED
+    @Published var todays_posts: [Post] = [Post]() {
+        didSet {
+            print("todays post did set called")
+            my_post_today = nil
+                if let currentUserID = self.current_user?.id,
+                   let index = todays_posts.firstIndex(where: { $0.userID == currentUserID }) {
+                    my_post_today = todays_posts.remove(at: index)
+                    print("todays post updated")
+
+                }
+            }
+    }
     
     
     // camera stuff (DONT USE)
@@ -51,7 +62,6 @@ class ViewModel: ObservableObject {
     let db = Firestore.firestore()
     let auth = Auth.auth()
     let storageRef = Storage.storage().reference()
-    
     // remove later
     init(photo1: UIImage? = nil, photo2: UIImage? = nil) {
             self.photo_1 = photo1
@@ -66,16 +76,11 @@ class ViewModel: ObservableObject {
                     print("Setting User: \(username)")
                     self?.setCurrentUser(userId: username) {
                         UserDefaults.standard.setValue(true, forKey: "log_Status")
-                        self?.get_todays_posts() { postIDs in
-                            // Create post models
-                            
-                            for id in postIDs {
-                                print("get post object for \(id)")
-                                self?.firebase_get_post(postID: id) { post in
-                                    self?.todays_posts.append(post)
-                                }
-                            }
-                            
+                        // refresh feed
+                        print("VIEW MODEL INIT")
+
+                        self?.refreshFeed {
+                            // do nothing
                         }
                     }
                 }
@@ -202,31 +207,73 @@ class ViewModel: ObservableObject {
         })
     }
     
-    func fetchPosts(postIDs: [String]) -> [Post]{
-        var post: [Post]?
-        post = nil
-        self.db.collection("POSTS").whereField("id", in: postIDs).getDocuments(completion: { [weak self] documents, error in
-                if let error = error {
-                    self?.errorText = "Cannot get list of posts from Firebase."
-                } else {
-                    for document in documents!.documents {
-                        post?.append(Post(id: document.documentID,
-                                          userID: document["userID"] as! String,
-                                          images: document["images"] as! [String],
-                                          date: document["date"] as! [String],
-                                          day: document["day"] as! String,
-                                          comments: document["comments"] as? [Comment] ?? [],
-                                          caption: document["caption"] as? [String] ?? [],
-                                          likes: document["likes"] as? [String] ?? [],
-                                          locations: document["locations"] as? [String] ?? [],
-                                          recipes: document["recipes"] as? [Recipe] ?? [],
-                                          friend: nil
-                                         ))
-                        UserDefaults.standard.setValue(true, forKey: "log_Status")
-                    }
+    func refreshFeed(_ completion: @escaping () -> Void) {
+        print("REFRESH FEED TOP")
+
+        get_todays_posts() { postIDs in
+            // Create post models
+            print(postIDs)
+            print("REFRESH FEED MID")
+            self.todays_posts.removeAll()
+            self.fetchPosts(postIDs: postIDs) { posts in
+                print("POSTS:\(posts)")
+                self.todays_posts = posts
+                print("REFRESH FEED BOTTOM")
+                completion()
+            }
+        }
+    }
+    
+    func fetchPosts(postIDs: [String], completion: @escaping ([Post]) -> Void) {
+        print("FETCH POSTS TOP")
+
+        let dispatchGroup = DispatchGroup()
+        var posts: [Post] = [Post]()
+
+        for postID in postIDs {
+            print("Entering dispatch group for post ID: \(postID)")
+            dispatchGroup.enter()
+
+            self.db.collection("POSTS").document(postID).getDocument { [weak self] document, error in
+                defer {
+                    print("Leaving dispatch group for post ID: \(postID)")
                 }
-            })
-        return post!
+
+                if let error = error {
+                    self?.errorText = "Error fetching post with ID \(postID): \(error.localizedDescription)"
+                } else if let document = document, document.exists {
+                    let data = document.data()!
+
+                    self?.getFriend(userID: data["userID"] as! String) { friend in
+                        print("FOUND FRIEND \(friend.name)")
+                        posts.append(Post(
+                            id: document.documentID,
+                            userID: data["userID"] as! String,
+                            images: data["images"] as! [String],
+                            date: data["date"] as! [String],
+                            day: data["day"] as! String,
+                            comments: self?.convertToComments(data["comments"] as? [String] ?? []) ?? [],
+                            caption: data["caption"] as? [String] ?? [],
+                            likes: data["likes"] as? [String] ?? [],
+                            locations: data["location"] as? [String] ?? [],
+                            recipes: self?.convertToRecipe(data["recipes"] as? [String] ?? []) ?? [],
+                            friend: friend
+                        ))
+
+                        // Notify that this specific task is complete
+                        dispatchGroup.leave()
+                    }
+                } else {
+                    // Notify that this specific task is complete even if there is an error
+                    dispatchGroup.leave()
+                }
+            }
+        }
+
+        dispatchGroup.notify(queue: .main) {
+            print("All tasks completed")
+            completion(posts)
+        }
     }
     
     func accept_friend_request(from: String, to: String) {
@@ -289,7 +336,7 @@ class ViewModel: ObservableObject {
         }
     }
     func firebase_get_post(postID: String, completion: @escaping ((Post) -> Void)) {
-        print("Getting post...")
+        print("Getting post TOP")
         db.collection("POSTS").document(postID).getDocument { document, error in
             if let err = error {
                 print(err.localizedDescription)
@@ -308,7 +355,7 @@ class ViewModel: ObservableObject {
                                             likes: data["likes"] as? [String] ?? [],
                                             locations: data["location"] as? [String] ?? [],
                                             recipes: self.convertToRecipe(data["recipes"] as? [String] ?? []),
-                                            friend: nil
+                                            friend: friend
                                            
                                            ))
                         }
@@ -410,7 +457,21 @@ class ViewModel: ObservableObject {
         let dayFormatted = dayFormatter.string(from: date) // get string from date
 
         self.firebase_get_url_from_image(image: self.photo_1!) { url_1 in
+            if url_1 == nil {
+                print("Error uploading photo_1")
+                completion(true)
+                return
+            } else {
+                print("URL_1: \(url_1?.absoluteString)")
+            }
             self.firebase_get_url_from_image(image: self.photo_2!) { url_2 in
+                
+                if url_2 == nil {
+                    print("Error uploading photo_2")
+                    completion(true)
+                    return
+                }
+                
                 if let foodPic = url_1 {
                     if let selfie = url_2 {
                         let data = ["userID" : self.current_user!.id,
@@ -436,9 +497,7 @@ class ViewModel: ObservableObject {
                             
                         }
                     }
-                    completion(true)
                 }
-                completion(true)
 
             }
         }
@@ -534,6 +593,8 @@ class ViewModel: ObservableObject {
 
     
     func get_todays_posts(completion: @escaping ([String]) -> Void) {
+        print("GET TODAYS POST TOP")
+
         let date = Date()
         
         let dateFormatterSimple = DateFormatter()
@@ -543,28 +604,30 @@ class ViewModel: ObservableObject {
         
         var postList: [String] = [String]()
         get_friends() { friends in
-            if friends.isEmpty {
-                // Problem getting friends, error screen
-            } else {
-                self.db.collection("POSTS").whereField("userID", in: friends).whereField("day", isEqualTo: dateTodayString).getDocuments() {documents, err in
-                    if let err = err {
-                        // Unable to get posts, error screen
-                        print("In Get Todays Posts: \(err.localizedDescription)")
-                    } else {
-                        for document in documents!.documents {
-                            postList.append(document.documentID)
-                            print(document.documentID)
-                        }
-                        completion(postList)
-                        
+            print("GET TODAYS POST MID")
+            var allUsersToFetch = friends
+            allUsersToFetch.append(self.current_user!.id)
+            
+            self.db.collection("POSTS").whereField("userID", in: allUsersToFetch).whereField("day", isEqualTo: dateTodayString).getDocuments() {documents, err in
+                if let err = err {
+                    // Unable to get posts, error screen
+                    print("In Get Todays Posts: \(err.localizedDescription)")
+                } else {
+                    print("GET TODAYS POST BOTTOM")
+                    for document in documents!.documents {
+                        postList.append(document.documentID)
+                        print("Document found: \(document.documentID)")
                     }
+                    print("DONE")
+                    completion(postList)
+                    
                 }
             }
-            
         }
     }
     
     func get_friends(completion: @escaping ([String]) -> Void) {
+        print("GET FRIENDS TOP")
         let userRef = self.db.collection("USERS").document(current_user!.id)
         userRef.getDocument { document, err in
             if let err = err  {
@@ -618,17 +681,19 @@ class ViewModel: ObservableObject {
         let imageRef = storageRef.child(imagePath)
         
         //upload image
-        let uploadTask = imageRef.putData(imageData, metadata: nil) { (metadata, error) in
-            if let error = error {
-                print("Error uploading image: \(error.localizedDescription)")
-                completion(nil)
-            } else {
-                // Image successfully uploaded
-                imageRef.downloadURL { url, error in
-                    if let downloadURL = url {
-                        completion(downloadURL)
-                    } else {
-                        print("Error getting download URL: \(String(describing: error?.localizedDescription))")
+        DispatchQueue.main.async {
+            let uploadTask = imageRef.putData(imageData, metadata: nil) { (metadata, error) in
+                if let error = error {
+                    print("Error uploading image: \(error.localizedDescription)")
+                    completion(nil)
+                } else {
+                    // Image successfully uploaded
+                    imageRef.downloadURL { url, error in
+                        if let downloadURL = url {
+                            completion(downloadURL)
+                        } else {
+                            print("Error getting download URL: \(String(describing: error?.localizedDescription))")
+                        }
                     }
                 }
             }

@@ -37,6 +37,7 @@
 		B212924E2ACD20850064AE5D /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */ = {isa = PBXBuildFile; productRef = B212924D2ACD20850064AE5D /* FirebaseAnalyticsWithoutAdIdSupport */; };
 		B212924F2ACD213C0064AE5D /* LandingPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6602DD8E2AC6262C008C3177 /* LandingPage.swift */; };
 		B21292512ACD21500064AE5D /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21292502ACD21500064AE5D /* ViewModel.swift */; };
+		B23FF6B82B0AC3FE00F27AF2 /* MyPostTodayPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B23FF6B72B0AC3FE00F27AF2 /* MyPostTodayPreviewView.swift */; };
 		B270544A2B06B5A300BC7174 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B27054492B06B5A300BC7174 /* CameraView.swift */; };
 		B270544D2B06BBA400BC7174 /* Camera-SwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = B270544C2B06BBA400BC7174 /* Camera-SwiftUI */; };
 		B270544F2B06BC7A00BC7174 /* CameraModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B270544E2B06BC7A00BC7174 /* CameraModel.swift */; };
@@ -92,6 +93,7 @@
 		669C94AF2AE98C770075BE66 /* ToolBars.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToolBars.swift; sourceTree = "<group>"; };
 		B21292452ACD20480064AE5D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		B21292502ACD21500064AE5D /* ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
+		B23FF6B72B0AC3FE00F27AF2 /* MyPostTodayPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPostTodayPreviewView.swift; sourceTree = "<group>"; };
 		B27054492B06B5A300BC7174 /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
 		B270544E2B06BC7A00BC7174 /* CameraModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraModel.swift; sourceTree = "<group>"; };
 		B27054502B06CFBD00BC7174 /* PublishPostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublishPostView.swift; sourceTree = "<group>"; };
@@ -158,6 +160,7 @@
 				BF0C62DC2ADF43A6003A7553 /* SignupView.swift */,
 				6602DD8E2AC6262C008C3177 /* LandingPage.swift */,
 				B27054502B06CFBD00BC7174 /* PublishPostView.swift */,
+				B23FF6B72B0AC3FE00F27AF2 /* MyPostTodayPreviewView.swift */,
 				B27054492B06B5A300BC7174 /* CameraView.swift */,
 				6602DD8C2AC625EF008C3177 /* ContactsView.swift */,
 				6602DD8D2AC625EF008C3177 /* MainScrollView.swift */,
@@ -421,6 +424,7 @@
 				489E36132AD8ACE900369ECB /* Comment.swift in Sources */,
 				B2C5E46C2AF2A476000EA620 /* Friend.swift in Sources */,
 				B2BACCCF2ACF132000F942A3 /* ContentView.swift in Sources */,
+				B23FF6B82B0AC3FE00F27AF2 /* MyPostTodayPreviewView.swift in Sources */,
 				664B8F062AC5F1AA001E8C7F /* FlavorFeedApp.swift in Sources */,
 				B2BACCCC2ACF12B300F942A3 /* MainScrollView.swift in Sources */,
 				BF0C62DD2ADF43A6003A7553 /* SignupView.swift in Sources */,
