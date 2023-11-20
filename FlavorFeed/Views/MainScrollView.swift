@@ -11,6 +11,8 @@ struct MainScrollView: View {
     @ObservedObject var vm: ViewModel
     @Binding var tabSelection: Tabs
     
+    @StateObject var myPostVars = MyPostTodayPreviewVariables()
+    
     
     var body: some View {
         GeometryReader { geometry in
@@ -31,6 +33,12 @@ struct MainScrollView: View {
                                 .foregroundStyle(Color.ffSecondary)
                                 .underline()
                             MyPostTodayPreviewView(post: myPost, vm: vm)
+                            Text(myPost.caption[myPostVars.myPostIndex])
+                                .font(.system(size: 12, weight: .semibold))
+                                .foregroundStyle(Color.ffSecondary)
+                            Text(myPost.locations[myPostVars.myPostIndex])
+                                .font(.system(size: 12, weight: .none))
+                                .foregroundStyle(Color.gray)
                         } else {
                             Text("You have not posted yet today.")
                         }
@@ -54,10 +62,15 @@ struct MainScrollView: View {
                 }.edgesIgnoringSafeArea(.bottom).frame(maxHeight: .infinity)
                 
             }
-        }
+        }.environmentObject(myPostVars)
     }
 }
 #Preview {
     MainScrollView(vm: ViewModel(), tabSelection: Binding.constant(Tabs.mainScrollView))
+}
+
+// Our observable object class
+class MyPostTodayPreviewVariables: ObservableObject {
+    @Published var myPostIndex = 0
 }
 

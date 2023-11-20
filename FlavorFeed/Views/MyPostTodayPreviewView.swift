@@ -7,89 +7,114 @@
 
 import SwiftUI
 
+
+
 struct MyPostTodayPreviewView: View {
     var post: Post
     
     @ObservedObject var vm: ViewModel
-    
+    @EnvironmentObject var index: MyPostTodayPreviewVariables
     
     init(post: Post, vm: ViewModel) {
+        
         self.post = post
         self.vm = vm
+        print("NUMBER OF POST ENTRIES FOUND: \(post.images.count)")
     }
     
     var body: some View {
-        VStack(spacing: 2) {
-            ZStack {
-                VStack {
-                    AsyncImage(url: URL(string: post.images[0][0])) { image in
-                        image.resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 112, height: 149)
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
-                    } placeholder: {
-                        ProgressView()
-                        
-                            .frame(width: 112, height: 149)
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
-                    }
-                    if (post.comments.count > 0) {
-                        Spacer()
-                    }
-                }
+        
+        ScrollView(.horizontal, showsIndicators: false) {
+            ScrollViewReader { value in
                 
                 HStack {
-                    VStack {
-                        AsyncImage(url: URL(string: post.images[0][1])) { image in
-                            image.resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 37, height: 50)
-                                .cornerRadius(5)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 5)
-                                        .stroke(Color.ffPrimary, lineWidth: 1)
-                                )
-                                .padding(7)
-                        } placeholder: {
-                            ProgressView()
-                                .frame(width: 37, height: 50)
-                                .cornerRadius(5)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 5)
-                                        .stroke(Color.ffPrimary, lineWidth: 1)
-                                )
-                                .padding(7)
+                    Spacer()
+                        .frame(width: UIScreen.main.bounds.size.width * 0.37)
+                    
+                    ForEach(0..<post.images.count, id: \.self) { i in
+                        Button {
+                            index.myPostIndex = i
+                        } label: {
+                            ZStack {
+                                VStack {
+                                    AsyncImage(url: URL(string: post.images[i][0])) { image in
+                                        image.resizable()
+                                            .aspectRatio(contentMode: .fit)
+                                            .frame(width: 112, height: 149)
+                                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                                    } placeholder: {
+                                        ProgressView()
+                                        
+                                            .frame(width: 112, height: 149)
+                                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                                    }
+                                    if (post.comments.count > 0) {
+                                        Spacer()
+                                    }
+                                }
+                                
+                                HStack {
+                                    VStack {
+                                        AsyncImage(url: URL(string: post.images[i][1])) { image in
+                                            image.resizable()
+                                                .aspectRatio(contentMode: .fit)
+                                                .frame(width: 37, height: 50)
+                                                .cornerRadius(5)
+                                                .overlay(
+                                                    RoundedRectangle(cornerRadius: 5)
+                                                        .stroke(Color.ffPrimary, lineWidth: 1)
+                                                )
+                                                .padding(7)
+                                        } placeholder: {
+                                            ProgressView()
+                                                .frame(width: 37, height: 50)
+                                                .cornerRadius(5)
+                                                .overlay(
+                                                    RoundedRectangle(cornerRadius: 5)
+                                                        .stroke(Color.ffPrimary, lineWidth: 1)
+                                                )
+                                                .padding(7)
+                                        }
+                                        
+                                        Spacer()
+                                    }
+                                    Spacer()
+                                }
+                                if (post.comments.count > 0) {
+                                    VStack {
+                                        Spacer()
+                                        ZStack(alignment: .center) {
+                                            Image(systemName: "bubble.right.fill")
+                                                .foregroundColor(.ffSecondary)
+                                            Text("\(post.comments.count)")
+                                                .font(.system(size: 11, weight: .none))
+                                                .foregroundStyle(.white)
+                                                .padding(.bottom, 3)
+                                        }.frame(width: 24, height: 24)
+                                    }
+                                }
+                                
+                            }.frame(width: 112, height: 160)
                         }
+                            .padding(5)
+                            .id(i)
                         
-                        Spacer()
                     }
                     Spacer()
-                }
-                if (post.comments.count > 0) {
-                    VStack {
-                        Spacer()
-                        ZStack(alignment: .center) {
-                            Image(systemName: "bubble.right.fill")
-                                .foregroundColor(.ffSecondary)
-                            Text("\(post.comments.count)")
-                                .font(.system(size: 11, weight: .none))
-                                .foregroundStyle(.white)
-                                .padding(.bottom, 3)
-                        }.frame(width: 24, height: 24)
-                    }
-                }
+                        .frame(width: UIScreen.main.bounds.size.width * 0.37)
+                }.scrollTargetLayout()
+                .onChange(of: index.myPostIndex) { _ in
+                                    if index.myPostIndex >= 0 {
+                                        withAnimation(.easeInOut(duration: 0.5)) {
+                                                value.scrollTo(index.myPostIndex, anchor: .top)
+                                            }
+                                        }
+                                    }
                 
-            }.frame(width: 112, height: 160)
-                .padding(5)
-            
-            Text(post.caption[0])
-                .font(.system(size: 12, weight: .semibold))
-                .foregroundStyle(Color.ffSecondary)
-            Text(post.locations[0])
-                .font(.system(size: 12, weight: .none))
-            
-                .foregroundStyle(Color.gray)
-        }
+            }
+        }.scrollDisabled(true)
+        .scrollTargetBehavior(.paging)
+        
     }
 }
 

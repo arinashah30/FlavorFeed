@@ -36,7 +36,7 @@ class ViewModel: ObservableObject {
     @Published var errorText: String? = nil
     @Published var comments: [Comment] = [Comment]()
     @Published var usernameSearchResults: [String] = [String]()
-
+    
     
     // POSTS
     @Published var my_post_today: Post?
@@ -44,13 +44,13 @@ class ViewModel: ObservableObject {
         didSet {
             print("todays post did set called")
             my_post_today = nil
-                if let currentUserID = self.current_user?.id,
-                   let index = todays_posts.firstIndex(where: { $0.userID == currentUserID }) {
-                    my_post_today = todays_posts.remove(at: index)
-                    print("todays post updated")
-
-                }
+            if let currentUserID = self.current_user?.id,
+               let index = todays_posts.firstIndex(where: { $0.userID == currentUserID }) {
+                my_post_today = todays_posts.remove(at: index)
+                print("todays post updated")
+                
             }
+        }
     }
     
     
@@ -62,13 +62,20 @@ class ViewModel: ObservableObject {
     let db = Firestore.firestore()
     let auth = Auth.auth()
     let storageRef = Storage.storage().reference()
+    
+    let dateFormatter = DateFormatter()
+    let dayFormatter = DateFormatter()
+    
     // remove later
     init(photo1: UIImage? = nil, photo2: UIImage? = nil) {
-            self.photo_1 = photo1
-            self.photo_2 = photo2
-        }
+        self.photo_1 = photo1
+        self.photo_2 = photo2
+    }
     
     init() {
+        dateFormatter.dateFormat = "MM-dd-yyyy HH:mm:ss"
+        dayFormatter.dateFormat = "MM-dd-yyyy"
+        
         _ = Auth.auth().addStateDidChangeListener { [weak self] auth, user in
             if let user = user {
                 print("User Found")
@@ -78,7 +85,7 @@ class ViewModel: ObservableObject {
                         UserDefaults.standard.setValue(true, forKey: "log_Status")
                         // refresh feed
                         print("VIEW MODEL INIT")
-
+                        
                         self?.refreshFeed {
                             // do nothing
                         }
@@ -209,7 +216,7 @@ class ViewModel: ObservableObject {
     
     func refreshFeed(_ completion: @escaping () -> Void) {
         print("REFRESH FEED TOP")
-
+        
         get_todays_posts() { postIDs in
             // Create post models
             print(postIDs)
@@ -226,24 +233,24 @@ class ViewModel: ObservableObject {
     
     func fetchPosts(postIDs: [String], completion: @escaping ([Post]) -> Void) {
         print("FETCH POSTS TOP")
-
+        
         let dispatchGroup = DispatchGroup()
         var posts: [Post] = [Post]()
-
+        
         for postID in postIDs {
             print("Entering dispatch group for post ID: \(postID)")
             dispatchGroup.enter()
-
+            
             self.db.collection("POSTS").document(postID).getDocument { [weak self] document, error in
                 defer {
                     print("Leaving dispatch group for post ID: \(postID)")
                 }
-
+                
                 if let error = error {
                     self?.errorText = "Error fetching post with ID \(postID): \(error.localizedDescription)"
                 } else if let document = document, document.exists {
                     let data = document.data()!
-
+                    
                     self?.getFriend(userID: data["userID"] as! String) { friend in
                         print("FOUND FRIEND \(friend.name)")
                         posts.append(Post(
@@ -259,7 +266,7 @@ class ViewModel: ObservableObject {
                             recipes: self?.convertToRecipe(data["recipes"] as? [String] ?? []) ?? [],
                             friend: friend
                         ))
-
+                        
                         // Notify that this specific task is complete
                         dispatchGroup.leave()
                     }
@@ -269,7 +276,7 @@ class ViewModel: ObservableObject {
                 }
             }
         }
-
+        
         dispatchGroup.notify(queue: .main) {
             print("All tasks completed")
             completion(posts)
@@ -356,7 +363,7 @@ class ViewModel: ObservableObject {
                                             locations: data["location"] as? [String] ?? [],
                                             recipes: self.convertToRecipe(data["recipes"] as? [String] ?? []),
                                             friend: friend
-                                           
+                                            
                                            ))
                         }
                     }
@@ -430,7 +437,7 @@ class ViewModel: ObservableObject {
                     "likes" : [],
                     "location" : location]
         as [String : Any]
-      
+        
         let docId = UUID()
         self.db.collection("POSTS").document(docId.uuidString).setData(data) { error in
             if let error = error {
@@ -448,14 +455,9 @@ class ViewModel: ObservableObject {
         // add logic to check if first post of today
         // for now just create new document
         
-        let dateFormatter = DateFormatter()
-        let dayFormatter = DateFormatter()
-        dateFormatter.dateFormat = "MM-dd-yyyy HH:mm:ss"
-        dayFormatter.dateFormat = "MM-dd-yyyy"
-
         let dateFormatted = dateFormatter.string(from: date) // get string from date
         let dayFormatted = dayFormatter.string(from: date) // get string from date
-
+        
         self.firebase_get_url_from_image(image: self.photo_1!) { url_1 in
             if url_1 == nil {
                 print("Error uploading photo_1")
@@ -485,25 +487,36 @@ class ViewModel: ObservableObject {
                                     "location" : [location]]
                         as [String : Any]
                         
+                        if self.my_post_today != nil {
+                            self.firebase_add_entry_post(
+                                selfie: selfie.absoluteString,
+                                foodPic: foodPic.absoluteString,
+                                caption: caption,
+                                recipe: "RECIPE STRING REPLACE SOON",
+                                location: location) { done in
+                                    // if entry upload is done, show camera view sheet should close (false)
+                                    completion(!done)
+                                }
+                        } else {
                         let docId = UUID()
-                        self.db.collection("POSTS").document(docId.uuidString).setData(data) { error in
-                            if let error = error {
-                                print("Error: \(error.localizedDescription) ")
-                                completion(true)
-                            } else {
-                                self.db.collection("USERS").document(self.current_user!.id).updateData(["myPosts": FieldValue.arrayUnion([docId.uuidString])])
-                                completion(false)
+                            self.db.collection("POSTS").document(docId.uuidString).setData(data) { error in
+                                if let error = error {
+                                    print("Error: \(error.localizedDescription) ")
+                                    completion(true)
+                                } else {
+                                    self.db.collection("USERS").document(self.current_user!.id).updateData(["myPosts": FieldValue.arrayUnion([docId.uuidString])])
+                                    completion(false)
+                                }
                             }
-                            
                         }
                     }
                 }
-
+                
             }
         }
     }
-
-            
+    
+    
     func firebase_search_for_username(username: String, completionHandler: @escaping (([String]) -> Void)) {
         var arr: [String] = []
         self.db.collection("USERS").whereField("id", isGreaterThanOrEqualTo: username).whereField("id", isLessThanOrEqualTo: username + "\u{f7ff}")
@@ -521,7 +534,7 @@ class ViewModel: ObservableObject {
             }
         
     }
-
+    
     
     func get_post_comments(postID: String, completion: @escaping ([Comment]) -> Void) {
         let commentsRef = self.db.collection("POSTS").document(postID).collection("COMMENTS")
@@ -540,61 +553,62 @@ class ViewModel: ObservableObject {
             completion(comments)
         }
     }
-
-
     
-    func firebase_add_entry_post(userID: String, selfie: String, foodPic: String, caption: String, recipe: String, location: String) {
+    
+    
+    func firebase_add_entry_post(selfie: String, foodPic: String, caption: String, recipe: String, location: String, completion: @escaping (Bool) -> Void) {
         let date = Date()
+        let entry_date = dateFormatter.string(from: date)
         
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "MM-dd-yyyy HH:mm:ss"
-        let dateFormatted = dateFormatter.string(from: date)
-        
-        self.db.collection("USERS").document(userID).getDocument { (document, error) in
-            var myPosts = []
-            if let document {
-                myPosts = document.data()!["myPosts"] as! [String]
-              } else {
-                print("Document does not exist")
-              }
-            let todayPostID = myPosts[myPosts.count - 1]
-            self.db.collection("POSTS").document(todayPostID as! String).getDocument { (document, error) in
-                if let document {
-                    var myCaptions = []
-                    myCaptions = document.data()!["caption"] as! [String]
-                    myCaptions.append(caption)
-                    self.db.collection("POSTS").document(todayPostID as! String).updateData(["caption": myCaptions])
-                    self.db.collection("POSTS").document(todayPostID as! String).updateData(["date": FieldValue.arrayUnion([dateFormatted])])
-                    
-                    var imagesArr = []
-                    imagesArr = document.data()!["images"] as! [String]
-                    imagesArr.append(selfie)
-                    imagesArr.append(foodPic)
-                    self.db.collection("POSTS").document(todayPostID as! String).updateData(["images": imagesArr])
-                    
-                    var locationArr = []
-                    locationArr = document.data()!["location"] as! [String]
-                    locationArr.append(location)
-                    self.db.collection("POSTS").document(todayPostID as! String).updateData(["location": locationArr])
-                    
-                    var recipeArr = []
-                    recipeArr = document.data()!["recipe"] as! [String]
-                    recipeArr.append(recipe)
-                    self.db.collection("POSTS").document(todayPostID as! String).updateData(["recipe": recipeArr])
+        if let id = self.my_post_today?.id {
+            self.db.collection("POSTS").document(id).getDocument { (document, error) in
+                if let doc = document {
+                    if let data = doc.data() {
+                        // ADD NEW DATE FIELD
+                        self.db.collection("POSTS").document(id).updateData(["date": FieldValue.arrayUnion([entry_date])])
+                        
+                        var myCaptions = []
+                        myCaptions = data["caption"] as! [String]
+                        myCaptions.append(caption)
+                        self.db.collection("POSTS").document(id).updateData(["caption": myCaptions])
+                        
+                        var imagesArr = []
+                        imagesArr = data["images"] as! [String]
+                        imagesArr.append("\(foodPic) \(selfie)")
+                        self.db.collection("POSTS").document(id).updateData(["images": imagesArr])
+                        
+                        var locationArr = []
+                        locationArr = data["location"] as! [String]
+                        locationArr.append(location)
+                        self.db.collection("POSTS").document(id).updateData(["location": locationArr])
+                        
+                        var recipeArr = []
+                        recipeArr = data["recipes"] as! [String]
+                        recipeArr.append(recipe)
+                        self.db.collection("POSTS").document(id).updateData(["recipe": recipeArr])
+                        
+                        completion(true)
+                    } else {
+                        print("Document does not exist")
+                        completion(false)
+                    }
                 } else {
                     print("Document does not exist")
+                    completion(false)
                 }
             }
+        } else {
+            completion(false)
         }
         
     }
     
-
-
+    
+    
     
     func get_todays_posts(completion: @escaping ([String]) -> Void) {
         print("GET TODAYS POST TOP")
-
+        
         let date = Date()
         
         let dateFormatterSimple = DateFormatter()
@@ -648,12 +662,12 @@ class ViewModel: ObservableObject {
             } else if let document = document {
                 if let data = document.data() {
                     completion(Friend(id: document.documentID,
-                                    name: data["name"] as? String ?? "Name not Found",
-                                    profilePicture: data["profilePicture"] as? String ?? "Profile picture not found",
-                                    bio: data["bio"] as? String ?? "",
-                                    mutualFriends: [],
-                                    pins: data["pins"] as? [String] ?? [],
-                                    todaysPosts: []))
+                                      name: data["name"] as? String ?? "Name not Found",
+                                      profilePicture: data["profilePicture"] as? String ?? "Profile picture not found",
+                                      bio: data["bio"] as? String ?? "",
+                                      mutualFriends: [],
+                                      pins: data["pins"] as? [String] ?? [],
+                                      todaysPosts: []))
                 }
             }
         }
