@@ -8,24 +8,27 @@
 import SwiftUI
 
 struct BioView: View {
-       var user: User
-       var body: some View {
-           VStack {
-               Image("profile Pic 2")
-                   .resizable()
-                   .aspectRatio(contentMode: .fill)
-                   .frame(maxWidth: 100, maxHeight: 200)
-                   .clipShape(.ellipse)
-               
-               
-               Text(user.username)
-                   .font(.title)
-               
-               Text("Friend for 2 years")
-                   .font(.system(size: 15))
-                   .foregroundColor(.gray)
-               
-           }
-       }
-   }
-
+    var user: User
+    var body: some View {
+        VStack (alignment: .center) {
+            AsyncImage(url: URL(string: user.profilePicture)) { image in
+                image
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(maxWidth: 80)
+                    .clipShape(.circle)
+            } placeholder: {
+                ProgressView()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(maxWidth: 80)
+                    .clipShape(.circle)
+            }
+                
+            Text(user.name)
+                .font(.title)
+            Text("@" + user.id)
+                .font(.system(size: 15))
+                .foregroundColor(.gray)
+        }
+    }
+}
