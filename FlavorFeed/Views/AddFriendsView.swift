@@ -17,8 +17,10 @@ struct AddFriendsView: View {
     var options = ["Suggestions", "Friends", "Requests"]
     @State private var searchText = ""
     @ObservedObject var vm: ViewModel
-    var users: [User] = addUsers() //later this will be the list of users we load in from firebase available in the view model
-    
+    @State private var requests: [Friend] = [Friend]()
+    @State private var suggestions: [Friend] = [Friend]()
+    @State private var friends: [Friend] = [Friend]()
+        
     var body: some View {
         NavigationStack {
             GeometryReader { geometry in
@@ -65,7 +67,7 @@ struct AddFriendsView: View {
                     
                    
                         
-                        UserListView(users: users, searchText: $searchText)
+                    UserListView(vm: vm, suggestions: suggestions, friends: friends, requests: requests, searchText: $searchText, selectedOption: $selectedOption)
 
                         
                         
@@ -108,31 +110,29 @@ struct AddFriendsView: View {
                                 .foregroundColor(.black)
                                 .font(.system(size: 20)).padding(5)
                         }
-                    }.padding([.leading, .trailing])
+                    }
                 }
             }
         }
         .onAppear {
             UISegmentedControl.appearance().backgroundColor = .white
+            vm.get_friend_requests() { friends in
+                requests = friends
+            }
+            vm.get_friend_suggestions() { friends in
+                suggestions = friends
+            }
+            vm.get_friends_ids() { friendIDs in
+                vm.get_friends(userIDs: friendIDs) { friend in
+                    friends = friend
+                }
+            }
         }
     }
+
 }
 
 //can remove this function once we have users list from firebase
-func addUsers() -> [User] {
-    var users : [User] = []
-    for i in 1...30 {
-        var user: User
-        if (i % 2 == 0) {
-            user = User(id: "champagnepapi", name: "Drake", profilePicture: "drake_pfp", email: "drake@gmail.com", bio: "I'm Drake.", phoneNumber: "1234567890", friends: [], pins: [], myPosts: [])
-        } else {
-            user = User(id: "travisscott", name: "Travis Scott", profilePicture: "travis_scott_pfp", email: "travisscott@gmail.com", bio: "I'm Travis Scott.", phoneNumber: "1234567890", friends: [], pins: [], myPosts: [])
-        }
-        
-        users.append(user)
-    }
-    return users
-}
 
 
 #Preview {

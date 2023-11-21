@@ -1,47 +1,62 @@
 import SwiftUI
 
-struct UserListView: View {
-    var users: [User]
+
+struct UserListView: View {    
+    @ObservedObject var vm: ViewModel
+    var suggestions: [Friend]
+    var friends: [Friend]
+    var requests: [Friend]
     @Binding var searchText: String
+    @Binding var selectedOption: String
     
-    var filteredUsers: [User] {
+    var filteredUsers: [Friend] {
+        let optionMap = ["Suggestions": suggestions, "Requests": requests, "Friends": friends]
+        let selectedList: [Friend] = optionMap[selectedOption]!
+        
         if searchText.isEmpty {
-            return users
+            return selectedList
         } else {
-            return users.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
+            return selectedList.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
         }
     }
     
     var body: some View {
-        GeometryReader { geometry in
-            List {
-                ForEach(filteredUsers) { user in
-                    UserRow(user: user, width: geometry.size.width).padding(.horizontal, 10)
-                }//.listRowBackground(Color.ffPrimary)
-            }//.scrollContentBackground(.hidden)
-                .listStyle(.plain)
+            GeometryReader { geometry in
+                List {
+                    ForEach(filteredUsers) { user in
+                        UserRow(user: user, width: geometry.size.width, vm: vm, selectedOption: $selectedOption).padding(.horizontal, 10)
+                    }//.listRowBackground(Color.ffPrimary)
+                }//.scrollContentBackground(.hidden)
+                    .listStyle(.plain)
+            }
         }
-    }
+    
+    
 }
 
 struct UserRow: View {
-    let user: User
+    let user: Friend
     let width: CGFloat
+    @ObservedObject var vm: ViewModel
+    @Binding var selectedOption: String
     var body: some View {
         HStack {
-            Image(user.profilePicture)
+            vm.load_image_from_url(url: user.profilePicture)!
                 .resizable()
                 .scaledToFit()
                 .clipShape(Circle())
                 .frame(width: 85, height: 70)
-            
             VStack(alignment: .leading) {
                 Text(user.name).bold()
                 Text(user.id)
             }
             Spacer()
             Button(action: {
-                //add friend function
+                if (selectedOption == "Requests") {
+                    vm.accept_friend_request(from: vm.current_user!.id, to: user.id)
+                } else if (selectedOption == "Suggestions") {
+                    vm.send_friend_request(from: vm.current_user!.id, to: user.id)
+                }
             }) {
                 Text("ADD")
                     .font(.system(size: 16))
@@ -52,7 +67,9 @@ struct UserRow: View {
             .background(Color.ffPrimary)
             .cornerRadius(25)
             Button(action: {
-                
+                if (selectedOption == "Requests") {
+                    vm.reject_friend_request(from: vm.current_user!.id, to: user.id)
+                }
             }) {
                 Image(systemName: "xmark")
                     .resizable()
@@ -64,9 +81,4 @@ struct UserRow: View {
         }.frame(width: width - 25)
         
     }
-}
-
-
-#Preview {
-    UserListView(users: [User(id: "travisscott", name: "Travis Scott", profilePicture: "travis_scott_pfp", email: "travisscott@gmail.com", bio: "I'm Travis Scott.", phoneNumber: "1234567890", friends: [], pins: [], myPosts: []), User(id: "champagnepapi", name: "Drake", profilePicture: "drake_pfp", email: "drake@gmail.com", bio: "I'm Drake.", phoneNumber: "1234567890", friends: [], pins: [], myPosts: [])], searchText: Binding.constant(""))
 }

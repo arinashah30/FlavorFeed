@@ -12,12 +12,10 @@ import Foundation
 struct SelfProfileView: View {
     @Binding var tabSelection: Tabs
     @ObservedObject var vm: ViewModel
-    var user = User(id: "AustinUserName", name: "Austin", profilePicture: "drake_pfp", email: "austin@gmail.com", bio: "", phoneNumber: "123456789", friends: [], pins: [], myPosts: [])
-    
     
     var body: some View {
         NavigationStack {
-            VStack {
+            VStack(alignment: .center) {
                 HStack {
                     Button {
                         self.tabSelection = .mainScrollView
@@ -32,7 +30,7 @@ struct SelfProfileView: View {
                         .foregroundColor(.ffSecondary)
                     Spacer()
                     NavigationLink {
-                        BioView(user: user) //change to SettingsView
+                        BioView(user: vm.current_user!) //change to SettingsView
                     } label: {
                         Image(systemName: "ellipsis")
                             .foregroundColor(.black)
@@ -41,12 +39,12 @@ struct SelfProfileView: View {
                 }.padding()
                 
                 ScrollView{
-                    BioView(user: user)
-                    PinsView(user: user)
-                    CalendarView(user: user)
+                    BioView(user: vm.current_user!)
+                    PinsView(vm: vm, user: vm.current_user!)
+                    CalendarView(vm: vm, user: vm.current_user!)
                     
                     NavigationLink {
-                        BioView(user: user)
+                        BioView(user: vm.current_user!)
                     } label: {
                         ZStack {
                             RoundedRectangle(cornerRadius: 9)
@@ -58,7 +56,7 @@ struct SelfProfileView: View {
                     }
                     .buttonStyle(PlainButtonStyle())
                     
-                    MapView(user: user, restaurants: [CLLocationCoordinate2D(latitude: 43, longitude: 100), CLLocationCoordinate2D(latitude: -10, longitude: 30), CLLocationCoordinate2D(latitude: 20, longitude: -50), CLLocationCoordinate2D(latitude: 17, longitude: -40)])
+                    MapView(user: vm.current_user!, restaurants: [CLLocationCoordinate2D(latitude: 43, longitude: 100), CLLocationCoordinate2D(latitude: -10, longitude: 30), CLLocationCoordinate2D(latitude: 20, longitude: -50), CLLocationCoordinate2D(latitude: 17, longitude: -40)])
                         .frame(minHeight: 400)
                 }
             }

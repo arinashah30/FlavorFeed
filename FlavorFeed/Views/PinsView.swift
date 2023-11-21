@@ -17,11 +17,10 @@ import SwiftUI
 import SwiftUI
 
 struct PinsView: View {
+    @ObservedObject var vm: ViewModel
     var user: User
-    var posts: [Post] = [Post(id: UUID().uuidString, userID: "champagnepapi", images: [["drake_selfie", "food_pic_1"], ["drake_selfie2", "food_pic_2"], ["drake_selfie3", "food_pic_3"]], date: ["01-24-2023 09:14:35", "10-24-2022 12:49:22", "10-24-2022 19:40:12"], comments: [Comment(id: UUID().uuidString, userID: "adonis", text: "Looking fresh Drake!", date: "October 24, 2023", replies: []), Comment(id: UUID().uuidString, userID: "travisscott", text: "She said do you love me I told her only partly.", date: "October 24, 2022", replies: [])], caption: ["That was yummy in my tummy", "", "Let's dig in"], likes: [], locations: [], recipes: []),
-                         Post(id: UUID().uuidString, userID: "champagnepapi", images: [["drake_selfie", "waffles"], ["drake_selfie2", "food_pic_2"], ["drake_selfie3", "food_pic_3"]], date: ["11-13-2023 09:14:35", "10-25-2023 12:49:22", "10-25-2022 19:40:12"], comments: [Comment(id: UUID().uuidString, userID: "adonis", text: "Looking fresh Drake!", date: "October 25, 2022", replies: []), Comment(id: UUID().uuidString, userID: "travisscott", text: "She said do you love me I told her only partly.", date: "October 25, 2023", replies: [])], caption: ["That was yummy in my tummy", "", "Let's dig in"], likes: [], locations: [], recipes: []),
-                         Post(id: UUID().uuidString, userID: "champagnepapi", images: [["drake_selfie", "food_pic_2"], ["drake_selfie2", "food_pic_2"], ["drake_selfie3", "food_pic_3"]], date: ["8-12-2023 09:14:35", "10-26-2022 12:49:22", "10-26-2022 19:40:12"], comments: [Comment(id: UUID().uuidString, userID: "adonis", text: "Looking fresh Drake!", date: "October 25, 2023", replies: []), Comment(id: UUID().uuidString, userID: "travisscott", text: "She said do you love me I told her only partly.", date: "October 26, 2022", replies: [])], caption: ["That was yummy in my tummy", "", "Let's dig in"], likes: [], locations: [], recipes: []),
-                         Post(id: UUID().uuidString, userID: "champagnepapi", images: [["drake_selfie", "food_pic_3"], ["drake_selfie2", "food_pic_2"], ["drake_selfie3", "food_pic_3"]], date: ["10-30-2023 09:14:35", "10-27-2022 12:49:22", "10-27-2022 19:40:12"], comments: [Comment(id: UUID().uuidString, userID: "adonis", text: "Looking fresh Drake!", date: "October 27, 2023", replies: [])], caption: ["That was yummy in my tummy", "", "Let's dig in"], likes: [], locations: [], recipes: [])] //this is going to be replaced with calls to firebase to fetch user's pins
+    @State var pins: [Post] = []
+    
     
     var body: some View {
         VStack {
@@ -52,7 +51,7 @@ struct PinsView: View {
                     .padding(.leading)
                     .padding(.bottom, 30)
                     
-                    ForEach(posts) { post in
+                    ForEach(pins) { post in
                         VStack {
                             Image(post.images[0][1])
                                 .resizable()
@@ -76,6 +75,10 @@ struct PinsView: View {
                 }
                 .padding(.top,1)
             }
+        }.onAppear {
+            vm.fetchPosts(postIDs: user.pins) { posts in
+                self.pins = posts
+            }
         }
     }
 }
@@ -95,5 +98,5 @@ func postDate(post: Post) -> String {
 }
 
 #Preview {
-    PinsView(user: User(id: "AustinUserName", name: "Austin", profilePicture: "drake_pfp", email: "austin@gmail.com", bio: "", phoneNumber: "123456789", friends: [], pins: [], myPosts: []))
+    PinsView(vm: ViewModel(), user: User(id: "AustinUserName", name: "Austin", profilePicture: "drake_pfp", email: "austin@gmail.com", bio: "", phoneNumber: "123456789", friends: [], pins: [], myPosts: []), pins: [])
 }
