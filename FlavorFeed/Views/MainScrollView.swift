@@ -19,13 +19,6 @@ struct MainScrollView: View {
             ZStack {
                 VStack {
                     TopBar(tabSelection: $tabSelection)
-                    //                ScrollView {
-                    //                    VStack {
-                    //                        ForEach(posts) {post in
-                    //                            PostView(post: post).frame(maxHeight: .infinity)
-                    //                        }
-                    //                    }
-                    //                }.frame(maxHeight: .infinity)
                     ScrollView {
                         if let myPost = vm.my_post_today {
                             Text("Your Post Today!")
