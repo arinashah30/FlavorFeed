@@ -341,6 +341,7 @@ class ViewModel: ObservableObject {
             }
         }
     }
+    
     func firebase_get_post(postID: String, completion: @escaping ((Post) -> Void)) {
         print("Getting post TOP")
         db.collection("POSTS").document(postID).getDocument { document, error in
@@ -356,13 +357,12 @@ class ViewModel: ObservableObject {
                                             images: data["images"] as! [String],
                                             date: data["date"] as! [String],
                                             day: data["day"] as! String,
-                                            comments: self.convertToComments(data["comments"] as? [String] ?? []),
+                                            comments: self.convertToComments(postID: doc.documentID),
                                             caption: data["caption"] as? [String] ?? [],
                                             likes: data["likes"] as? [String] ?? [],
                                             locations: data["location"] as? [String] ?? [],
-                                            recipes: self.convertToRecipe(data["recipes"] as? [String] ?? []),
+                                            recipes: self.convertToRecipe(postID: doc.documentID),
                                             friend: friend
-                                            
                                            ))
                         }
                     }
@@ -743,14 +743,48 @@ class ViewModel: ObservableObject {
         }
     }
     
-    // needs to be done
-    func convertToRecipe(_ recipesString: [String]) -> [Recipe] {
-        return [Recipe]()
+ 
+    func convertToRecipe(postID: String) -> [Recipe] {
+        var recipe: [Recipe]?
+        
+        self.db.collection("POSTS").document(postID).collection("RECIPES").getDocuments(completion: { [weak self] documents, error in
+                if let error = error {
+                    self?.errorText = "Cannot get list of recipes from Firebase."
+                } else {
+                    for document in documents!.documents {
+                        recipe?.append(Recipe(id: document.documentID,
+                                          title: document["title"] as! String,
+                                          link: document["link"] as? String ?? nil,
+                                          ingredients: document["ingredients"] as! [String],
+                                          directions: document["directions"] as! [String]
+                                         ))
+                        UserDefaults.standard.setValue(true, forKey: "log_Status")
+                    }
+                }
+            })
+        return recipe!
     }
     
-    // needs to be done
-    func convertToComments(_ commentsString: [String]) -> [Comment] {
-        return [Comment]()
+
+    func convertToComments(postID: String) -> [Comment] {
+        var comment: [Comment]?
+        
+        self.db.collection("POSTS").document(postID).collection("COMMENTS").getDocuments(completion: { [weak self] documents, error in
+                if let error = error {
+                    self?.errorText = "Cannot get list of recipes from Firebase."
+                } else {
+                    for document in documents!.documents {
+                        comment?.append(Comment(id: document.documentID,
+                                          userID: document["userID"] as! String,
+                                          text: document["text"] as! String,
+                                          date: document["date"] as! String,
+                                          replies: document["directions"] as? [Comment] ?? []
+                                         ))
+                        UserDefaults.standard.setValue(true, forKey: "log_Status")
+                    }
+                }
+            })
+        return comment!
     }
     
     func firebase_get_url_from_image(image: UIImage, completion: @escaping (URL?) -> Void) {
@@ -798,3 +832,4 @@ class ViewModel: ObservableObject {
         return Image(uiImage: uiImage)
     }
 }
+
