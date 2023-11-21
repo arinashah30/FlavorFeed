@@ -24,7 +24,10 @@ struct UserListView: View {
             GeometryReader { geometry in
                 List {
                     ForEach(filteredUsers) { user in
-                        UserRow(user: user, width: geometry.size.width, vm: vm, selectedOption: $selectedOption).padding(.horizontal, 10)
+                        NavigationLink(destination: FriendProfileView(vm: vm, friend: user), label: {
+                            UserRow(user: user, width: geometry.size.width, vm: vm, selectedOption: $selectedOption).padding(.horizontal, 10)
+                        })
+                        
                     }//.listRowBackground(Color.ffPrimary)
                 }//.scrollContentBackground(.hidden)
                     .listStyle(.plain)

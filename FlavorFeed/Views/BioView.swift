@@ -8,10 +8,13 @@
 import SwiftUI
 
 struct BioView: View {
-    var user: User
+    var profilePicture: String
+    var name: String
+    var id: String
+    
     var body: some View {
         VStack (alignment: .center) {
-            AsyncImage(url: URL(string: user.profilePicture)) { image in
+            AsyncImage(url: URL(string: profilePicture)) { image in
                 image
                     .resizable()
                     .aspectRatio(contentMode: .fill)
@@ -24,9 +27,9 @@ struct BioView: View {
                     .clipShape(.circle)
             }
                 
-            Text(user.name)
+            Text(name)
                 .font(.title)
-            Text("@" + user.id)
+            Text("@" + id)
                 .font(.system(size: 15))
                 .foregroundColor(.gray)
         }
