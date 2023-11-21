@@ -258,11 +258,11 @@ class ViewModel: ObservableObject {
                             images: data["images"] as! [String],
                             date: data["date"] as! [String],
                             day: data["day"] as! String,
-                            comments: self?.convertToComments(data["comments"] as? [String] ?? []) ?? [],
+                            comments: self?.convertToComments(postID: postID) ?? [],
                             caption: data["caption"] as? [String] ?? [],
                             likes: data["likes"] as? [String] ?? [],
                             locations: data["location"] as? [String] ?? [],
-                            recipes: self?.convertToRecipe(data["recipes"] as? [String] ?? []) ?? [],
+                            recipes: self?.convertToRecipe(postID: postID) ?? [],
                             friend: friend
                         ))
                         
@@ -756,13 +756,13 @@ class ViewModel: ObservableObject {
                                           title: document["title"] as! String,
                                           link: document["link"] as? String ?? nil,
                                           ingredients: document["ingredients"] as! [String],
-                                          directions: document["directions"] as! [String]
+                                          directions: document["directions"] as! String?
                                          ))
                         UserDefaults.standard.setValue(true, forKey: "log_Status")
                     }
                 }
             })
-        return recipe!
+        return recipe ?? []
     }
     
 
@@ -784,7 +784,7 @@ class ViewModel: ObservableObject {
                     }
                 }
             })
-        return comment!
+        return comment ?? []
     }
     
     func firebase_get_url_from_image(image: UIImage, completion: @escaping (URL?) -> Void) {
