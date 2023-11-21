@@ -12,6 +12,7 @@ struct PostView: View {
     @ObservedObject var vm: ViewModel
     @State private var tabSelection = 0
     var post: Post
+
     var gold = Color(red:255/255, green:211/255, blue:122/255)
     var salmon = Color(red: 255/255, green: 112/255, blue: 112/255)
     var teal = Color(red: 0/255, green: 82/255, blue: 79/255)
@@ -20,27 +21,15 @@ struct PostView: View {
     @State private var showSelfieFirst = true
     @State private var showComments = true
 
-    var post_images = [[Image]]()
-    
-    var profilePicture: Image
+    let person_circle_address = "https://www.iconbolt.com/preview/facebook/ionicons-outline/person-circle.svg"
     
     init(vm: ViewModel, post: Post) {
-        print(post)
         self.vm = vm
         
         self.post = post
+        print("CREATING POST")
+        print(vm.todays_posts.count)
         
-        profilePicture = vm.load_image_from_url(url: post.friend?.profilePicture ?? "NIL") ?? Image(systemName: "person.circle")
-        
-        for entry in 0..<post.images.count {
-            var postEntry: [Image] = [Image]()
-            print("Size of post entry: \(post.images[entry].count)")
-            for picSide in 0..<2 {
-                postEntry.append(vm.load_image_from_url(url: post.images[entry][picSide]) ?? Image(systemName: "person.circle"))
-            }
-            post_images.append(postEntry)
-            print("Size: \(post_images[0].count)")
-        }
     }
 
     @State private var isShowingSheet = false
@@ -50,14 +39,29 @@ struct PostView: View {
         GeometryReader { geo in
             VStack {
                 HStack {
-                    profilePicture
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: geo.size.height * 0.08)
-                        .clipShape(.circle)
+                    AsyncImage(url: URL(string: post.friend!.profilePicture)) { image in
+                            image.resizable()
+                                .scaledToFill()
+                                .frame(width: geo.size.height * 0.08, height: geo.size.height * 0.08)
+                                .clipShape(.circle)
+                    } placeholder: {
+                        ProgressView()
+                            .frame(width: geo.size.height * 0.08, height: geo.size.height * 0.08)
+                            .clipShape(.circle)
+                            
+                    }.task {
+                        do {
+                            _ = try await URLSession.shared.data(from: URL(string: post.friend!.profilePicture)!)
+                            // The image loaded successfully
+                            print("Image loaded successfully")
+                        } catch {
+                            print("Error loading image: \(error.localizedDescription)")
+                        }
+                    }
+
                     
                     VStack (alignment: .leading) {
-                        Text(post.userID)
+                        Text(post.friend!.name)
                             .font(.system(size: 18))
                             .foregroundColor(.ffSecondary)
                             .fontWeight(.semibold)
@@ -68,6 +72,7 @@ struct PostView: View {
                     
                     Spacer()
                     Button {
+                        
                     } label: {
                         Image(systemName: "ellipsis")
                             .resizable()
@@ -75,38 +80,55 @@ struct PostView: View {
                             .frame(width: 20)
                             .foregroundColor(.black)
                     }
-                }.padding([.leading, .trailing] , 20)
+                }
+                .padding([.leading, .trailing] , 20)
                 
                 TabView(selection: $tabSelection) {
-                    ForEach(0..<post_images.count) { index in
+                    ForEach(0..<post.images.count) { index in
                         
                         ZStack (){
-                            bigImage(index)
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(width: geo.size.width*0.98, height: geo.size.height*0.66)
-                                .clipped()
+                            AsyncImage(url: URL(string: bigImage(index))) { image in
+                                image.resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(width: geo.size.width*0.98, height: geo.size.height*0.66)
+                                    .clipped()
+                            } placeholder: {
+                                ProgressView()
+                                    .frame(width: geo.size.width*0.98, height: geo.size.height*0.66)
+                                    .clipped()
+                            }
                             
-
+                            
                             VStack {
-                                
                                 HStack {
                                     VStack {
                                         Button {
                                             self.showSelfieFirst.toggle()
                                         } label: {
-                                            smallImage(index)
-                                                .resizable()
-                                                .aspectRatio(contentMode: .fill)
-                                                .frame(width: geo.size.width * 0.30, height: geo.size.height * 0.2)
-                                                .clipped()
+                                            AsyncImage(url: URL(string: smallImage(index))) { image in
+                                                image.resizable()
+                                                    .aspectRatio(contentMode: .fill)
+                                                    .frame(width: geo.size.width * 0.30, height: geo.size.height * 0.2)
+                                                    .clipped()
+                                                    .cornerRadius(10)
+                                                    .overlay(
+                                                        RoundedRectangle(cornerRadius: 10)
+                                                            .stroke(Color.ffPrimary, lineWidth: 2)
+                                                    )
+                                                    .padding()
+                                            } placeholder: {
+                                                ProgressView()
+                                                    .frame(width: geo.size.width * 0.30, height: geo.size.height * 0.2)
+                                                    .clipped()
+                                                    .cornerRadius(10)
+                                                    .overlay(
+                                                        RoundedRectangle(cornerRadius: 10)
+                                                            .stroke(Color.ffPrimary, lineWidth: 2)
+                                                    )
+                                                    .padding()
+                                            }
+                                            
                                         }
-                                        .cornerRadius(10)
-                                        .overlay(
-                                            RoundedRectangle(cornerRadius: 10)
-                                                .stroke(Color.ffPrimary, lineWidth: 2)
-                                        )
-                                    .padding()
                                         Spacer()
                                     }
                                     Spacer()
@@ -133,7 +155,7 @@ struct PostView: View {
                                         }
                                         Spacer()
                                     }.padding()
-
+                                    
                                 }
                                 Spacer()
                                 if index < post.caption.count {
@@ -152,21 +174,21 @@ struct PostView: View {
                             .sheet(isPresented: $isShowingSheet) {
                                 RecipeSheetView(recipe: post.recipes[index], isShowingSheet: $isShowingSheet)
                             }
-
                     }.frame(height: geo.size.height * 0.69)
                     
                 }.tabViewStyle(.page).indexViewStyle(.page(backgroundDisplayMode: .always))
-                    .frame(height: geo.size.height * 0.735)
+                    .frame(height: geo.size.height * 0.725)
                     .onAppear {
                         setupAppearance()
                     }
-                    
+                
                 
                 VStack{
                     HStack{
                         Text("Top Comments")
                             .font(.system(size: 15))
                             .fontWeight(.light)
+                            .padding(.top, -2)
                         Spacer()
                         Button {
                             withAnimation (.smooth) {
@@ -182,12 +204,12 @@ struct PostView: View {
                     }
                     .padding(.horizontal, 20)
                     .padding(.top, 5)
-                    if showComments && post.comments != nil {
+                    if showComments && post.comments.count != 0 {
                         ScrollView {
                             VStack {
                                 ForEach(post.comments, id: \.self) { comment in
                                     HStack{
-//                                        Image(comment.profilePicture)
+                                        //                                        Image(comment.profilePicture)
                                         Image("travis_scott_pfp")
                                             .resizable()
                                             .frame(width: 60, height: 60)
@@ -211,10 +233,12 @@ struct PostView: View {
                             .padding(.vertical)
                             .background(lightGray)
                             .cornerRadius(20)
-                            .padding(.bottom, 5)
+                            .padding(.bottom, 8)
                         }
+                        .frame(width: geo.size.width * 0.97)
                     }
                 }
+                .padding(.top, -7)
                 Spacer()
             }.frame(maxHeight: .infinity)
         }
@@ -224,7 +248,7 @@ struct PostView: View {
         UIPageControl.appearance().currentPageIndicatorTintColor = .red
         UIPageControl.appearance().pageIndicatorTintColor = UIColor.black.withAlphaComponent(0.2)
         
-      }
+    }
     
     func formatPostTime(time: String) -> String {
         let dateFormatterIn = DateFormatter()
@@ -236,25 +260,18 @@ struct PostView: View {
         return dateFormatterOut.string(from: date)
     }
     
-    func bigImage(_ i: Int) -> Image {
-        return showSelfieFirst ? post_images[i][0] : post_images[i][1]
+    func bigImage(_ i: Int) -> String {
+        print("BIG IMAGE: \(showSelfieFirst ? post.images[i][0] : post.images[i][1])")
+        return showSelfieFirst ? post.images[i][0] : post.images[i][1]
     }
     
-    func smallImage(_ i: Int) -> Image {
-        return showSelfieFirst ? post_images[i][1] : post_images[i][0]
-    }
-    
-    mutating func populateFriend(friend: Friend) {
-        
+    func smallImage(_ i: Int) -> String {
+        print("SMALL IMAGE: \(showSelfieFirst ? post.images[i][1] : post.images[i][0])")
+        return showSelfieFirst ? post.images[i][1] : post.images[i][0]
     }
 }
 
-#Preview {
-
-    let sampleRecipe = Recipe(id: "id", title: "Fruit Salad", link: nil, ingredients: ["apple", "banana", "orange", "strawberry"], directions: "Step 1: For the sauce: Bring orange juice, lemon juice, brown sugar, orange zest, and lemon zest to a boil in a saucepan over medium-high heat. Reduce heat to medium-low and simmer until slightly thickened, about 5 minutes. Remove from heat and stir in vanilla extract. Set aside to cool. For the salad: Layer fruit in a large, clear glass bowl in this order: pineapple, strawberries, kiwi fruit, bananas, oranges, grapes, and blueberries. Pour cooled sauce over fruit; cover and refrigerate for 3 to 4 hours before serving.Step 1: For the sauce: Bring orange juice, lemon juice, brown sugar, orange zest, and lemon zest to a boil in a saucepan over medium-high heat. Reduce heat to medium-low and simmer until slightly thickened, about 5 minutes. Remove from heat and stir in vanilla extract. Set aside to cool. For the salad: Layer fruit in a large, clear glass bowl in this order: pineapple, strawberries, kiwi fruit, bananas, oranges, grapes, and blueberries. Pour cooled sauce over fruit; cover and refrigerate for 3 to 4 hours before serving.Step 1: For the sauce: Bring orange juice, lemon juice, brown sugar, orange zest, and lemon zest to a boil in a saucepan over medium-high heat. Reduce heat to medium-low and simmer until slightly thickened, about 5 minutes. Remove from heat and stir in vanilla extract. Set aside to cool. For the salad: Layer fruit in a large, clear glass bowl in this order: pineapple, strawberries, kiwi fruit, bananas, oranges, grapes, and blueberries. Pour cooled sauce over fruit; cover and refrigerate for 3 to 4 hours before serving.Step 1: For the sauce: Bring orange juice, lemon juice, brown sugar, orange zest, and lemon zest to a boil in a saucepan over medium-high heat. Reduce heat to medium-low and simmer until slightly thickened, about 5 minutes. Remove from heat and stir in vanilla extract. Set aside to cool. For the salad: Layer fruit in a large, clear glass bowl in this order: pineapple, strawberries, kiwi fruit, bananas, oranges, grapes, and blueberries. Pour cooled sauce over fruit; cover and refrigerate for 3 to 4 hours before serving.")
-    PostView(vm: ViewModel(), post: Post(id: UUID().uuidString, userID: "champagnepapi", images: ["drake_selfie food_pic_1", "drake_selfie2 food_pic_2", "drake_selfie3 food_pic_3"], date: ["October 24, 2022", "October 24, 2022", "October 24, 2022"], day: "October 23", comments: [Comment(id: UUID().uuidString, userID: "adonis", text: "Looking fresh Drake!", date: "October 24, 2022", replies: []), Comment(id: UUID().uuidString, userID: "travisscott", text: "She said do you love me I told her only partly.", date: "October 24, 2022", replies: [])], caption: ["That was yummy in my tummy", "", "Let's dig in"], likes: [], locations: [], recipes: [sampleRecipe, sampleRecipe, sampleRecipe], friend: nil))
-    
-    
-}
-
-
+//#Preview {
+//    let sampleRecipe = Recipe(id: "id", title: "Fruit Salad", link: nil, ingredients: ["apple", "banana", "orange", "strawberry"], directions: "Step 1: For the sauce: Bring orange juice, lemon juice, brown sugar, orange zest, and lemon zest to a boil in a saucepan over medium-high heat. Reduce heat to medium-low and simmer until slightly thickened, about 5 minutes. Remove from heat and stir in vanilla extract. Set aside to cool. For the salad: Layer fruit in a large, clear glass bowl in this order: pineapple, strawberries, kiwi fruit, bananas, oranges, grapes, and blueberries. Pour cooled sauce over fruit; cover and refrigerate for 3 to 4 hours before serving.Step 1: For the sauce: Bring orange juice, lemon juice, brown sugar, orange zest, and lemon zest to a boil in a saucepan over medium-high heat. Reduce heat to medium-low and simmer until slightly thickened, about 5 minutes. Remove from heat and stir in vanilla extract. Set aside to cool. For the salad: Layer fruit in a large, clear glass bowl in this order: pineapple, strawberries, kiwi fruit, bananas, oranges, grapes, and blueberries. Pour cooled sauce over fruit; cover and refrigerate for 3 to 4 hours before serving.Step 1: For the sauce: Bring orange juice, lemon juice, brown sugar, orange zest, and lemon zest to a boil in a saucepan over medium-high heat. Reduce heat to medium-low and simmer until slightly thickened, about 5 minutes. Remove from heat and stir in vanilla extract. Set aside to cool. For the salad: Layer fruit in a large, clear glass bowl in this order: pineapple, strawberries, kiwi fruit, bananas, oranges, grapes, and blueberries. Pour cooled sauce over fruit; cover and refrigerate for 3 to 4 hours before serving.Step 1: For the sauce: Bring orange juice, lemon juice, brown sugar, orange zest, and lemon zest to a boil in a saucepan over medium-high heat. Reduce heat to medium-low and simmer until slightly thickened, about 5 minutes. Remove from heat and stir in vanilla extract. Set aside to cool. For the salad: Layer fruit in a large, clear glass bowl in this order: pineapple, strawberries, kiwi fruit, bananas, oranges, grapes, and blueberries. Pour cooled sauce over fruit; cover and refrigerate for 3 to 4 hours before serving.")    
+//    PostView(vm: ViewModel(), post: Post(id: UUID().uuidString, userID: "champagnepapi", images: ["https://pbs.twimg.com/media/F3xazUkawAEeDOc.jpg:large https://cdn.openart.ai/stable_diffusion/cc2c55c983affcc95f0bfd881d62eb446e2a4c69_2000x2000.webp"], date: ["October 24, 2022", "October 24, 2022", "October 24, 2022"], day: "11-09-2923", comments: [Comment(id: UUID().uuidString, userID: "adonis", text: "Looking fresh Drake!", date: "October 24, 2022", replies: []), Comment(id: UUID().uuidString, userID: "travisscott", text: "She said do you love me I told her only partly.", date: "October 24, 2022", replies: [])], caption: ["That was yummy in my tummy", "", "Let's dig in"], likes: [], locations: [], recipes: [sampleRecipe, sampleRecipe, sampleRecipe], friend: Friend(id: "arinashah", name: "Arina", profilePicture: "https://images-prod.dazeddigital.com/463/azure/dazed-prod/1300/0/1300889.jpeg", bio: "Nothing", mutualFriends: [], pins: [], todaysPosts: [])))
+//}
