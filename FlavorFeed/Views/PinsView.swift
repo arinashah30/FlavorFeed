@@ -18,8 +18,9 @@ import SwiftUI
 
 struct PinsView: View {
     @ObservedObject var vm: ViewModel
-    var user: User
     @State var pins: [Post] = []
+    var pinIDs: [String]
+    let id: String
     
     
     var body: some View {
@@ -38,18 +39,21 @@ struct PinsView: View {
             .padding([.leading,.trailing,.top], 20)
             ScrollView(.horizontal) {
                 HStack {
-                    ZStack(alignment: .center) {
-                        RoundedRectangle(cornerRadius: 10)
-                            .stroke(style: .init(dash: [5]))
-                            .stroke(Color.ffTertiary, lineWidth: 2)
-                            .frame(width: 110, height: 136)
-                        Image(systemName: "plus")
-                            .resizable()
-                            .frame(width: 20, height: 20)
-                            .foregroundColor(.ffPrimary)
+                    if (id == vm.current_user!.id) {
+                        ZStack(alignment: .center) {
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(style: .init(dash: [5]))
+                                .stroke(Color.ffTertiary, lineWidth: 2)
+                                .frame(width: 110, height: 136)
+                            Image(systemName: "plus")
+                                .resizable()
+                                .frame(width: 20, height: 20)
+                                .foregroundColor(.ffPrimary)
+                        }
+                        .padding(.leading)
+                        .padding(.bottom, 30)
                     }
-                    .padding(.leading)
-                    .padding(.bottom, 30)
+                    
                     
                     ForEach(pins) { post in
                         VStack {
@@ -76,11 +80,12 @@ struct PinsView: View {
                 .padding(.top,1)
             }
         }.onAppear {
-            vm.fetchPosts(postIDs: user.pins) { posts in
-                self.pins = posts
+            vm.fetchPosts(postIDs: pinIDs) { posts in
+                pins = posts
             }
         }
     }
+    
 }
 
 
@@ -98,5 +103,5 @@ func postDate(post: Post) -> String {
 }
 
 #Preview {
-    PinsView(vm: ViewModel(), user: User(id: "AustinUserName", name: "Austin", profilePicture: "drake_pfp", email: "austin@gmail.com", bio: "", phoneNumber: "123456789", friends: [], pins: [], myPosts: []), pins: [])
+    PinsView(vm: ViewModel(), pinIDs: [], id: "arinashah")
 }

@@ -68,7 +68,6 @@ struct mapAnnotationView: View {
 
 struct MapView: View {
     //    @State var region: MKCoordinateRegion
-    var user: User
     @State var restaurants: [CLLocationCoordinate2D]
     var body: some View{
         VStack{
@@ -95,8 +94,7 @@ struct MapView_Previews: PreviewProvider {
     static var previews: some View {
         VStack {
             MyView()
-            MapView(user: User(id: "AustinUserName", name: "Austin", profilePicture: "drake_pfp", email: "austin@gmail.com", bio: "", phoneNumber: "123456789", friends: [], pins: [], myPosts: []), restaurants: [CLLocationCoordinate2D(latitude: 43, longitude: 100), CLLocationCoordinate2D(latitude: -10, longitude: 30), CLLocationCoordinate2D(latitude: 20, longitude: -50), CLLocationCoordinate2D(latitude: 17, longitude: -40)])
-            
+            MapView(restaurants: [])
         }
     }
 }

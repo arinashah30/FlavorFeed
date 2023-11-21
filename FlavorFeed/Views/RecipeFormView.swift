@@ -195,7 +195,7 @@ struct RecipeFormView: View {
         recipe = nil
     }
     private func saveRecipe() {
-        let newRecipe = Recipe(id: UUID().uuidString, title: title, ingredients: ingredients.components(separatedBy: ","), instructions: instructions, link: link)
+        let newRecipe = Recipe(id: UUID().uuidString, title: title, link: link, ingredients: ingredients.components(separatedBy: ","), directions: instructions)
         recipe = newRecipe
         submittedRecipes.append(newRecipe)
         resetForm()

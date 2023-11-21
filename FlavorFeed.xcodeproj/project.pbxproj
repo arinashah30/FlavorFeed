@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		082052E32B06E40F007BE0CE /* FriendProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 082052E22B06E40F007BE0CE /* FriendProfileView.swift */; };
 		172AC00C2AF466BF00594E71 /* RecipeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 172AC00B2AF466BF00594E71 /* RecipeView.swift */; };
 		1733DEE02B06DA120008572D /* RecipeSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1733DEDF2B06DA120008572D /* RecipeSheetView.swift */; };
 		48349B1C2ACCCADA00F672E3 /* BioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48349B1B2ACCCADA00F672E3 /* BioView.swift */; };
@@ -83,6 +84,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		082052E22B06E40F007BE0CE /* FriendProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendProfileView.swift; sourceTree = "<group>"; };
 		172AC00B2AF466BF00594E71 /* RecipeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeView.swift; sourceTree = "<group>"; };
 		1733DEDF2B06DA120008572D /* RecipeSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeSheetView.swift; sourceTree = "<group>"; };
 		48349B1B2ACCCADA00F672E3 /* BioView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BioView.swift; sourceTree = "<group>"; };
@@ -180,6 +182,7 @@
 				B23FF6B72B0AC3FE00F27AF2 /* MyPostTodayPreviewView.swift */,
 				B27054492B06B5A300BC7174 /* CameraView.swift */,
 				6602DD8B2AC625EF008C3177 /* SelfProfileView.swift */,
+				082052E22B06E40F007BE0CE /* FriendProfileView.swift */,
 				668CD51A2AEC1D6F00A64DF1 /* MainScrollView.swift */,
 				48349B1F2ACCCAEF00F672E3 /* CalendarView.swift */,
 				48349B212ACCCAF600F672E3 /* MapView.swift */,
@@ -439,6 +442,8 @@
 				48349B202ACCCAEF00F672E3 /* CalendarView.swift in Sources */,
 				48349B222ACCCAF600F672E3 /* MapView.swift in Sources */,
 				48349B1C2ACCCADA00F672E3 /* BioView.swift in Sources */,
+				668CD5192AEC1D6500A64DF1 /* ContactsView.swift in Sources */,
+				082052E32B06E40F007BE0CE /* FriendProfileView.swift in Sources */,
 				668CD5212AF03F2F00A64DF1 /* UserListView.swift in Sources */,
 				665113522AC6021800027654 /* User.swift in Sources */,
 				B270544A2B06B5A300BC7174 /* CameraView.swift in Sources */,

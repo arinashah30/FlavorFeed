@@ -30,7 +30,7 @@ struct SelfProfileView: View {
                         .foregroundColor(.ffSecondary)
                     Spacer()
                     NavigationLink {
-                        BioView(user: vm.current_user!) //change to SettingsView
+                        BioView(profilePicture: vm.current_user!.profilePicture, name: vm.current_user!.name, id: vm.current_user!.id) //change to SettingsView
                     } label: {
                         Image(systemName: "ellipsis")
                             .foregroundColor(.black)
@@ -39,12 +39,12 @@ struct SelfProfileView: View {
                 }.padding()
                 
                 ScrollView{
-                    BioView(user: vm.current_user!)
-                    PinsView(vm: vm, user: vm.current_user!)
+                    BioView(profilePicture: vm.current_user!.profilePicture, name: vm.current_user!.name, id: vm.current_user!.id)
+                    PinsView(vm: vm, pinIDs: vm.current_user!.pins, id: vm.current_user!.id)
                     CalendarView(vm: vm, user: vm.current_user!)
                     
                     NavigationLink {
-                        BioView(user: vm.current_user!)
+                        BioView(profilePicture: vm.current_user!.profilePicture, name: vm.current_user!.name, id: vm.current_user!.id)
                     } label: {
                         ZStack {
                             RoundedRectangle(cornerRadius: 9)
@@ -56,7 +56,7 @@ struct SelfProfileView: View {
                     }
                     .buttonStyle(PlainButtonStyle())
                     
-                    MapView(user: vm.current_user!, restaurants: [CLLocationCoordinate2D(latitude: 43, longitude: 100), CLLocationCoordinate2D(latitude: -10, longitude: 30), CLLocationCoordinate2D(latitude: 20, longitude: -50), CLLocationCoordinate2D(latitude: 17, longitude: -40)])
+                    MapView(restaurants: [CLLocationCoordinate2D(latitude: 43, longitude: 100), CLLocationCoordinate2D(latitude: -10, longitude: 30), CLLocationCoordinate2D(latitude: 20, longitude: -50), CLLocationCoordinate2D(latitude: 17, longitude: -40)])
                         .frame(minHeight: 400)
                 }
             }
