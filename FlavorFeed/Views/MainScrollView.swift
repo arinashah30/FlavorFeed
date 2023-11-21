@@ -51,7 +51,7 @@ struct MainScrollView: View {
                 }
                 VStack {
                     Spacer()
-                    BottomBar(messagesRemaing: Binding.constant(2), vm: vm).frame(height: 100).edgesIgnoringSafeArea(.bottom)
+                    BottomBar(messagesRemaing: (3 - (vm.my_post_today?.images.count ?? 0)), vm: vm).frame(height: 100).edgesIgnoringSafeArea(.bottom)
                 }.edgesIgnoringSafeArea(.bottom).frame(maxHeight: .infinity)
                 
             }
