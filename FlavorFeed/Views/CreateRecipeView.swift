@@ -1,18 +1,23 @@
-//
-//  CreateRecipeView.swift
-//  FlavorFeed
-//
-//  Created by Misry Dhanani on 11/2/23.
-//
-
 import SwiftUI
 
 struct CreateRecipeView: View {
+    @State private var isPresentingRecipeForm = false
+    @State private var recipe: Recipe?
+
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack {            
+            Button("Show Recipe Form") {
+                isPresentingRecipeForm.toggle()
+            }
+            .sheet(isPresented: $isPresentingRecipeForm) {
+                RecipeFormView(recipe: $recipe, isPresentingRecipeForm: $isPresentingRecipeForm)
+            }
+        }
     }
 }
 
-#Preview {
-    CreateRecipeView()
+struct CreateRecipeView_Previews: PreviewProvider {
+    static var previews: some View {
+        CreateRecipeView()
+    }
 }
