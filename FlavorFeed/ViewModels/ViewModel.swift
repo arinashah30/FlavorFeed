@@ -636,7 +636,7 @@ class ViewModel: ObservableObject {
         
         var postList: [String] = [String]()
 
-        get_friends() { friends in
+        get_friends_ids() { friends in
             var allUsersToFetch = friends
             allUsersToFetch.append(self.current_user!.id)
             

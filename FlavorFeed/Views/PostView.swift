@@ -61,7 +61,7 @@ struct PostView: View {
 
                     
                     VStack (alignment: .leading) {
-                        Text(post.userID)
+                        Text(post.friend!.name)
                             .font(.system(size: 18))
                             .foregroundColor(.ffSecondary)
                             .fontWeight(.semibold)
@@ -80,7 +80,8 @@ struct PostView: View {
                             .frame(width: 20)
                             .foregroundColor(.black)
                     }
-                }.padding([.leading, .trailing] , 20)
+                }
+                .padding([.leading, .trailing] , 20)
                 
                 TabView(selection: $tabSelection) {
                     ForEach(0..<post.images.count) { index in
@@ -176,7 +177,7 @@ struct PostView: View {
                     }.frame(height: geo.size.height * 0.69)
                     
                 }.tabViewStyle(.page).indexViewStyle(.page(backgroundDisplayMode: .always))
-                    .frame(height: geo.size.height * 0.735)
+                    .frame(height: geo.size.height * 0.725)
                     .onAppear {
                         setupAppearance()
                     }
@@ -187,6 +188,7 @@ struct PostView: View {
                         Text("Top Comments")
                             .font(.system(size: 15))
                             .fontWeight(.light)
+                            .padding(.top, -2)
                         Spacer()
                         Button {
                             withAnimation (.smooth) {
@@ -231,10 +233,12 @@ struct PostView: View {
                             .padding(.vertical)
                             .background(lightGray)
                             .cornerRadius(20)
-                            .padding(.bottom, 5)
+                            .padding(.bottom, 8)
                         }
+                        .frame(width: geo.size.width * 0.97)
                     }
                 }
+                .padding(.top, -7)
                 Spacer()
             }.frame(maxHeight: .infinity)
         }
