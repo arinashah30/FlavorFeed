@@ -17,7 +17,9 @@ struct AddFriendsView: View {
     var options = ["Suggestions", "Friends", "Requests"]
     @State private var searchText = ""
     @ObservedObject var vm: ViewModel
-    var users: [Friend] = [Friend]()
+    @State private var requests: [Friend] = [Friend]()
+    @State private var suggestions: [Friend] = [Friend]()
+    @State private var friends: [Friend] = [Friend]()
         
     var body: some View {
         NavigationStack {
@@ -65,7 +67,7 @@ struct AddFriendsView: View {
                     
                    
                         
-                        UserListView(users: users, searchText: $searchText)
+                    UserListView(vm: vm, suggestions: suggestions, friends: friends, requests: requests, searchText: $searchText, selectedOption: $selectedOption)
 
                         
                         
@@ -108,14 +110,22 @@ struct AddFriendsView: View {
                                 .foregroundColor(.black)
                                 .font(.system(size: 20)).padding(5)
                         }
-                    }.padding([.leading, .trailing])
+                    }
                 }
             }
         }
         .onAppear {
             UISegmentedControl.appearance().backgroundColor = .white
             vm.get_friend_requests() { friends in
-                users = friends
+                requests = friends
+            }
+            vm.get_friend_suggestions() { friends in
+                suggestions = friends
+            }
+            vm.get_friends_ids() { friendIDs in
+                vm.get_friends(userIDs: friendIDs) { friend in
+                    friends = friend
+                }
             }
         }
     }

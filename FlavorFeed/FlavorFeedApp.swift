@@ -24,6 +24,7 @@ struct FlavorFeedApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+            //CalendarView(user: User(id: "AustinUserName", name: "Austin", profilePicture: "drake_pfp", email: "austin@gmail.com", bio: "", phoneNumber: "123456789", friends: [], pins: [], myPosts: []))
         }
     }
 }
