@@ -177,7 +177,7 @@ struct PublishPostView: View {
                 
                 Button(action: {
                     // PUBLISH POST
-                    vm.publish_post(caption: caption, location: "Atlanta, GA", recipe: Recipe(id: "1")) { close in
+                    vm.publish_post(caption: caption, location: "Atlanta, GA", recipe: Recipe(id: "1", title: "Recipe")) { close in
                         print("Recipe uploaded: \((!close).description)")
                         if !close {
                             vm.refreshFeed() {

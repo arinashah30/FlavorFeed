@@ -61,7 +61,7 @@ struct PostView: View {
 
                     
                     VStack (alignment: .leading) {
-                        Text(post.userID)
+                        Text(post.friend!.name)
                             .font(.system(size: 18))
                             .foregroundColor(.ffSecondary)
                             .fontWeight(.semibold)
