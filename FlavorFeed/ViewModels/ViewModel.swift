@@ -36,6 +36,10 @@ class ViewModel: ObservableObject {
     @Published var errorText: String? = nil
     @Published var comments: [Comment] = [Comment]()
     @Published var usernameSearchResults: [String] = [String]()
+    @Published var allMyPosts: [String] = [String]()
+    @Published var allMyPostDate: [Date] = [Date]()
+    @Published var allMyPostUrl: [String] = [String]()
+    @Published var calendarViews: [CalendarItemView] = [CalendarItemView]()
 
     
     @Published var todays_posts: [Post] = [Post]()
@@ -614,6 +618,22 @@ class ViewModel: ObservableObject {
         }
     }
     
+    func get_day_and_url(postID: String, completion: @escaping (String, String) -> Void){
+        db.collection("POSTS").document(postID).getDocument { document, err in
+            if let err {
+                return
+            } else {
+                if let document = document {
+                    if let data = document.data() {
+                        let day = data["day"] as! String
+                        let url = data["images"] as! [String]
+                        completion(day, url[0])
+                    }
+                }
+            }
+        }
+    }
+    
     //synchronous approach
     func load_image_from_url(url: String) -> Image? {
         if url == "NIL" {
@@ -626,5 +646,21 @@ class ViewModel: ObservableObject {
             return nil
         }
         return Image(uiImage: uiImage)
+    }
+    
+    
+    func getAllPostsOfUser(userID: String, completion: @escaping ([String]) -> Void) {
+        
+        var arr: [String] = []
+        
+        self.db.collection("USERS").document(userID).getDocument { document, err in
+            if let err {
+                return
+            } else {
+                let data = document!.data()
+                arr = data?["myPosts"] as? [String] ?? [""]
+            }
+            completion(arr)
+        }
     }
 }
