@@ -13,7 +13,7 @@ struct PostView: View {
     @ObservedObject var vm: ViewModel
     @State private var tabSelection = 0
     var post: Post
-    //    var userID: String
+
     var gold = Color(red:255/255, green:211/255, blue:122/255)
     var salmon = Color(red: 255/255, green: 112/255, blue: 112/255)
     var teal = Color(red: 0/255, green: 82/255, blue: 79/255)
@@ -37,6 +37,9 @@ struct PostView: View {
         
         
     }
+
+    @State private var isShowingSheet = false
+
     
     var body: some View {
         GeometryReader { geo in
@@ -83,14 +86,13 @@ struct PostView: View {
                             .frame(width: 20)
                             .foregroundColor(.black)
                     }
-                }.padding([.leading, .trailing] , 20)
+                }
+                .padding([.leading, .trailing] , 20)
                 
                 TabView(selection: $tabSelection) {
                     ForEach(0..<post.images.count) { index in
                         
-                        //                ForEach(1...3, id: \.self) { pic in
                         ZStack (){
-                            //
                             AsyncImage(url: URL(string: bigImage(index))) { image in
                                 image.resizable()
                                     .aspectRatio(contentMode: .fill)
@@ -107,7 +109,6 @@ struct PostView: View {
                             
                             
                             VStack {
-                                
                                 HStack {
                                     VStack {
                                         Button {
@@ -142,7 +143,7 @@ struct PostView: View {
                                     Spacer()
                                     VStack {
                                         Button {
-                                            
+                                            isShowingSheet = true
                                         } label: {
                                             Image("fork_and_knife")
                                                 .resizable()
@@ -150,6 +151,8 @@ struct PostView: View {
                                                 .frame(width: 35)
                                                 .foregroundColor(.ffTertiary)
                                         }
+                                        
+
                                         
                                         Button {
                                             
@@ -177,11 +180,13 @@ struct PostView: View {
                             .padding(.bottom, 55)
                             .padding([.leading, .trailing] , 20)
                             .tag(index)
-                        
+                            .sheet(isPresented: $isShowingSheet) {
+                                RecipeSheetView(recipe: post.recipes[index], isShowingSheet: $isShowingSheet)
+                            }
                     }.frame(height: geo.size.height * 0.69)
                     
                 }.tabViewStyle(.page).indexViewStyle(.page(backgroundDisplayMode: .always))
-                    .frame(height: geo.size.height * 0.735)
+                    .frame(height: geo.size.height * 0.725)
                     .onAppear {
                         setupAppearance()
                     }
@@ -192,6 +197,7 @@ struct PostView: View {
                         Text("Top Comments (\(post.comments.count))")
                             .font(.system(size: 15))
                             .fontWeight(.light)
+                            .padding(.top, -2)
                         Spacer()
                         
                         Button {
@@ -237,7 +243,7 @@ struct PostView: View {
                             .padding(.vertical)
                             .background(lightGray)
                             .cornerRadius(20)
-                            .padding(.bottom, 5)
+                            .padding(.bottom, 8)
                         }
                         
                     }
@@ -258,7 +264,7 @@ struct PostView: View {
                         .padding()
                         
                 }
-            }
+                .padding(.top, -7)
                 Spacer()
             }.frame(maxHeight: .infinity)
     }
@@ -290,6 +296,7 @@ struct PostView: View {
     }
 }
 
-#Preview {
-    PostView(vm: ViewModel(), post: Post(id: UUID().uuidString, userID: "champagnepapi", images: ["https://pbs.twimg.com/media/F3xazUkawAEeDOc.jpg:large https://cdn.openart.ai/stable_diffusion/cc2c55c983affcc95f0bfd881d62eb446e2a4c69_2000x2000.webp"], date: ["October 24, 2022", "October 24, 2022", "October 24, 2022"], day: "11-09-2923", comments: [Comment(id: UUID().uuidString, userID: "adonis", text: "Looking fresh Drake!", date: "October 24, 2022", replies: []), Comment(id: UUID().uuidString, userID: "travisscott", text: "She said do you love me I told her only partly.", date: "October 24, 2022", replies: [])], caption: ["That was yummy in my tummy", "", "Let's dig in"], likes: [], locations: [], recipes: [], friend: Friend(id: "arinashah", name: "Arina", profilePicture: "https://images-prod.dazeddigital.com/463/azure/dazed-prod/1300/0/1300889.jpeg", bio: "Nothing", mutualFriends: [], pins: [], todaysPosts: [])))
-}
+//#Preview {
+//    let sampleRecipe = Recipe(id: "id", title: "Fruit Salad", link: nil, ingredients: ["apple", "banana", "orange", "strawberry"], directions: "Step 1: For the sauce: Bring orange juice, lemon juice, brown sugar, orange zest, and lemon zest to a boil in a saucepan over medium-high heat. Reduce heat to medium-low and simmer until slightly thickened, about 5 minutes. Remove from heat and stir in vanilla extract. Set aside to cool. For the salad: Layer fruit in a large, clear glass bowl in this order: pineapple, strawberries, kiwi fruit, bananas, oranges, grapes, and blueberries. Pour cooled sauce over fruit; cover and refrigerate for 3 to 4 hours before serving.Step 1: For the sauce: Bring orange juice, lemon juice, brown sugar, orange zest, and lemon zest to a boil in a saucepan over medium-high heat. Reduce heat to medium-low and simmer until slightly thickened, about 5 minutes. Remove from heat and stir in vanilla extract. Set aside to cool. For the salad: Layer fruit in a large, clear glass bowl in this order: pineapple, strawberries, kiwi fruit, bananas, oranges, grapes, and blueberries. Pour cooled sauce over fruit; cover and refrigerate for 3 to 4 hours before serving.Step 1: For the sauce: Bring orange juice, lemon juice, brown sugar, orange zest, and lemon zest to a boil in a saucepan over medium-high heat. Reduce heat to medium-low and simmer until slightly thickened, about 5 minutes. Remove from heat and stir in vanilla extract. Set aside to cool. For the salad: Layer fruit in a large, clear glass bowl in this order: pineapple, strawberries, kiwi fruit, bananas, oranges, grapes, and blueberries. Pour cooled sauce over fruit; cover and refrigerate for 3 to 4 hours before serving.Step 1: For the sauce: Bring orange juice, lemon juice, brown sugar, orange zest, and lemon zest to a boil in a saucepan over medium-high heat. Reduce heat to medium-low and simmer until slightly thickened, about 5 minutes. Remove from heat and stir in vanilla extract. Set aside to cool. For the salad: Layer fruit in a large, clear glass bowl in this order: pineapple, strawberries, kiwi fruit, bananas, oranges, grapes, and blueberries. Pour cooled sauce over fruit; cover and refrigerate for 3 to 4 hours before serving.")    
+//    PostView(vm: ViewModel(), post: Post(id: UUID().uuidString, userID: "champagnepapi", images: ["https://pbs.twimg.com/media/F3xazUkawAEeDOc.jpg:large https://cdn.openart.ai/stable_diffusion/cc2c55c983affcc95f0bfd881d62eb446e2a4c69_2000x2000.webp"], date: ["October 24, 2022", "October 24, 2022", "October 24, 2022"], day: "11-09-2923", comments: [Comment(id: UUID().uuidString, userID: "adonis", text: "Looking fresh Drake!", date: "October 24, 2022", replies: []), Comment(id: UUID().uuidString, userID: "travisscott", text: "She said do you love me I told her only partly.", date: "October 24, 2022", replies: [])], caption: ["That was yummy in my tummy", "", "Let's dig in"], likes: [], locations: [], recipes: [sampleRecipe, sampleRecipe, sampleRecipe], friend: Friend(id: "arinashah", name: "Arina", profilePicture: "https://images-prod.dazeddigital.com/463/azure/dazed-prod/1300/0/1300889.jpeg", bio: "Nothing", mutualFriends: [], pins: [], todaysPosts: [])))
+//}
