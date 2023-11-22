@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Combine
 
 
 struct PostView: View {
@@ -21,6 +22,10 @@ struct PostView: View {
     @State private var showSelfieFirst = true
     @State private var showComments = true
     
+    @State private var myNewComment = ""
+    
+    @State private var keyboardHeight: CGFloat = 0
+        
     let person_circle_address = "https://www.iconbolt.com/preview/facebook/ionicons-outline/person-circle.svg"
     
     init(vm: ViewModel, post: Post) {
@@ -30,6 +35,7 @@ struct PostView: View {
         print("CREATING POST")
         print(vm.todays_posts.count)
         
+        
     }
     
     var body: some View {
@@ -37,15 +43,15 @@ struct PostView: View {
             VStack {
                 HStack {
                     AsyncImage(url: URL(string: post.friend!.profilePicture)) { image in
-                            image.resizable()
-                                .scaledToFill()
-                                .frame(width: geo.size.height * 0.08, height: geo.size.height * 0.08)
-                                .clipShape(.circle)
+                        image.resizable()
+                            .scaledToFill()
+                            .frame(width: geo.size.height * 0.08, height: geo.size.height * 0.08)
+                            .clipShape(.circle)
                     } placeholder: {
                         ProgressView()
                             .frame(width: geo.size.height * 0.08, height: geo.size.height * 0.08)
                             .clipShape(.circle)
-                            
+                        
                     }.task {
                         do {
                             _ = try await URLSession.shared.data(from: URL(string: post.friend!.profilePicture)!)
@@ -55,7 +61,7 @@ struct PostView: View {
                             print("Error loading image: \(error.localizedDescription)")
                         }
                     }
-
+                    
                     
                     VStack (alignment: .leading) {
                         Text(post.friend!.name)
@@ -94,9 +100,9 @@ struct PostView: View {
                                 ProgressView()
                                     .frame(width: geo.size.width*0.98, height: geo.size.height*0.66)
                                     .clipped()
-                                    
-
-
+                                
+                                
+                                
                             }
                             
                             
@@ -183,10 +189,11 @@ struct PostView: View {
                 
                 VStack{
                     HStack{
-                        Text("Top Comments")
+                        Text("Top Comments (\(post.comments.count))")
                             .font(.system(size: 15))
                             .fontWeight(.light)
                         Spacer()
+                        
                         Button {
                             withAnimation (.smooth) {
                                 self.showComments.toggle()
@@ -232,11 +239,28 @@ struct PostView: View {
                             .cornerRadius(20)
                             .padding(.bottom, 5)
                         }
+                        
                     }
+                    HStack {
+                        TextField("Add comment here", text: $myNewComment)
+                        Button {
+                            // add comment
+                        } label: {
+                            Image(systemName: "paperplane.circle")
+                                .foregroundColor(.ffSecondary)
+                                .font(.system(size: 24))
+                        }
+                    }.frame(maxWidth: .infinity)
+                        .padding(.horizontal)
+                        .padding(.vertical, 5)
+                        .background(Color.ffPrimary)
+                        .cornerRadius(10)
+                        .padding()
+                        
                 }
+            }
                 Spacer()
             }.frame(maxHeight: .infinity)
-        }
     }
     
     func setupAppearance() {
