@@ -49,7 +49,7 @@ struct UserRow: View {
             }
             Spacer()
             Button(action: {
-                //add friend function
+                vm.accept_friend_request(from: user.id, to: vm.current_user!.id)
             }) {
                 Text("ADD")
                     .font(.system(size: 16))
@@ -60,7 +60,7 @@ struct UserRow: View {
             .background(Color.ffPrimary)
             .cornerRadius(25)
             Button(action: {
-                
+                vm.reject_friend_request(from: user.id, to: vm.current_user!.id)
             }) {
                 Image(systemName: "xmark")
                     .resizable()

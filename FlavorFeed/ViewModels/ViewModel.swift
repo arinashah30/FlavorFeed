@@ -184,6 +184,7 @@ class ViewModel: ObservableObject {
                                           bio: document["bio"] as! String,
                                           phoneNumber: document["phone_number"] as! String,
                                           friends: document["friends"] as! [String],
+                                          requests: document["incomingRequests"] as! [String],
                                           pins: document["pins"] as? [String] ?? [],
                                           myPosts: document["myPosts"] as! [String])
                 completion()
