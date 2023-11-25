@@ -13,19 +13,19 @@ struct PostView: View {
     @ObservedObject var vm: ViewModel
     @State private var tabSelection = 0
     var post: Post
-
+    
     var gold = Color(red:255/255, green:211/255, blue:122/255)
     var salmon = Color(red: 255/255, green: 112/255, blue: 112/255)
     var teal = Color(red: 0/255, green: 82/255, blue: 79/255)
     var lightGray = Color(red: 238/255, green: 238/255, blue: 239/255)
     
     @State private var showSelfieFirst = true
+    
     @State private var showComments = true
-    
     @State private var myNewComment = ""
+    @State private var isShowingSheet = false
     
-    @State private var keyboardHeight: CGFloat = 0
-        
+    
     let person_circle_address = "https://www.iconbolt.com/preview/facebook/ionicons-outline/person-circle.svg"
     
     init(vm: ViewModel, post: Post) {
@@ -35,11 +35,10 @@ struct PostView: View {
         print("CREATING POST")
         print(vm.todays_posts.count)
         
-        
+        self.post.comments = self.post.comments.sorted { this, next in
+            this.date < next.date
+        }
     }
-
-    @State private var isShowingSheet = false
-
     
     var body: some View {
         GeometryReader { geo in
@@ -152,7 +151,7 @@ struct PostView: View {
                                                 .foregroundColor(.ffTertiary)
                                         }
                                         
-
+                                        
                                         
                                         Button {
                                             
@@ -215,29 +214,32 @@ struct PostView: View {
                     .padding(.horizontal, 20)
                     .padding(.top, 5)
                     if showComments && post.comments.count != 0 {
-                        ScrollView {
-                            VStack {
-                                ForEach(post.comments, id: \.self) { comment in
-                                    HStack{
-                                        //                                        Image(comment.profilePicture)
-                                        Image("travis_scott_pfp")
+                        VStack {
+                            ForEach(post.comments, id: \.self) { comment in
+                                HStack{
+                                    AsyncImage(url: URL(string: comment.profilePicture)) { image in
+                                        image
                                             .resizable()
                                             .frame(width: 60, height: 60)
                                             .clipShape(.circle)
-                                        Spacer()
-                                        
-                                        ZStack{
-                                            RoundedRectangle(cornerRadius: 10)
-                                                .fill(gold)
-                                            Text("**\(comment.userID)**: \(comment.text)")
-                                                .frame(maxWidth: .infinity, alignment: .leading)
-                                                .multilineTextAlignment(.leading)
-                                                .padding(.horizontal, 10)
-                                        }
-                                        Spacer()
+                                    } placeholder: {
+                                        ProgressView()
+                                            .frame(width: 60, height: 60)
+                                            .clipShape(.circle)
                                     }
-                                    .padding(.horizontal, 15)
+                                    Spacer()
+                                    
+                                    ZStack{
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .fill(gold)
+                                        Text("**\(comment.userID)**: \(comment.text)")
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                            .multilineTextAlignment(.leading)
+                                            .padding(.horizontal, 10)
+                                    }
+                                    Spacer()
                                 }
+                                .padding(.horizontal, 15)
                                 
                             }
                             .padding(.vertical)
@@ -251,6 +253,14 @@ struct PostView: View {
                         TextField("Add comment here", text: $myNewComment)
                         Button {
                             // add comment
+                            vm.firebase_add_comment(postID: post.id, text: myNewComment, date: Date()) { uploaded in
+                                if uploaded {
+                                    myNewComment = ""
+                                    vm.refreshFeed {
+                                        // do nothing
+                                    }
+                                }
+                            }
                         } label: {
                             Image(systemName: "paperplane.circle")
                                 .foregroundColor(.ffSecondary)
@@ -262,11 +272,12 @@ struct PostView: View {
                         .background(Color.ffPrimary)
                         .cornerRadius(10)
                         .padding()
-                        
+                    
                 }
                 .padding(.top, -7)
                 Spacer()
             }.frame(maxHeight: .infinity)
+        }
     }
     
     func setupAppearance() {
@@ -297,6 +308,6 @@ struct PostView: View {
 }
 
 //#Preview {
-//    let sampleRecipe = Recipe(id: "id", title: "Fruit Salad", link: nil, ingredients: ["apple", "banana", "orange", "strawberry"], directions: "Step 1: For the sauce: Bring orange juice, lemon juice, brown sugar, orange zest, and lemon zest to a boil in a saucepan over medium-high heat. Reduce heat to medium-low and simmer until slightly thickened, about 5 minutes. Remove from heat and stir in vanilla extract. Set aside to cool. For the salad: Layer fruit in a large, clear glass bowl in this order: pineapple, strawberries, kiwi fruit, bananas, oranges, grapes, and blueberries. Pour cooled sauce over fruit; cover and refrigerate for 3 to 4 hours before serving.Step 1: For the sauce: Bring orange juice, lemon juice, brown sugar, orange zest, and lemon zest to a boil in a saucepan over medium-high heat. Reduce heat to medium-low and simmer until slightly thickened, about 5 minutes. Remove from heat and stir in vanilla extract. Set aside to cool. For the salad: Layer fruit in a large, clear glass bowl in this order: pineapple, strawberries, kiwi fruit, bananas, oranges, grapes, and blueberries. Pour cooled sauce over fruit; cover and refrigerate for 3 to 4 hours before serving.Step 1: For the sauce: Bring orange juice, lemon juice, brown sugar, orange zest, and lemon zest to a boil in a saucepan over medium-high heat. Reduce heat to medium-low and simmer until slightly thickened, about 5 minutes. Remove from heat and stir in vanilla extract. Set aside to cool. For the salad: Layer fruit in a large, clear glass bowl in this order: pineapple, strawberries, kiwi fruit, bananas, oranges, grapes, and blueberries. Pour cooled sauce over fruit; cover and refrigerate for 3 to 4 hours before serving.Step 1: For the sauce: Bring orange juice, lemon juice, brown sugar, orange zest, and lemon zest to a boil in a saucepan over medium-high heat. Reduce heat to medium-low and simmer until slightly thickened, about 5 minutes. Remove from heat and stir in vanilla extract. Set aside to cool. For the salad: Layer fruit in a large, clear glass bowl in this order: pineapple, strawberries, kiwi fruit, bananas, oranges, grapes, and blueberries. Pour cooled sauce over fruit; cover and refrigerate for 3 to 4 hours before serving.")    
+//    let sampleRecipe = Recipe(id: "id", title: "Fruit Salad", link: nil, ingredients: ["apple", "banana", "orange", "strawberry"], directions: "Step 1: For the sauce: Bring orange juice, lemon juice, brown sugar, orange zest, and lemon zest to a boil in a saucepan over medium-high heat. Reduce heat to medium-low and simmer until slightly thickened, about 5 minutes. Remove from heat and stir in vanilla extract. Set aside to cool. For the salad: Layer fruit in a large, clear glass bowl in this order: pineapple, strawberries, kiwi fruit, bananas, oranges, grapes, and blueberries. Pour cooled sauce over fruit; cover and refrigerate for 3 to 4 hours before serving.Step 1: For the sauce: Bring orange juice, lemon juice, brown sugar, orange zest, and lemon zest to a boil in a saucepan over medium-high heat. Reduce heat to medium-low and simmer until slightly thickened, about 5 minutes. Remove from heat and stir in vanilla extract. Set aside to cool. For the salad: Layer fruit in a large, clear glass bowl in this order: pineapple, strawberries, kiwi fruit, bananas, oranges, grapes, and blueberries. Pour cooled sauce over fruit; cover and refrigerate for 3 to 4 hours before serving.Step 1: For the sauce: Bring orange juice, lemon juice, brown sugar, orange zest, and lemon zest to a boil in a saucepan over medium-high heat. Reduce heat to medium-low and simmer until slightly thickened, about 5 minutes. Remove from heat and stir in vanilla extract. Set aside to cool. For the salad: Layer fruit in a large, clear glass bowl in this order: pineapple, strawberries, kiwi fruit, bananas, oranges, grapes, and blueberries. Pour cooled sauce over fruit; cover and refrigerate for 3 to 4 hours before serving.Step 1: For the sauce: Bring orange juice, lemon juice, brown sugar, orange zest, and lemon zest to a boil in a saucepan over medium-high heat. Reduce heat to medium-low and simmer until slightly thickened, about 5 minutes. Remove from heat and stir in vanilla extract. Set aside to cool. For the salad: Layer fruit in a large, clear glass bowl in this order: pineapple, strawberries, kiwi fruit, bananas, oranges, grapes, and blueberries. Pour cooled sauce over fruit; cover and refrigerate for 3 to 4 hours before serving.")
 //    PostView(vm: ViewModel(), post: Post(id: UUID().uuidString, userID: "champagnepapi", images: ["https://pbs.twimg.com/media/F3xazUkawAEeDOc.jpg:large https://cdn.openart.ai/stable_diffusion/cc2c55c983affcc95f0bfd881d62eb446e2a4c69_2000x2000.webp"], date: ["October 24, 2022", "October 24, 2022", "October 24, 2022"], day: "11-09-2923", comments: [Comment(id: UUID().uuidString, userID: "adonis", text: "Looking fresh Drake!", date: "October 24, 2022", replies: []), Comment(id: UUID().uuidString, userID: "travisscott", text: "She said do you love me I told her only partly.", date: "October 24, 2022", replies: [])], caption: ["That was yummy in my tummy", "", "Let's dig in"], likes: [], locations: [], recipes: [sampleRecipe, sampleRecipe, sampleRecipe], friend: Friend(id: "arinashah", name: "Arina", profilePicture: "https://images-prod.dazeddigital.com/463/azure/dazed-prod/1300/0/1300889.jpeg", bio: "Nothing", mutualFriends: [], pins: [], todaysPosts: [])))
 //}
