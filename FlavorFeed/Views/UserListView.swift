@@ -24,18 +24,24 @@ struct UserListView: View {
             GeometryReader { geometry in
                 List {
                     ForEach(filteredUsers) { user in
-                        UserRow(user: user, width: geometry.size.width, vm: vm).padding(.horizontal, 10)
+                        NavigationLink(destination: FriendProfileView(vm: vm, friend: user), label: {
+                            UserRow(user: user, width: geometry.size.width, vm: vm, selectedOption: $selectedOption).padding(.horizontal, 10)
+                        })
+                        
                     }//.listRowBackground(Color.ffPrimary)
                 }//.scrollContentBackground(.hidden)
                     .listStyle(.plain)
             }
         }
+    
+    
 }
 
 struct UserRow: View {
     let user: Friend
     let width: CGFloat
     @ObservedObject var vm: ViewModel
+    @Binding var selectedOption: String
     var body: some View {
         HStack {
             vm.load_image_from_url(url: user.profilePicture)!
@@ -49,7 +55,11 @@ struct UserRow: View {
             }
             Spacer()
             Button(action: {
-                vm.accept_friend_request(from: user.id, to: vm.current_user!.id)
+                if (selectedOption == "Requests") {
+                    vm.accept_friend_request(from: vm.current_user!.id, to: user.id)
+                } else if (selectedOption == "Suggestions") {
+                    vm.send_friend_request(from: vm.current_user!.id, to: user.id)
+                }
             }) {
                 Text("ADD")
                     .font(.system(size: 16))
@@ -60,7 +70,9 @@ struct UserRow: View {
             .background(Color.ffPrimary)
             .cornerRadius(25)
             Button(action: {
-                vm.reject_friend_request(from: user.id, to: vm.current_user!.id)
+                if (selectedOption == "Requests") {
+                    vm.reject_friend_request(from: vm.current_user!.id, to: user.id)
+                }
             }) {
                 Image(systemName: "xmark")
                     .resizable()
