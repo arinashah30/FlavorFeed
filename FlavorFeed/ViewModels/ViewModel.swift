@@ -35,8 +35,6 @@ class ViewModel: ObservableObject {
     @Published var current_user: User? = nil
     @Published var errorText: String? = nil
     
-    @Published var new_profile_image: Image?
-    
     @Published var comments: [Comment] = [Comment]()
     @Published var usernameSearchResults: [String] = [String]()
     
@@ -621,7 +619,6 @@ class ViewModel: ObservableObject {
         } else {
             completion(false)
         }
-        return arr
     }
     
     
@@ -833,6 +830,19 @@ class ViewModel: ObservableObject {
             return nil
         }
         return Image(uiImage: uiImage)
+    }
+    
+    func updateUserField(field: String, value: String) {
+        db.collection("USERS").document(current_user!.id).updateData(
+            [field: value]) { err in
+                if let err = err {
+                    print(err.localizedDescription)
+                } else {
+                    self.setCurrentUser(userId: self.current_user!.id) {
+                        
+                    }
+                }
+        }
     }
 }
 

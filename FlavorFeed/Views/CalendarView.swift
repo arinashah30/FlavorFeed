@@ -97,7 +97,10 @@ func getLast14DaysViews(posts: [Post]) -> [MaybePost] {
     let lastTwoWeekDates = getLast14Days(from: today)
     for date in lastTwoWeekDates {
         if let post = postForDate(posts: posts, dateToCheck: date) {
-            maybePosts.append(contentsOf: [MaybePost(date: date, image: post.images[0][1])])
+            if (post.images.count >= 2) {
+                maybePosts.append(contentsOf: [MaybePost(date: date, image: post.images[0][1])])
+            }
+            
         } else {
             maybePosts.append(contentsOf: [MaybePost(date: date, image: nil)])
         }
