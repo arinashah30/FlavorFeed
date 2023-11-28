@@ -81,11 +81,6 @@ struct UserRow: View {
             Spacer()
             if (selectedOption != "Friends") {
                 Button(action: {
-                    if (selectedOption == "Requests") {
-                        vm.accept_friend_request(from: user.id, to: vm.current_user!.id)
-                    } else if (selectedOption == "Suggestions") {
-                        vm.send_friend_request(from: vm.current_user!.id, to: user.id)
-                    }
                     onAccept(user)
                 }) {
                     Text("ADD")
@@ -98,7 +93,6 @@ struct UserRow: View {
                 .cornerRadius(25)
                 if (selectedOption == "Requests") {
                     Button(action: {
-                        print("X button pressed")
                         onReject(user)
                     }) {
                         Image(systemName: "xmark")
