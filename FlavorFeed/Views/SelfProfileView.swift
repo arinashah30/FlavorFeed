@@ -29,13 +29,15 @@ struct SelfProfileView: View {
                         .font(.title2)
                         .foregroundColor(.ffSecondary)
                     Spacer()
-                    NavigationLink {
-                        SettingsView(vm: vm)
-                    } label: {
+                    
+                    Button(action: {
+                        tabSelection = .settingsView
+                    }, label: {
                         Image(systemName: "ellipsis")
                             .foregroundColor(.black)
                             .font(.system(size: 30))
-                    }
+                    })
+                    
                 }.padding()
                 
                 ScrollView{

@@ -3,8 +3,8 @@ import PhotosUI
 
 struct SettingsView: View {
     @ObservedObject var vm: ViewModel
-    
-    //@Binding var showSettingsView: Bool
+    @Binding var tabSelection: Tabs
+
     
     @State private var showAccountSettingsView = false
     
@@ -14,26 +14,30 @@ struct SettingsView: View {
     
     //Editing states
     @State private var isEditingProfile: Bool = false
+    @FocusState private var isFocused: Bool
     
-    init(vm: ViewModel) {
+    
+    init(vm: ViewModel, tabSelection: Binding<Tabs>) {
         self.vm = vm
+        _tabSelection = tabSelection
         self.displayName = vm.current_user?.name ?? "Display Name Unavailable"
         self.bio = vm.current_user?.bio ?? "Bio Unavailable"
     }
     
     
+    
     var body: some View {
         VStack{
             HStack {
-                Spacer(minLength: 155)
-//                Button {
-//                    showSettingsView.toggle()
-//                } label: {
-//                    Image(systemName: "chevron.left")
-//                        .resizable()
-//                        .aspectRatio(contentMode: .fit)
-//                        .frame(width: 15)
-//                }.padding(.trailing, 30)
+                Button {
+                    tabSelection = .selfProfileView
+                } label: {
+                    Image(systemName: "chevron.left")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 15)
+                }.padding(.leading, 20)
+                Spacer()
                 Text("Settings")
                     .font(.title2)
                     .foregroundColor(.ffSecondary)
@@ -47,7 +51,7 @@ struct SettingsView: View {
                 }.padding()
                 
             }
-            ProfilePhotoView(vm: vm)
+            ProfilePhotoView(vm: vm, avatarImage: vm.current_user!.profilePicture)
                 .frame(width: 150)
             Text("@" + (vm.current_user?.id ?? "USERNAMEERROR"))
                 .font(.system(size: 20))
@@ -76,12 +80,16 @@ struct SettingsView: View {
                     .foregroundStyle(Color.ffPrimary)
                     .fontWeight(.bold)
                     .frame(width: 120, alignment: .leading)
-                TextField("Enter bio", text: $bio, axis: .vertical)
-                    .lineLimit(5)
+                TextField("Enter bio", text: $bio)
+                    //.lineLimit(5)
                     .font(.system(size: 18))
                     .disabled(!isEditingProfile)
                     .frame(height: 110)
                     .foregroundStyle(Color.ffSecondary)
+                    .focused($isFocused)
+                    .onSubmit {
+                        isFocused = false
+                    }
             }.padding(.horizontal, 20)
             
             Divider()
@@ -132,23 +140,6 @@ struct SettingsView: View {
                 }
             }
             Spacer()
-//            Button{
-//                showAccountSettingsView.toggle()
-//            } label: {
-//                ZStack {
-//                    RoundedRectangle(cornerRadius: 10.0)
-//                        .frame(width: 325, height: 50)
-//                        .foregroundColor(Color.ffTertiary)
-//                    HStack {
-//                        Text("Account Settings")
-//                            .foregroundStyle(Color.black)
-//                            .font(.system(size: 20))
-//                        Spacer()
-//                        Image(systemName: "chevron.right")
-//                    }.padding(.horizontal, 55)
-//                }
-//            }
-//            Spacer()
             
         }.fullScreenCover(isPresented: $showAccountSettingsView) {
             AccountSettingsView(vm: vm, showAccountSettingsView: $showAccountSettingsView)
@@ -160,36 +151,41 @@ struct SettingsView: View {
     
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        SettingsView(vm: ViewModel())
+        SettingsView(vm: ViewModel(), tabSelection: Binding.constant(Tabs.settingsView))
     }
 }
 
 struct ProfilePhotoView: View {
     
     @State private var avatarItem: PhotosPickerItem?
-    @State private var avatarImage: URL? = nil
+    @State private var avatarImage: URL?
     
     @State private var isEditingProfilePic: Bool = false
     
     @ObservedObject var vm: ViewModel
     
-    init(avatarItem: PhotosPickerItem? = nil, vm: ViewModel) {
+    init(avatarItem: PhotosPickerItem? = nil, vm: ViewModel, avatarImage: String) {
         self.vm = vm
-        self.avatarImage = URL(string: vm.current_user?.profilePicture ?? "")
+        self.avatarImage = URL(string: avatarImage)
+        print(avatarImage)
     }
     
     var body: some View {
         VStack {
-            if let avatarImage  {
-                AsyncImage(url: avatarImage)
+            
+            AsyncImage(url: avatarImage) { image in
+                image
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
                     .frame(width: 120, height: 120)
-                    .clipShape(Circle())
-            } else {
-                Image(systemName: "person.circle")
-                    .scaledToFit()
-                    .font(.system(size: 120))
-                    .clipShape(Circle())
+                    .clipShape(.circle)
+            } placeholder: {
+                ProgressView()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: 120, height: 120)
+                    .clipShape(.circle)
             }
+            
             
             
             PhotosPicker("Edit Profile Picture", selection: $avatarItem, matching: .images)
@@ -214,6 +210,10 @@ struct ProfilePhotoView: View {
                 }
                 print("Could not load transferable from selected item")
             }
+        }
+        .onAppear {
+            print("avim : \(avatarImage)")
+            avatarImage = URL(string: vm.current_user!.profilePicture)
         }
     }
 }
@@ -243,48 +243,6 @@ struct AccountSettingsView: View {
     
     var body: some View {
         NavigationStack {
-//            HStack {
-//                Button(action: {
-//                    showAccountSettingsView = false
-//                }, label: {
-//                    Text("Cancel")
-//                        .foregroundColor(.gray)
-//                        .font(.system(size: 15))
-//                })
-//                .padding(5)
-//                Spacer()
-////                Button {
-////                    showAccountSettingsView.toggle()
-////                } label: {
-////                    Image(systemName: "chevron.left")
-////                        .resizable()
-////                        .aspectRatio(contentMode: .fit)
-////                        .frame(width: 15)
-////                }.padding(.trailing, 25)
-//                Text("Advanced Settings")
-//                    .font(.title)
-//                    .foregroundColor(.ffSecondary)
-//                Spacer()
-//                Button(action: {
-//                    if let user = vm.current_user {
-//                        if (phoneNumber != user.phoneNumber) {
-//                            vm.updateUserField(field: "phone_number", value: phoneNumber)
-//                        }
-//                        if (email != user.email) {
-//                            vm.updateUserField(field: "email", value: email)
-//                        }
-//                    }
-//                    showAccountSettingsView = false
-//                }, label: {
-//                    Text("Save")
-//                        
-//                        .font(.system(size: 15))
-//                })
-//                .padding(5)
-//                
-//            }
-
-
             VStack {
                 Text("Advanced Settings")
                                     .font(.title)
@@ -299,49 +257,7 @@ struct AccountSettingsView: View {
                     TextField("Enter phone number", text: $phoneNumber)
                         .font(.system(size: 18))
                         .foregroundStyle(Color.ffSecondary)
-                        //.disabled(!isEditingPhoneNum)
                 }.padding(.horizontal, 20)
-//                if !isEditingPhoneNum {
-//                    Button {
-//                        isEditingPhoneNum = true
-//                    } label: {
-//                        Text("Edit")
-//                            .foregroundStyle(.white)
-//                            .font(.system(size: 20))
-//                            .background(RoundedRectangle(cornerRadius: 25.0)
-//                                .frame(width: 150, height: 40)
-//                                .foregroundColor(Color.ffSecondary))
-//                    }.padding()
-//                } else {
-//                    HStack {
-//                        Spacer()
-//                        Button {
-//                            phoneNumber = vm.current_user!.phoneNumber
-//                            isEditingPhoneNum = false
-//                            
-//                        } label : {
-//                            Text("Cancel")
-//                                .foregroundStyle(.white)
-//                                .font(.system(size: 20))
-//                                .background(RoundedRectangle(cornerRadius: 25.0)
-//                                    .frame(width: 125, height: 40)
-//                                    .foregroundColor(Color.ffSecondary))
-//                        }
-//                        Spacer()
-//                        Button {
-//                            vm.updateUserField(field: "phone_number", value: phoneNumber)
-//                            isEditingPhoneNum.toggle()
-//                        } label: {
-//                            Text("Save")
-//                                .foregroundStyle(.white)
-//                                .font(.system(size: 20))
-//                                .background(RoundedRectangle(cornerRadius: 25.0)
-//                                    .frame(width: 125, height: 40)
-//                                    .foregroundColor(Color.ffSecondary))
-//                        }
-//                        Spacer()
-//                    }.padding()
-//                }
             }
             
             Divider()
@@ -356,7 +272,6 @@ struct AccountSettingsView: View {
                     .frame(width: 130, alignment: .leading)
                 TextField("Enter email", text: $email)
                     .font(.system(size: 18))
-                    //.disabled(!isEditingEmail)
                     .foregroundStyle(Color.ffSecondary)
             }.padding(.horizontal, 20)
             
@@ -405,10 +320,3 @@ struct AccountSettingsView: View {
     }
     
 }
-    
-//struct AccountSettingsView_Previews: PreviewProvider {
-//    static let vm = ViewModel(user: User(id: "username", name: "Display Name", profilePicture: "samplepfp", email: "samplemail@mail.com", bio: "Sample bio", phoneNumber: "000-111-2244", friends: [], pins: [], myPosts: []))
-//    static var previews: some View {
-//        AccountSettingsView(vm: vm, phoneNumber: vm.current_user!.phoneNumber, email: vm.current_user!.email, showAccountSettings: Binding.constant(true))
-//    }
-//}
