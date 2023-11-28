@@ -782,7 +782,7 @@ class ViewModel: ObservableObject {
                     comment?.append(Comment(id: document.documentID,
                                             userID: document["userID"] as! String,
                                             text: document["text"] as! String,
-                                            date: self!.dateFormatter.date(from: document["date"] as! String)!,
+                                            date: self?.dayFormatter.date(from: document["date"] as! String)  ?? Date(),
                                             profilePicture: document["profilePicture"] as! String,
                                             replies: document["directions"] as? [Comment] ?? []
                                            ))
@@ -915,5 +915,27 @@ class ViewModel: ObservableObject {
                     }
                 }
         }
+    }
+    
+    func firebase_search_for_friends(username: String, completionHandler: @escaping (([Friend]) -> Void)) {
+        var arr: [String] = []
+        
+        self.db.collection("USERS").whereField("id", isGreaterThanOrEqualTo: username).whereField("id", isLessThanOrEqualTo: username + "\u{f7ff}")
+            .getDocuments() { (querySnapshot, error) in
+                if let error = error {
+                    print("Error: \(error.localizedDescription)")
+                    return
+                } else {
+                    for document in querySnapshot!.documents {
+                        let data = document.data()
+                        arr.append(data["id"] as! String)
+                    }
+                }
+                self.get_friends(userIDs: arr) { friends in
+                    print(friends.count)
+                    
+                    completionHandler(friends)
+                }
+            }
     }
 }

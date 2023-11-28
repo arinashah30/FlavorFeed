@@ -36,15 +36,13 @@ struct FullCalendarView: View {
                         self.showFullCalendar = false
                     }, label: {
                         HStack {
-                            Button(action: {}, label: {
-                                Image(systemName: "chevron.backward")
-                                Text("Back")
-                            })
-                            .foregroundColor(.white)
-                            .bold()
-                            .padding()
-                            Spacer()
+                            Image(systemName: "chevron.backward")
+                            Text("Back")
                         }
+                        .foregroundColor(.white)
+                        .bold()
+                        .padding()
+                        Spacer()
                     })
                 }.frame(height: UIScreen.main.bounds.size.height * 0.06)
                     .background(.black)

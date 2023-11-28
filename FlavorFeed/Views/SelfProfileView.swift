@@ -37,7 +37,6 @@ struct SelfProfileView: View {
                         .foregroundColor(.black)
                         .font(.system(size: 30))
                 })
-                
             }.padding()
             
             ScrollView {
@@ -56,6 +55,7 @@ struct SelfProfileView: View {
                                 .padding()
                             Text("View All My Memories")
                         }
+
                     }
                     .buttonStyle(PlainButtonStyle())
                     .padding(.top, 20)
