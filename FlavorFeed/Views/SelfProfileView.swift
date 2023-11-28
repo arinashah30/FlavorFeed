@@ -15,38 +15,38 @@ struct SelfProfileView: View {
     @State var showFullCalendar = false
 
     var body: some View {
-            VStack(alignment: .center) {
-                HStack {
-                    Button {
-                        self.tabSelection = .mainScrollView
-                    } label: {
-                        Image(systemName: "arrow.left")
-                            .foregroundColor(.black)
-                            .font(.system(size: 30))
-                    }
-                    Spacer()
-                    Text("Profile")
-                        .font(.title2)
-                        .foregroundColor(.ffSecondary)
-                    Spacer()
-                    
-                    Button(action: {
-                        tabSelection = .settingsView
-                    }, label: {
-                        Image(systemName: "ellipsis")
-                            .foregroundColor(.black)
-                            .font(.system(size: 30))
-                    })
-                    
-                }.padding()
+        VStack(alignment: .center) {
+            HStack {
+                Button {
+                    self.tabSelection = .mainScrollView
+                } label: {
+                    Image(systemName: "arrow.left")
+                        .foregroundColor(.black)
+                        .font(.system(size: 30))
+                }
+                Spacer()
+                Text("Profile")
+                    .font(.title2)
+                    .foregroundColor(.ffSecondary)
+                Spacer()
                 
-                ScrollView {
-                    if let user = vm.current_user {
-                        BioView(profilePicture: user.profilePicture, name: user.name, id: user.id)
-                        PinsView(vm: vm, pinIDs: user.pins, id: user.id)
-                        CalendarView(vm: vm, user: user)
-                        
-                        Button {
+                Button(action: {
+                    tabSelection = .settingsView
+                }, label: {
+                    Image(systemName: "ellipsis")
+                        .foregroundColor(.black)
+                        .font(.system(size: 30))
+                })
+                
+            }.padding()
+            
+            ScrollView {
+                if let user = vm.current_user {
+                    BioView(profilePicture: user.profilePicture, name: user.name, id: user.id)
+                    PinsView(vm: vm, pinIDs: user.pins, id: user.id)
+                    CalendarView(vm: vm, user: user)
+                    
+                    Button {
                         showFullCalendar = true
                     } label: {
                         ZStack {
@@ -56,16 +56,18 @@ struct SelfProfileView: View {
                                 .padding()
                             Text("View All My Memories")
                         }
-                    .buttonStyle(PlainButtonStyle())
-                    
-                    MapView(restaurants: [CLLocationCoordinate2D(latitude: 43, longitude: 100), CLLocationCoordinate2D(latitude: -10, longitude: 30), CLLocationCoordinate2D(latitude: 20, longitude: -50), CLLocationCoordinate2D(latitude: 17, longitude: -40)])
-                        .frame(minHeight: 400)
-                    
-                }.fullScreenCover(isPresented: $showFullCalendar, content: {
-                    FullCalendarView(vm: vm, showFullCalendar: $showFullCalendar)
-                })
+                        .buttonStyle(PlainButtonStyle())
+                        
+                        MapView(restaurants: [CLLocationCoordinate2D(latitude: 43, longitude: 100), CLLocationCoordinate2D(latitude: -10, longitude: 30), CLLocationCoordinate2D(latitude: 20, longitude: -50), CLLocationCoordinate2D(latitude: 17, longitude: -40)])
+                            .frame(minHeight: 400)
+                        
+                    }.fullScreenCover(isPresented: $showFullCalendar, content: {
+                        FullCalendarView(vm: vm, showFullCalendar: $showFullCalendar)
+                    })
+                }
             }
             .ignoresSafeArea()
+        }
     }
 }
 
