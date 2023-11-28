@@ -37,7 +37,6 @@ class ViewModel: ObservableObject {
     @Published var comments: [Comment] = [Comment]()
     @Published var usernameSearchResults: [String] = [String]()
     
-    
     // POSTS
     @Published var my_post_today: Post?
     @Published var todays_posts: [Post] = [Post]() {
@@ -429,7 +428,7 @@ class ViewModel: ObservableObject {
         dateFormatter.dateFormat = "MM-dd-yyyy HH:mm:ss"
         let dateFormatted = dateFormatter.string(from: date) // get string from date
         
-
+        
         let data = ["images" : selfie + " " + foodPic,
                     "caption" : caption,
                     "recipes" : recipe,
@@ -476,7 +475,10 @@ class ViewModel: ObservableObject {
                 
                 if let foodPic = url_1 {
                     if let selfie = url_2 {
-                        let data = ["userID" : self.current_user!.id,
+                        let docId = UUID()
+
+                        let data = ["id" : docId.uuidString,
+                                    "userID" : self.current_user!.id,
                                     "images" : ["\(foodPic) \(selfie)"],
                                     "caption" : [caption],
                                     "recipes" : [""],
@@ -498,7 +500,6 @@ class ViewModel: ObservableObject {
                                     completion(!done)
                                 }
                         } else {
-                        let docId = UUID()
                             self.db.collection("POSTS").document(docId.uuidString).setData(data) { error in
                                 if let error = error {
                                     print("Error: \(error.localizedDescription) ")
@@ -553,7 +554,7 @@ class ViewModel: ObservableObject {
             completion(comments)
         }
     }
-
+    
     
     func get_friend_requests(completion: @escaping ([Friend]) -> Void) {
         let userRef = self.db.collection("USERS").document(current_user!.id)
@@ -569,8 +570,8 @@ class ViewModel: ObservableObject {
             }
         }
     }
-
-
+    
+    
     
     
     
@@ -635,7 +636,7 @@ class ViewModel: ObservableObject {
         let dateTodayString = dateFormatterSimple.string(from: date)
         
         var postList: [String] = [String]()
-
+        
         get_friends_ids() { friends in
             var allUsersToFetch = friends
             allUsersToFetch.append(self.current_user!.id)
@@ -658,7 +659,7 @@ class ViewModel: ObservableObject {
         }
     }
     
-
+    
     func get_friends_ids(completion: @escaping ([String]) -> Void) {
         let userRef = self.db.collection("USERS").document(current_user!.id)
         userRef.getDocument { document, err in
@@ -743,47 +744,47 @@ class ViewModel: ObservableObject {
         }
     }
     
- 
+    
     func convertToRecipe(postID: String) -> [Recipe] {
         var recipe: [Recipe]?
         
         self.db.collection("POSTS").document(postID).collection("RECIPES").getDocuments(completion: { [weak self] documents, error in
-                if let error = error {
-                    self?.errorText = "Cannot get list of recipes from Firebase."
-                } else {
-                    for document in documents!.documents {
-                        recipe?.append(Recipe(id: document.documentID,
+            if let error = error {
+                self?.errorText = "Cannot get list of recipes from Firebase."
+            } else {
+                for document in documents!.documents {
+                    recipe?.append(Recipe(id: document.documentID,
                                           title: document["title"] as! String,
                                           link: document["link"] as? String ?? nil,
                                           ingredients: document["ingredients"] as! [String],
                                           directions: document["directions"] as! String?
                                          ))
-                        UserDefaults.standard.setValue(true, forKey: "log_Status")
-                    }
+                    UserDefaults.standard.setValue(true, forKey: "log_Status")
                 }
-            })
+            }
+        })
         return recipe ?? []
     }
     
-
+    
     func convertToComments(postID: String) -> [Comment] {
         var comment: [Comment]?
         
         self.db.collection("POSTS").document(postID).collection("COMMENTS").getDocuments(completion: { [weak self] documents, error in
-                if let error = error {
-                    self?.errorText = "Cannot get list of recipes from Firebase."
-                } else {
-                    for document in documents!.documents {
-                        comment?.append(Comment(id: document.documentID,
-                                          userID: document["userID"] as! String,
-                                          text: document["text"] as! String,
-                                          date: document["date"] as! String,
-                                          replies: document["directions"] as? [Comment] ?? []
-                                         ))
-                        UserDefaults.standard.setValue(true, forKey: "log_Status")
-                    }
+            if let error = error {
+                self?.errorText = "Cannot get list of recipes from Firebase."
+            } else {
+                for document in documents!.documents {
+                    comment?.append(Comment(id: document.documentID,
+                                            userID: document["userID"] as! String,
+                                            text: document["text"] as! String,
+                                            date: document["date"] as! String,
+                                            replies: document["directions"] as? [Comment] ?? []
+                                           ))
+                    UserDefaults.standard.setValue(true, forKey: "log_Status")
                 }
-            })
+            }
+        })
         return comment ?? []
     }
     
@@ -818,6 +819,47 @@ class ViewModel: ObservableObject {
         }
     }
     
+    // returns post ID
+    func get_post_from_day(day: String, completion: @escaping (String) -> Void) {
+        db.collection("POSTS").whereField("userID", isEqualTo: self.current_user!.id).whereField("day", isEqualTo: day).getDocuments(completion: { documents, error in
+            if let err = error {
+                print(err.localizedDescription)
+                completion("")
+            } else if let docs = documents?.documents {
+                if docs.count == 1 {
+                    if let postID = docs[0]["id"] as? String {
+                        completion(postID)
+                    } else {
+                        completion("")
+                    }
+                } else {
+                    completion("")
+                }
+                completion("")
+            } else {
+                completion("")
+            }
+        })
+            
+        
+        
+    }
+//    func get_day_and_url(postID: String, completion: @escaping (String, String) -> Void){
+//        db.collection("POSTS").document(postID).getDocument { document, err in
+//            if let err {
+//                return
+//            } else {
+//                if let document = document {
+//                    if let data = document.data() {
+//                        let day = data["day"] as! String
+//                        let url = data["images"] as! [String]
+//                        completion(day, url[0])
+//                    }
+//                }
+//            }
+//        }
+//    }
+    
     //synchronous approach
     func load_image_from_url(url: String) -> Image? {
         if url == "NIL" {
@@ -831,5 +873,20 @@ class ViewModel: ObservableObject {
         }
         return Image(uiImage: uiImage)
     }
+    
+    
+//    func getAllPostsOfUser(userID: String, completion: @escaping ([String]) -> Void) {
+//        
+//        var arr: [String] = []
+//        
+//        self.db.collection("USERS").document(userID).getDocument { document, err in
+//            if let err {
+//                return
+//            } else {
+//                let data = document!.data()
+//                arr = data?["myPosts"] as? [String] ?? [""]
+//            }
+//            completion(arr)
+//        }
+//    }
 }
-

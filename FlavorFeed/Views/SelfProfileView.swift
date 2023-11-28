@@ -44,7 +44,7 @@ struct SelfProfileView: View {
                     CalendarView(vm: vm, user: vm.current_user!)
                     
                     NavigationLink {
-                        BioView(profilePicture: vm.current_user!.profilePicture, name: vm.current_user!.name, id: vm.current_user!.id)
+                        FullCalendarView(vm: vm)
                     } label: {
                         ZStack {
                             RoundedRectangle(cornerRadius: 9)
