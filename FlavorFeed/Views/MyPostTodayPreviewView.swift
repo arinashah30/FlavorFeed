@@ -44,7 +44,6 @@ struct MyPostTodayPreviewView: View {
                                             .clipShape(RoundedRectangle(cornerRadius: 10))
                                     } placeholder: {
                                         ProgressView()
-                                        
                                             .frame(width: 112, height: 149)
                                             .clipShape(RoundedRectangle(cornerRadius: 10))
                                     }

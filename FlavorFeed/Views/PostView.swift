@@ -46,6 +46,7 @@ struct PostView: View {
                 HStack {
                     AsyncImage(url: URL(string: post.friend!.profilePicture)) { image in
                         image.resizable()
+                            .aspectRatio(contentMode: .fill)
                             .scaledToFill()
                             .frame(width: geo.size.height * 0.08, height: geo.size.height * 0.08)
                             .clipShape(.circle)
@@ -167,11 +168,13 @@ struct PostView: View {
                                 }
                                 Spacer()
                                 if index < post.caption.count {
-                                    Text(post.caption[index])
-                                        .background(RoundedRectangle(cornerRadius: 10.0)
-                                            .frame(width: geo.size.width * 0.7, height: geo.size.height * 0.05)
-                                            .foregroundColor(.ffTertiary))
-                                        .padding(20)
+                                    if (!post.caption[index].isEmpty) {
+                                        Text(post.caption[index])
+                                            .background(RoundedRectangle(cornerRadius: 10.0)
+                                                .frame(width: geo.size.width * 0.7, height: geo.size.height * 0.05)
+                                                .foregroundColor(.ffTertiary))
+                                            .padding(20)
+                                    }
                                 }
                             }
                             
@@ -180,7 +183,10 @@ struct PostView: View {
                             .padding([.leading, .trailing] , 20)
                             .tag(index)
                             .sheet(isPresented: $isShowingSheet) {
-                                RecipeSheetView(recipe: post.recipes[index], isShowingSheet: $isShowingSheet)
+                                if (index <= post.recipes.endIndex) { //temporary fix need to make sure there's always something in recipe array
+                                    RecipeSheetView(recipe: post.recipes[index], isShowingSheet: $isShowingSheet)
+                                }
+                                
                             }
                     }.frame(height: geo.size.height * 0.69)
                     
@@ -236,17 +242,17 @@ struct PostView: View {
                                             .frame(maxWidth: .infinity, alignment: .leading)
                                             .multilineTextAlignment(.leading)
                                             .padding(.horizontal, 10)
-                                    }
+                                    }.padding(.horizontal, 15)
                                     Spacer()
                                 }
-                                .padding(.horizontal, 15)
+                                .padding(.horizontal, 30)
                                 
                             }
                             .padding(.vertical)
                             .background(lightGray)
                             .cornerRadius(20)
                             .padding(.bottom, 8)
-                        }
+                        }.padding(.horizontal, 10)
                         
                     }
                     HStack {

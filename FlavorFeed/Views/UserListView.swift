@@ -109,6 +109,7 @@ struct UserRow: View {
     
     var body: some View {
         HStack {
+
             AsyncImage(url: URL(string: user.profilePicture)) { image in
                 image
                     .resizable()
@@ -117,12 +118,12 @@ struct UserRow: View {
                     .clipShape(Circle())
                 
             } placeholder: {
-                Rectangle()
+                Color.gray
                     .frame(width: 70, height: 70)
-                    .background(.black)
                     .clipShape(Circle())
             }
             
+
             VStack(alignment: .leading) {
                 Text(user.name).bold()
                 Text(user.id)
