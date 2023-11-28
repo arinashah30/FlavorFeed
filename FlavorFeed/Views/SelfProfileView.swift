@@ -29,35 +29,39 @@ struct SelfProfileView: View {
                         .font(.title2)
                         .foregroundColor(.ffSecondary)
                     Spacer()
-                    NavigationLink {
-                        BioView(profilePicture: vm.current_user!.profilePicture, name: vm.current_user!.name, id: vm.current_user!.id) //change to SettingsView
-                    } label: {
+                    
+                    Button(action: {
+                        tabSelection = .settingsView
+                    }, label: {
                         Image(systemName: "ellipsis")
                             .foregroundColor(.black)
                             .font(.system(size: 30))
-                    }
+                    })
+                    
                 }.padding()
                 
                 ScrollView{
-                    BioView(profilePicture: vm.current_user!.profilePicture, name: vm.current_user!.name, id: vm.current_user!.id)
-                    PinsView(vm: vm, pinIDs: vm.current_user!.pins, id: vm.current_user!.id)
-                    CalendarView(vm: vm, user: vm.current_user!)
-                    
-                    NavigationLink {
-                        BioView(profilePicture: vm.current_user!.profilePicture, name: vm.current_user!.name, id: vm.current_user!.id)
-                    } label: {
-                        ZStack {
-                            RoundedRectangle(cornerRadius: 9)
-                                .stroke(Color.black, lineWidth: 2)
-                                .frame(width: 200, height: 35)
-                                .padding()
-                            Text("View All My Memories")
+                    if let user = vm.current_user {
+                        BioView(profilePicture: user.profilePicture, name: user.name, id: user.id)
+                        PinsView(vm: vm, pinIDs: user.pins, id: user.id)
+                        CalendarView(vm: vm, user: user)
+                        
+                        NavigationLink {
+                            BioView(profilePicture: user.profilePicture, name: user.name, id: user.id)
+                        } label: {
+                            ZStack {
+                                RoundedRectangle(cornerRadius: 9)
+                                    .stroke(Color.black, lineWidth: 2)
+                                    .frame(width: 200, height: 35)
+                                    .padding()
+                                Text("View All My Memories")
+                            }
                         }
+                        .buttonStyle(PlainButtonStyle())
+                        
+                        MapView(restaurants: [CLLocationCoordinate2D(latitude: 43, longitude: 100), CLLocationCoordinate2D(latitude: -10, longitude: 30), CLLocationCoordinate2D(latitude: 20, longitude: -50), CLLocationCoordinate2D(latitude: 17, longitude: -40)])
+                            .frame(minHeight: 400)
                     }
-                    .buttonStyle(PlainButtonStyle())
-                    
-                    MapView(restaurants: [CLLocationCoordinate2D(latitude: 43, longitude: 100), CLLocationCoordinate2D(latitude: -10, longitude: 30), CLLocationCoordinate2D(latitude: 20, longitude: -50), CLLocationCoordinate2D(latitude: 17, longitude: -40)])
-                        .frame(minHeight: 400)
                 }
             }
         }

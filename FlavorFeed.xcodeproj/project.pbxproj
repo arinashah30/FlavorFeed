@@ -14,6 +14,7 @@
 		48349B202ACCCAEF00F672E3 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48349B1F2ACCCAEF00F672E3 /* CalendarView.swift */; };
 		48349B222ACCCAF600F672E3 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48349B212ACCCAF600F672E3 /* MapView.swift */; };
 		489E36132AD8ACE900369ECB /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 489E36122AD8ACE900369ECB /* Comment.swift */; };
+		48D942A92B09677000456526 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48D942A82B09677000456526 /* SettingsView.swift */; };
 		660026442AF0B309002212E1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B21292452ACD20480064AE5D /* GoogleService-Info.plist */; };
 		660026462AF0B317002212E1 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 664B8F0C2AC5F1AB001E8C7F /* Preview Assets.xcassets */; };
 		664B8F062AC5F1AA001E8C7F /* FlavorFeedApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 664B8F052AC5F1AA001E8C7F /* FlavorFeedApp.swift */; };
@@ -45,14 +46,12 @@
 		B212924A2ACD20850064AE5D /* FirebaseAnalyticsOnDeviceConversion in Frameworks */ = {isa = PBXBuildFile; productRef = B21292492ACD20850064AE5D /* FirebaseAnalyticsOnDeviceConversion */; };
 		B212924C2ACD20850064AE5D /* FirebaseAnalyticsSwift in Frameworks */ = {isa = PBXBuildFile; productRef = B212924B2ACD20850064AE5D /* FirebaseAnalyticsSwift */; };
 		B212924E2ACD20850064AE5D /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */ = {isa = PBXBuildFile; productRef = B212924D2ACD20850064AE5D /* FirebaseAnalyticsWithoutAdIdSupport */; };
-		B212924F2ACD213C0064AE5D /* (null) in Sources */ = {isa = PBXBuildFile; };
 		B21292512ACD21500064AE5D /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21292502ACD21500064AE5D /* ViewModel.swift */; };
 		B23FF6B82B0AC3FE00F27AF2 /* MyPostTodayPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B23FF6B72B0AC3FE00F27AF2 /* MyPostTodayPreviewView.swift */; };
 		B270544A2B06B5A300BC7174 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B27054492B06B5A300BC7174 /* CameraView.swift */; };
 		B270544D2B06BBA400BC7174 /* Camera-SwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = B270544C2B06BBA400BC7174 /* Camera-SwiftUI */; };
 		B270544F2B06BC7A00BC7174 /* CameraModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B270544E2B06BC7A00BC7174 /* CameraModel.swift */; };
 		B27054512B06CFBD00BC7174 /* PublishPostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B27054502B06CFBD00BC7174 /* PublishPostView.swift */; };
-		B2BACCCB2ACF12B300F942A3 /* (null) in Sources */ = {isa = PBXBuildFile; };
 		B2BACCCD2ACF12B300F942A3 /* SelfProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6602DD8B2AC625EF008C3177 /* SelfProfileView.swift */; };
 		B2BACCCF2ACF132000F942A3 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2BACCCE2ACF132000F942A3 /* ContentView.swift */; };
 		B2C5E46C2AF2A476000EA620 /* Friend.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C5E46B2AF2A476000EA620 /* Friend.swift */; };
@@ -91,6 +90,7 @@
 		48349B1F2ACCCAEF00F672E3 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 		48349B212ACCCAF600F672E3 /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		489E36122AD8ACE900369ECB /* Comment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
+		48D942A82B09677000456526 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		6602DD8B2AC625EF008C3177 /* SelfProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelfProfileView.swift; sourceTree = "<group>"; };
 		664B8F022AC5F1AA001E8C7F /* FlavorFeed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlavorFeed.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		664B8F052AC5F1AA001E8C7F /* FlavorFeedApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlavorFeedApp.swift; sourceTree = "<group>"; };
@@ -192,6 +192,7 @@
 				66F125552B0D4D1000CB63A9 /* LandingPage.swift */,
 				B6903C962AC8D2FF009CCE41 /* AddFriendsView.swift */,
 				668CD5202AF03F2F00A64DF1 /* UserListView.swift */,
+				48D942A82B09677000456526 /* SettingsView.swift */,
 				B689E7952AF46348009CD552 /* CreateRecipeView.swift */,
 				B624B05E2B058650007B43E5 /* RecipeFormView.swift */,
 				172AC00B2AF466BF00594E71 /* RecipeView.swift */,
@@ -207,7 +208,6 @@
 				664B8F152AC5F1AB001E8C7F /* FlavorFeedTests */,
 				664B8F1F2AC5F1AB001E8C7F /* FlavorFeedUITests */,
 				664B8F032AC5F1AA001E8C7F /* Products */,
-				66F125542B0D4C9C00CB63A9 /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -442,7 +442,6 @@
 				48349B202ACCCAEF00F672E3 /* CalendarView.swift in Sources */,
 				48349B222ACCCAF600F672E3 /* MapView.swift in Sources */,
 				48349B1C2ACCCADA00F672E3 /* BioView.swift in Sources */,
-				668CD5192AEC1D6500A64DF1 /* ContactsView.swift in Sources */,
 				082052E32B06E40F007BE0CE /* FriendProfileView.swift in Sources */,
 				668CD5212AF03F2F00A64DF1 /* UserListView.swift in Sources */,
 				665113522AC6021800027654 /* User.swift in Sources */,
@@ -453,6 +452,7 @@
 				665113502AC601E900027654 /* Post.swift in Sources */,
 				666AE2C72AF47508003EF7B6 /* MainScrollView.swift in Sources */,
 				F75D1E8F2AC63EF40054F7EC /* PostView.swift in Sources */,
+				48D942A92B09677000456526 /* SettingsView.swift in Sources */,
 				B6903C972AC8D2FF009CCE41 /* AddFriendsView.swift in Sources */,
 				668CD51F2AEC205300A64DF1 /* PinsView.swift in Sources */,
 				669C94B02AE98C770075BE66 /* ToolBars.swift in Sources */,
@@ -466,7 +466,6 @@
 				664B8F062AC5F1AA001E8C7F /* FlavorFeedApp.swift in Sources */,
 				A91C89B22AFEAB01002146FF /* LocationManager.swift in Sources */,
 				BF0C62DD2ADF43A6003A7553 /* SignupView.swift in Sources */,
-
 				B689E7962AF46348009CD552 /* CreateRecipeView.swift in Sources */,
 				B624B05F2B058650007B43E5 /* RecipeFormView.swift in Sources */,
 				B27054512B06CFBD00BC7174 /* PublishPostView.swift in Sources */,
@@ -638,7 +637,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"FlavorFeed/Preview Content\"";
-				DEVELOPMENT_TEAM = 3U7XP56VTS;
+				DEVELOPMENT_TEAM = W25VYB4Y9F;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FlavorFeed/Info.plist;
@@ -671,7 +670,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"FlavorFeed/Preview Content\"";
-				DEVELOPMENT_TEAM = 3U7XP56VTS;
+				DEVELOPMENT_TEAM = W25VYB4Y9F;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FlavorFeed/Info.plist;
