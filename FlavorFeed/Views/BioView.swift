@@ -11,6 +11,7 @@ struct BioView: View {
     var profilePicture: String
     var name: String
     var id: String
+    var bio: String
     
     var body: some View {
         VStack (alignment: .center) {
@@ -18,13 +19,18 @@ struct BioView: View {
                 image
                     .resizable()
                     .aspectRatio(contentMode: .fill)
-                    .frame(maxWidth: 80)
+                    .frame(width: 80)
                     .clipShape(.circle)
             } placeholder: {
-                ProgressView()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(maxWidth: 80)
+                ZStack {
+                    Color.gray
+                    if (!profilePicture.isEmpty) {
+                        ProgressView()
+                    }
+                }.aspectRatio(contentMode: .fill)
+                    .frame(width: 80)
                     .clipShape(.circle)
+                
             }
                 
             Text(name)
@@ -32,6 +38,10 @@ struct BioView: View {
             Text("@" + id)
                 .font(.system(size: 15))
                 .foregroundColor(.gray)
+            
+            Text(bio)
+                .font(.system(size: 20))
+                .foregroundColor(.black)
         }
     }
 }

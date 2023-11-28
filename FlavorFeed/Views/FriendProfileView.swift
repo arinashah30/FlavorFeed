@@ -18,7 +18,7 @@ struct FriendProfileView: View {
         VStack {
             Spacer(minLength: 50)
             ScrollView{
-                BioView(profilePicture: friend.profilePicture, name: friend.name, id: friend.id)
+                BioView(profilePicture: friend.profilePicture, name: friend.name, id: friend.id, bio: friend.bio)
                 VStack {
                     ZStack{
                         RoundedRectangle(cornerRadius: /*@START_MENU_TOKEN@*/25.0/*@END_MENU_TOKEN@*/)

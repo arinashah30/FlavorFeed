@@ -69,11 +69,19 @@ struct UserRow: View {
     
     var body: some View {
         HStack {
-            vm.load_image_from_url(url: user.profilePicture)!
-                .resizable()
-                .scaledToFit()
-                .clipShape(Circle())
-                .frame(width: 85, height: 70)
+            
+            if let image = vm.load_image_from_url(url: user.profilePicture) {
+                image
+                    .resizable()
+                    .scaledToFit()
+                    .clipShape(Circle())
+                    .frame(width: 70, height: 70)
+            } else {
+                Color.gray
+                    .clipShape(Circle())
+                    .frame(width: 70, height: 70)
+            }
+                
             VStack(alignment: .leading) {
                 Text(user.name).bold()
                 Text(user.id)

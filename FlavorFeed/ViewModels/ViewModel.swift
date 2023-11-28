@@ -782,7 +782,8 @@ class ViewModel: ObservableObject {
                     comment?.append(Comment(id: document.documentID,
                                             userID: document["userID"] as! String,
                                             text: document["text"] as! String,
-                                            date: document["date"] as! String,
+                                            date: self!.dateFormatter.date(from: document["date"] as! String)!,
+                                            profilePicture: document["profilePicture"] as! String,
                                             replies: document["directions"] as? [Comment] ?? []
                                            ))
                     UserDefaults.standard.setValue(true, forKey: "log_Status")
@@ -852,16 +853,18 @@ class ViewModel: ObservableObject {
     
     //synchronous approach
     func load_image_from_url(url: String) -> Image? {
-        if url == "NIL" {
+        if (url == "NIL" || url.isEmpty) {
             return nil
         }
-        let url = URL(string: url)!
+        guard let url = URL(string: url) else { return nil }
         
-        guard let imageData = try? Data(contentsOf: url),
-              let uiImage = UIImage(data: imageData) else {
+        guard let imageData = try? Data(contentsOf: url) else { return nil }
+        if let uiImage = UIImage(data: imageData) {
+            return Image(uiImage: uiImage)
+        } else {
             return nil
         }
-        return Image(uiImage: uiImage)
+        
     }
     
 
