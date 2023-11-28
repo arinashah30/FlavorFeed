@@ -17,7 +17,8 @@ struct Comment: Identifiable, Hashable {
     var id: String // comment document ID
     var userID: String // id of user who commented
     var text: String // comment description (the comment itself)
-    var date: String // timestamp of comment
+    var date: Date // timestamp of comment
+    var profilePicture: String // url of profile image
     
     // OPTIONAL PROPERTIES
     var replies: [Comment]? // replies to comment

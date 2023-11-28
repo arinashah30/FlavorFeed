@@ -10,7 +10,6 @@ import SwiftUI
 struct MainScrollView: View {
     @ObservedObject var vm: ViewModel
     @Binding var tabSelection: Tabs
-    
     @StateObject var myPostVars = MyPostTodayPreviewVariables()
     
     
@@ -38,16 +37,18 @@ struct MainScrollView: View {
                         
                         ForEach(vm.todays_posts, id: \.self) { post in
                             PostView(vm: vm, post: post)
-                                .frame(width: geometry.size.width, height: 700)
+                                .frame(idealWidth: geometry.size.width, minHeight: 700, idealHeight: 750, maxHeight: .infinity)
                         }
-                    }.edgesIgnoringSafeArea(.bottom)
-                        .refreshable {
-                            DispatchQueue.main.async {
-                                vm.refreshFeed {
-                                    
-                                }
+                        Spacer()
+                            .frame(height: geometry.size.height * 0.5)
+                    }
+                    .refreshable {
+                        DispatchQueue.main.async {
+                            vm.refreshFeed {
+                                // do nothing
                             }
                         }
+                    }
                 }
                 VStack {
                     Spacer()
@@ -56,6 +57,7 @@ struct MainScrollView: View {
                 
             }
         }.environmentObject(myPostVars)
+            .ignoresSafeArea(.keyboard, edges: .bottom)
     }
 }
 #Preview {
