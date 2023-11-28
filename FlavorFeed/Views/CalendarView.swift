@@ -152,5 +152,5 @@ func findDateFromPost(post: Post) -> Date! {
 }
 
 #Preview {
-    CalendarView(vm: ViewModel(), user: User(id: "AustinUserName", name: "Austin", profilePicture: "drake_pfp", email: "austin@gmail.com", bio: "", phoneNumber: "123456789", friends: [], pins: [], myPosts: []))
+    CalendarView(vm: ViewModel(), user: User(id: "AustinUserName", name: "Austin", profilePicture: "drake_pfp", email: "austin@gmail.com", bio: "", phoneNumber: "123456789", friends: [], requests: [], pins: [], myPosts: []))
 }

@@ -1,11 +1,11 @@
 import SwiftUI
 
 
-struct UserListView: View {    
+struct UserListView: View {
     @ObservedObject var vm: ViewModel
-    var suggestions: [Friend]
-    var friends: [Friend]
-    var requests: [Friend]
+    @Binding var suggestions: [Friend]
+    @Binding var friends: [Friend]
+    @Binding var requests: [Friend]
     @Binding var searchText: String
     @Binding var selectedOption: String
     
@@ -25,7 +25,7 @@ struct UserListView: View {
                 List {
                     ForEach(filteredUsers) { user in
                         NavigationLink(destination: FriendProfileView(vm: vm, friend: user), label: {
-                            UserRow(user: user, width: geometry.size.width, vm: vm, selectedOption: $selectedOption).padding(.horizontal, 10)
+                            UserRow(suggestions: suggestions, friends: friends, requests: requests, user: user, width: geometry.size.width, vm: vm, selectedOption: $selectedOption, onAccept: {_ in self.accept(user)}, onReject: {_ in self.reject(user)}).padding(.horizontal, 10)
                         })
                         
                     }//.listRowBackground(Color.ffPrimary)
@@ -33,15 +33,40 @@ struct UserListView: View {
                     .listStyle(.plain)
             }
         }
+    func accept(_ user: Friend) {
+        friends.append(user)
+        requests.removeAll { request in
+            request.id == user.id
+        }
+        if (selectedOption == "Requests") {
+            vm.accept_friend_request(from: user.id, to: vm.current_user!.id)
+        } else if (selectedOption == "Suggestions") {
+            vm.send_friend_request(from: vm.current_user!.id, to: user.id)
+        }
+    }
+    func reject(_ user: Friend) {
+        requests.removeAll { request in
+            request.id == user.id
+        }
+        vm.reject_friend_request(from: user.id, to: vm.current_user!.id)
+    }
     
     
 }
 
 struct UserRow: View {
+    var suggestions: [Friend]
+    var friends: [Friend]
+    var requests: [Friend]
     let user: Friend
     let width: CGFloat
     @ObservedObject var vm: ViewModel
     @Binding var selectedOption: String
+    var onAccept: (Friend) -> Void
+    var onReject: (Friend) -> Void
+    
+    
+    
     var body: some View {
         HStack {
             vm.load_image_from_url(url: user.profilePicture)!
@@ -54,33 +79,38 @@ struct UserRow: View {
                 Text(user.id)
             }
             Spacer()
-            Button(action: {
-                if (selectedOption == "Requests") {
-                    vm.accept_friend_request(from: vm.current_user!.id, to: user.id)
-                } else if (selectedOption == "Suggestions") {
-                    vm.send_friend_request(from: vm.current_user!.id, to: user.id)
+            if (selectedOption != "Friends") {
+                Button(action: {
+                    if (selectedOption == "Requests") {
+                        vm.accept_friend_request(from: user.id, to: vm.current_user!.id)
+                    } else if (selectedOption == "Suggestions") {
+                        vm.send_friend_request(from: vm.current_user!.id, to: user.id)
+                    }
+                    onAccept(user)
+                }) {
+                    Text("ADD")
+                        .font(.system(size: 16))
+                        .bold()
+                        .foregroundColor(.white)
                 }
-            }) {
-                Text("ADD")
-                    .font(.system(size: 16))
-                    .bold()
-                    .foregroundColor(.white)
-            }
-            .buttonStyle(.bordered)
-            .background(Color.ffPrimary)
-            .cornerRadius(25)
-            Button(action: {
+                .buttonStyle(.bordered)
+                .background(Color.ffPrimary)
+                .cornerRadius(25)
                 if (selectedOption == "Requests") {
-                    vm.reject_friend_request(from: vm.current_user!.id, to: user.id)
+                    Button(action: {
+                        print("X button pressed")
+                        onReject(user)
+                    }) {
+                        Image(systemName: "xmark")
+                            .resizable()
+                            .frame(width: 13, height: 13)
+                            .foregroundColor(.gray)
+                            .bold()
+                    }
+                    .padding(.horizontal, 10)
+                    .buttonStyle(.borderless)
                 }
-            }) {
-                Image(systemName: "xmark")
-                    .resizable()
-                    .frame(width: 13, height: 13)
-                    .foregroundColor(.gray)
-                    .bold()
             }
-            .padding(.horizontal, 10)
         }.frame(width: width - 25)
         
     }

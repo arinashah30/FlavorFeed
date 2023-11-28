@@ -734,6 +734,9 @@ class ViewModel: ObservableObject {
                             suggestions.formUnion(friends!)
                         }
                         suggestions.subtract(friends)
+                        //make sure current user doesn't show up in suggestions
+                        let userid: Set<String> = [self.current_user!.id]
+                        suggestions.subtract(userid)
                         self.get_friends(userIDs: Array(suggestions)) { friends in
                             completion(friends)
                         }
