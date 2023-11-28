@@ -82,8 +82,6 @@ class ViewModel: ObservableObject {
                     print("Setting User: \(username)")
                     self?.setCurrentUser(userId: username) {
                         UserDefaults.standard.setValue(true, forKey: "log_Status")
-                        // refresh feed
-                        print("VIEW MODEL INIT")
                         
                         self?.refreshFeed {
                             // do nothing
@@ -214,17 +212,14 @@ class ViewModel: ObservableObject {
     }
     
     func refreshFeed(_ completion: @escaping () -> Void) {
-        print("REFRESH FEED TOP")
         
         get_todays_posts() { postIDs in
             // Create post models
             print(postIDs)
-            print("REFRESH FEED MID")
             self.todays_posts.removeAll()
             self.fetchPosts(postIDs: postIDs) { posts in
                 print("POSTS:\(posts)")
                 self.todays_posts = posts
-                print("REFRESH FEED BOTTOM")
                 completion()
             }
         }
@@ -342,7 +337,6 @@ class ViewModel: ObservableObject {
     }
     
     func firebase_get_post(postID: String, completion: @escaping ((Post) -> Void)) {
-        print("Getting post TOP")
         db.collection("POSTS").document(postID).getDocument { document, error in
             if let err = error {
                 print(err.localizedDescription)
@@ -844,21 +838,6 @@ class ViewModel: ObservableObject {
         
         
     }
-//    func get_day_and_url(postID: String, completion: @escaping (String, String) -> Void){
-//        db.collection("POSTS").document(postID).getDocument { document, err in
-//            if let err {
-//                return
-//            } else {
-//                if let document = document {
-//                    if let data = document.data() {
-//                        let day = data["day"] as! String
-//                        let url = data["images"] as! [String]
-//                        completion(day, url[0])
-//                    }
-//                }
-//            }
-//        }
-//    }
     
     //synchronous approach
     func load_image_from_url(url: String) -> Image? {
@@ -874,19 +853,39 @@ class ViewModel: ObservableObject {
         return Image(uiImage: uiImage)
     }
     
+    func firebase_add_pin(postID: String, completion: @escaping (Bool) -> Void) {
+        let docRef = db.collection("USERS").document(self.current_user!.id)
+            
+        docRef.updateData(
+            ["pins" : FieldValue.arrayUnion([postID])] // append pins
+        ) { err in
+            if let err = err {
+                print(err.localizedDescription)
+                completion(false) // not added
+            } else {
+                print("Added Pin")
+                self.current_user?.pins.append(postID)
+                completion(true)
+            }
+        }
+    }
     
-//    func getAllPostsOfUser(userID: String, completion: @escaping ([String]) -> Void) {
-//        
-//        var arr: [String] = []
-//        
-//        self.db.collection("USERS").document(userID).getDocument { document, err in
-//            if let err {
-//                return
-//            } else {
-//                let data = document!.data()
-//                arr = data?["myPosts"] as? [String] ?? [""]
-//            }
-//            completion(arr)
-//        }
-//    }
+    func firebase_remove_pin(postID: String, completion: @escaping (Bool) -> Void) {
+        let docRef = db.collection("USERS").document(self.current_user!.id)
+            
+        docRef.updateData(
+            ["pins" : FieldValue.arrayRemove([postID])] // remove pins
+        ) { err in
+            if let err = err {
+                print(err.localizedDescription)
+                completion(false) // not removed
+            } else {
+                print("Removed Pin")
+                self.current_user?.pins.removeAll(where: { id in
+                    id == postID
+                })
+                completion(true)
+            }
+        }
+    }
 }

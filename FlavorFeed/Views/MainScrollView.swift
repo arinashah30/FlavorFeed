@@ -10,7 +10,6 @@ import SwiftUI
 struct MainScrollView: View {
     @ObservedObject var vm: ViewModel
     @Binding var tabSelection: Tabs
-    
     @StateObject var myPostVars = MyPostTodayPreviewVariables()
     
     
