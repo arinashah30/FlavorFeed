@@ -47,6 +47,8 @@
 		B212924C2ACD20850064AE5D /* FirebaseAnalyticsSwift in Frameworks */ = {isa = PBXBuildFile; productRef = B212924B2ACD20850064AE5D /* FirebaseAnalyticsSwift */; };
 		B212924E2ACD20850064AE5D /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */ = {isa = PBXBuildFile; productRef = B212924D2ACD20850064AE5D /* FirebaseAnalyticsWithoutAdIdSupport */; };
 		B21292512ACD21500064AE5D /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21292502ACD21500064AE5D /* ViewModel.swift */; };
+		B2164D532B15891200F269C8 /* FullCalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2164D522B15891200F269C8 /* FullCalendarView.swift */; };
+		B2164D552B15895000F269C8 /* CalendarItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2164D542B15895000F269C8 /* CalendarItemView.swift */; };
 		B23FF6B82B0AC3FE00F27AF2 /* MyPostTodayPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B23FF6B72B0AC3FE00F27AF2 /* MyPostTodayPreviewView.swift */; };
 		B270544A2B06B5A300BC7174 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B27054492B06B5A300BC7174 /* CameraView.swift */; };
 		B270544D2B06BBA400BC7174 /* Camera-SwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = B270544C2B06BBA400BC7174 /* Camera-SwiftUI */; };
@@ -111,6 +113,8 @@
 		A91C89B12AFEAB01002146FF /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		B21292452ACD20480064AE5D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		B21292502ACD21500064AE5D /* ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
+		B2164D522B15891200F269C8 /* FullCalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullCalendarView.swift; sourceTree = "<group>"; };
+		B2164D542B15895000F269C8 /* CalendarItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarItemView.swift; sourceTree = "<group>"; };
 		B23FF6B72B0AC3FE00F27AF2 /* MyPostTodayPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPostTodayPreviewView.swift; sourceTree = "<group>"; };
 		B27054492B06B5A300BC7174 /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
 		B270544E2B06BC7A00BC7174 /* CameraModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraModel.swift; sourceTree = "<group>"; };
@@ -185,6 +189,8 @@
 				082052E22B06E40F007BE0CE /* FriendProfileView.swift */,
 				668CD51A2AEC1D6F00A64DF1 /* MainScrollView.swift */,
 				48349B1F2ACCCAEF00F672E3 /* CalendarView.swift */,
+				B2164D522B15891200F269C8 /* FullCalendarView.swift */,
+				B2164D542B15895000F269C8 /* CalendarItemView.swift */,
 				48349B212ACCCAF600F672E3 /* MapView.swift */,
 				48349B1B2ACCCADA00F672E3 /* BioView.swift */,
 				668CD51E2AEC205300A64DF1 /* PinsView.swift */,
@@ -450,10 +456,12 @@
 				172AC00C2AF466BF00594E71 /* RecipeView.swift in Sources */,
 				B2FCB8FF2AC63AA200865FCF /* FFColors.swift in Sources */,
 				665113502AC601E900027654 /* Post.swift in Sources */,
+				B2164D532B15891200F269C8 /* FullCalendarView.swift in Sources */,
 				666AE2C72AF47508003EF7B6 /* MainScrollView.swift in Sources */,
 				F75D1E8F2AC63EF40054F7EC /* PostView.swift in Sources */,
 				48D942A92B09677000456526 /* SettingsView.swift in Sources */,
 				B6903C972AC8D2FF009CCE41 /* AddFriendsView.swift in Sources */,
+				B2164D552B15895000F269C8 /* CalendarItemView.swift in Sources */,
 				668CD51F2AEC205300A64DF1 /* PinsView.swift in Sources */,
 				669C94B02AE98C770075BE66 /* ToolBars.swift in Sources */,
 				BF0C62DB2ADF4399003A7553 /* LoginView.swift in Sources */,

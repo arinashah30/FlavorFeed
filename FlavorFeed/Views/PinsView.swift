@@ -18,7 +18,7 @@ import SwiftUI
 
 struct PinsView: View {
     @ObservedObject var vm: ViewModel
-    @State var pins: [Post] = []
+    @State var pins = [Post]()
     var pinIDs: [String]
     let id: String
     
@@ -57,15 +57,20 @@ struct PinsView: View {
                     
                     ForEach(pins) { post in
                         VStack {
-                            Image(post.images[0][1])
-                                .resizable()
-                                .frame(width: 110, height: 136)
+                            AsyncImage(url: URL(string: post.images[0][0])) { image in
+                                image
+                                    .resizable()
+                            } placeholder: {
+                                ProgressView()
+                            }.frame(width: 110, height: 136)
                                 .clipped()
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 10)
                                         .stroke(Color.ffTertiary, lineWidth: 5)
                                 )
                                 .cornerRadius(10)
+
+                               
                             ZStack {
                                 RoundedRectangle(cornerRadius: 12.5)
                                     .frame(width: 100, height: 25)

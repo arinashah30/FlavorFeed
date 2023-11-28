@@ -38,7 +38,6 @@ class ViewModel: ObservableObject {
     @Published var comments: [Comment] = [Comment]()
     @Published var usernameSearchResults: [String] = [String]()
     
-    
     // POSTS
     @Published var my_post_today: Post?
     @Published var todays_posts: [Post] = [Post]() {
@@ -84,8 +83,6 @@ class ViewModel: ObservableObject {
                     print("Setting User: \(username)")
                     self?.setCurrentUser(userId: username) {
                         UserDefaults.standard.setValue(true, forKey: "log_Status")
-                        // refresh feed
-                        print("VIEW MODEL INIT")
                         
                         self?.refreshFeed {
                             // do nothing
@@ -342,7 +339,6 @@ class ViewModel: ObservableObject {
     }
     
     func firebase_get_post(postID: String, completion: @escaping ((Post) -> Void)) {
-        print("Getting post TOP")
         db.collection("POSTS").document(postID).getDocument { document, error in
             if let err = error {
                 print(err.localizedDescription)
@@ -477,7 +473,10 @@ class ViewModel: ObservableObject {
                 
                 if let foodPic = url_1 {
                     if let selfie = url_2 {
-                        let data = ["userID" : self.current_user!.id,
+                        let docId = UUID()
+
+                        let data = ["id" : docId.uuidString,
+                                    "userID" : self.current_user!.id,
                                     "images" : ["\(foodPic) \(selfie)"],
                                     "caption" : [caption],
                                     "recipes" : [""],
@@ -766,6 +765,29 @@ class ViewModel: ObservableObject {
         return recipe ?? []
     }
     
+
+    
+    func convertToComments(postID: String) -> [Comment] {
+        var comment: [Comment]?
+        
+        self.db.collection("POSTS").document(postID).collection("COMMENTS").getDocuments(completion: { [weak self] documents, error in
+            if let error = error {
+                self?.errorText = "Cannot get list of recipes from Firebase."
+            } else {
+                for document in documents!.documents {
+                    comment?.append(Comment(id: document.documentID,
+                                            userID: document["userID"] as! String,
+                                            text: document["text"] as! String,
+                                            date: document["date"] as! String,
+                                            replies: document["directions"] as? [Comment] ?? []
+                                           ))
+                    UserDefaults.standard.setValue(true, forKey: "log_Status")
+                }
+            }
+        })
+        return comment ?? []
+    }
+
     
     func firebase_get_url_from_image(image: UIImage, completion: @escaping (URL?) -> Void) {
         guard let imageData = image.jpegData(compressionQuality: 0.8) else {
@@ -798,6 +820,32 @@ class ViewModel: ObservableObject {
         }
     }
     
+    // returns post ID
+    func get_post_from_day(day: String, completion: @escaping (String) -> Void) {
+        db.collection("POSTS").whereField("userID", isEqualTo: self.current_user!.id).whereField("day", isEqualTo: day).getDocuments(completion: { documents, error in
+            if let err = error {
+                print(err.localizedDescription)
+                completion("")
+            } else if let docs = documents?.documents {
+                if docs.count == 1 {
+                    if let postID = docs[0]["id"] as? String {
+                        completion(postID)
+                    } else {
+                        completion("")
+                    }
+                } else {
+                    completion("")
+                }
+                completion("")
+            } else {
+                completion("")
+            }
+        })
+            
+        
+        
+    }
+    
     //synchronous approach
     func load_image_from_url(url: String) -> Image? {
         if url == "NIL" {
@@ -812,6 +860,43 @@ class ViewModel: ObservableObject {
         return Image(uiImage: uiImage)
     }
     
+
+    func firebase_add_pin(postID: String, completion: @escaping (Bool) -> Void) {
+        let docRef = db.collection("USERS").document(self.current_user!.id)
+            
+        docRef.updateData(
+            ["pins" : FieldValue.arrayUnion([postID])] // append pins
+        ) { err in
+            if let err = err {
+                print(err.localizedDescription)
+                completion(false) // not added
+            } else {
+                print("Added Pin")
+                self.current_user?.pins.append(postID)
+                completion(true)
+            }
+        }
+    }
+    
+    func firebase_remove_pin(postID: String, completion: @escaping (Bool) -> Void) {
+        let docRef = db.collection("USERS").document(self.current_user!.id)
+            
+        docRef.updateData(
+            ["pins" : FieldValue.arrayRemove([postID])] // remove pins
+        ) { err in
+            if let err = err {
+                print(err.localizedDescription)
+                completion(false) // not removed
+            } else {
+                print("Removed Pin")
+                self.current_user?.pins.removeAll(where: { id in
+                    id == postID
+                })
+                completion(true)
+            }
+          }
+    }
+
     func updateUserField(field: String, value: String) {
         db.collection("USERS").document(current_user!.id).updateData(
             [field: value]) { err in
@@ -825,4 +910,3 @@ class ViewModel: ObservableObject {
         }
     }
 }
-

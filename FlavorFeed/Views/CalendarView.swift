@@ -12,6 +12,15 @@ struct CalendarView: View {
     @ObservedObject var vm: ViewModel
     var user : User
     @State var posts: [Post] = []
+    private var dates = [Date]()
+    
+    init(vm: ViewModel, user: User) {
+        self.vm = vm
+        self.user = user
+        for i in 0..<14 {
+            dates.append(Date(timeIntervalSinceNow: TimeInterval(24 * 3600 * i * -1)))
+        }
+    }
     
     var body: some View {
             VStack {
@@ -29,10 +38,8 @@ struct CalendarView: View {
                 HStack (alignment: .top) {
                     VStack {
                         LazyVGrid(columns: Array(repeating: GridItem(), count: 7)){
-                            ForEach(getLast14DaysViews(posts: posts), id: \.self) { post in
-                                HStack {
-                                    CalendarCollectionViewCell(post:post)
-                                }
+                            ForEach(dates, id: \.self) { date in
+                                    CalendarCollectionViewCell(date: date, vm: vm)
                             }
                         }
                     }
@@ -48,110 +55,56 @@ struct CalendarView: View {
 }
 
 struct CalendarCollectionViewCell: View {
-    let post: MaybePost
+    let date: Date
+    @ObservedObject var vm: ViewModel
+    @State var url = "https://imageio.forbes.com/specials-images/imageserve/5ed6636cdd5d320006caf841/0x0.jpg?format=jpg&height=900&width=1600&fit=bounds"
+    
     var body: some View {
         ZStack {
-            if post.image != nil {
-                CalendarImage(post: post)
-                Text(formatDate(date: post.date))
-                    .font(.system(size: 16)).bold()
-                    .foregroundColor(.white)
-                    .padding(2)
-            } else {
-                Text(formatDate(date: post.date))
-                    .font(.system(size: 16)).bold()
-                    .foregroundColor(.ffPrimary)
-                    .padding(2)
+            AsyncImage(url: URL(string: url)) { image in
+                image
+                    .resizable()
+                    .scaledToFill()
                     .frame(width: 45, height: 55)
+                    .clipped()
+                    .cornerRadius(7)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 7)
+                            .stroke(Color.ffTertiary, lineWidth: 1)
+                            .frame(width: 45, height: 55)
+                    )
+            } placeholder: {
+                ProgressView()
             }
-        }
-    }
-}
 
-struct CalendarImage: View {
-    let post: MaybePost
-    var body: some View {
-        Image(self.post.image!)
-            .resizable()
-            .scaledToFit()
-            .frame(width: 45, height: 55)
-            .overlay(
-                RoundedRectangle(cornerRadius: 7)
-                    .stroke(Color.ffTertiary, lineWidth: 1)
-                    .frame(width: 42, height: 55)
-            )
-            .cornerRadius(9)
-    }
-}
+            Text("\(getDay(date: date))")
+                .fontWeight(.heavy)
+                .foregroundStyle(.white)
 
-
-
-struct MaybePost: Hashable {
-    var date: Date
-    var image: String?
-}
-
-func getLast14DaysViews(posts: [Post]) -> [MaybePost] {
-    var maybePosts: [MaybePost] = []
-    let today = Date()
-    let lastTwoWeekDates = getLast14Days(from: today)
-    for date in lastTwoWeekDates {
-        if let post = postForDate(posts: posts, dateToCheck: date) {
-            if (post.images.count >= 2) {
-                maybePosts.append(contentsOf: [MaybePost(date: date, image: post.images[0][1])])
-            }
-            
-        } else {
-            maybePosts.append(contentsOf: [MaybePost(date: date, image: nil)])
-        }
-    }
-    maybePosts.reverse()
-    return maybePosts
-}
-
-func postForDate(posts: [Post], dateToCheck: Date) -> Post? {
-    for post in posts {
-        let calendar = Calendar.current
-        if (calendar.isDate(findDateFromPost(post: post), inSameDayAs: dateToCheck)) {
-            return post
-        }
-    }
-    return nil
-}
-
-func hasPostForDate(posts: [Post], dateToCheck: Date) -> Bool {
-    let hasPostForDate = posts.contains { post in
-        let calendar = Calendar.current
-        return calendar.isDate(findDateFromPost(post: post), inSameDayAs: dateToCheck)
-    }
-    
-    return hasPostForDate
-}
-
-
-func getLast14Days(from startDate: Date) -> [Date] {
-    var dates: [Date] = []
-            let calendar = Calendar.current
-            for i in 0..<14 {
-                if let date = calendar.date(byAdding: .day, value: -i, to: startDate) {
-                    dates.append(date)
+        }.onAppear() {
+            DispatchQueue.main.async {
+                let dayFormatted = getDayformatted(date: date)
+                vm.get_post_from_day(day: dayFormatted) { postID in
+                    if postID.count > 0 {
+                        print(dayFormatted)
+                        vm.firebase_get_post(postID: postID) { post in
+                            self.url = post.images[0][0]
+                            print("Showing image for \(dayFormatted): \(post.images[0][0])")
+                        }
+                    }
                 }
             }
-            return dates
-}
-
-func formatDate(date: Date) -> String {
-    let dateFormatter = DateFormatter()
-    dateFormatter.dateFormat = "dd"
-    return dateFormatter.string(from: date)
-}
-
-func findDateFromPost(post: Post) -> Date! {
-    let dateString = post.date[0].prefix(10)
-    let dateFormatter = DateFormatter()
-    dateFormatter.dateFormat = "MM-dd-yyyy"
-    let date = dateFormatter.date(from: String(dateString))
-    return date
+        }
+    }
+    func getDayformatted(date: Date) -> String {
+        return vm.dayFormatter.string(from: date)
+    }
+    
+    func getDay(date: Date) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd"
+        return dateFormatter.string(from: date)
+    }
 }
 
 #Preview {
