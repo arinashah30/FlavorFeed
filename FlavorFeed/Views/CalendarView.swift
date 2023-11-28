@@ -76,6 +76,7 @@ struct CalendarCollectionViewCell: View {
             } placeholder: {
                 ProgressView()
             }
+
             Text("\(getDay(date: date))")
                 .fontWeight(.heavy)
                 .foregroundStyle(.white)

@@ -34,6 +34,7 @@ class ViewModel: ObservableObject {
     
     @Published var current_user: User? = nil
     @Published var errorText: String? = nil
+    
     @Published var comments: [Comment] = [Comment]()
     @Published var usernameSearchResults: [String] = [String]()
     
@@ -212,13 +213,10 @@ class ViewModel: ObservableObject {
     }
     
     func refreshFeed(_ completion: @escaping () -> Void) {
-        
         get_todays_posts() { postIDs in
             // Create post models
-            print(postIDs)
             self.todays_posts.removeAll()
             self.fetchPosts(postIDs: postIDs) { posts in
-                print("POSTS:\(posts)")
                 self.todays_posts = posts
                 completion()
             }
@@ -245,23 +243,25 @@ class ViewModel: ObservableObject {
                     let data = document.data()!
                     
                     self?.getFriend(userID: data["userID"] as! String) { friend in
-                        print("FOUND FRIEND \(friend.name)")
-                        posts.append(Post(
-                            id: document.documentID,
-                            userID: data["userID"] as! String,
-                            images: data["images"] as! [String],
-                            date: data["date"] as! [String],
-                            day: data["day"] as! String,
-                            comments: self?.convertToComments(postID: postID) ?? [],
-                            caption: data["caption"] as? [String] ?? [],
-                            likes: data["likes"] as? [String] ?? [],
-                            locations: data["location"] as? [String] ?? [],
-                            recipes: self?.convertToRecipe(postID: postID) ?? [],
-                            friend: friend
-                        ))
-                        
-                        // Notify that this specific task is complete
-                        dispatchGroup.leave()
+                        self?.get_post_comments(postID: postID, completion: { comments in
+                            
+                            print("FOUND FRIEND \(friend.name)")
+                            posts.append(Post(
+                                id: document.documentID,
+                                userID: data["userID"] as! String,
+                                images: data["images"] as! [String],
+                                date: data["date"] as! [String],
+                                day: data["day"] as! String,
+                                comments: comments,
+                                caption: data["caption"] as? [String] ?? [],
+                                likes: data["likes"] as? [String] ?? [],
+                                locations: data["location"] as? [String] ?? [],
+                                recipes: self?.convertToRecipe(postID: postID) ?? [],
+                                friend: friend
+                            ))
+                            // Notify that this specific task is complete
+                            dispatchGroup.leave()
+                        })
                     }
                 } else {
                     // Notify that this specific task is complete even if there is an error
@@ -324,13 +324,15 @@ class ViewModel: ObservableObject {
         }
     }
     
-    func firebase_delete_comment(post: Post, comment: Comment) {
+    func firebase_delete_comment(post: Post, comment: Comment, completion: @escaping (Bool) -> Void) {
         self.db.collection("POSTS").document(post.id).collection("COMMENTS").document(comment.id).delete { err in
             if let err = err {
                 print("Error: \(err.localizedDescription)")
+                completion(false)
             } else {
                 // comment deleted
                 // UI Changes
+                completion(true)
                 
             }
         }
@@ -345,18 +347,20 @@ class ViewModel: ObservableObject {
                 if let doc = document {
                     if let data = doc.data() {
                         self.getFriend(userID: data["userID"] as! String) { friend in
-                            completion(Post(id: doc.documentID,
-                                            userID: data["userID"] as! String,
-                                            images: data["images"] as! [String],
-                                            date: data["date"] as! [String],
-                                            day: data["day"] as! String,
-                                            comments: self.convertToComments(postID: doc.documentID),
-                                            caption: data["caption"] as? [String] ?? [],
-                                            likes: data["likes"] as? [String] ?? [],
-                                            locations: data["location"] as? [String] ?? [],
-                                            recipes: self.convertToRecipe(postID: doc.documentID),
-                                            friend: friend
-                                           ))
+                            self.get_post_comments(postID: postID) { comments in
+                                completion(Post(id: doc.documentID,
+                                                userID: data["userID"] as! String,
+                                                images: data["images"] as! [String],
+                                                date: data["date"] as! [String],
+                                                day: data["day"] as! String,
+                                                comments: comments,
+                                                caption: data["caption"] as? [String] ?? [],
+                                                likes: data["likes"] as? [String] ?? [],
+                                                locations: data["location"] as? [String] ?? [],
+                                                recipes: self.convertToRecipe(postID: doc.documentID),
+                                                friend: friend
+                                               ))
+                            }
                         }
                     }
                 }
@@ -365,27 +369,27 @@ class ViewModel: ObservableObject {
     }
     
     
-    func firebase_add_comment(post: Post, text: String, date: String) {
+    func firebase_add_comment(postID: String, text: String, date: Date, completion: @escaping (Bool) -> Void) {
         
-        let id = UUID()
+        let comment_id = UUID()
+        let dateString = self.dateFormatter.string(from: date)
         
-        self.db.collection("POSTS").document(post.id).collection("COMMENTS").document(id.uuidString).setData(
-            ["id": id.uuidString,
+        self.db.collection("POSTS").document(postID).collection("COMMENTS").document(comment_id.uuidString).setData(
+            ["id": comment_id.uuidString,
              "user_id" : current_user!.id,
              "text": text,
-             "date": date,
+             "date": dateString,
+             "profilePicture" : current_user!.profilePicture,
              "replies": []
             ] as [String : Any]
         ) { error in
             if let error = error {
                 print("Error: \(error.localizedDescription)")
+                completion(false)
             } else {
-                
-                
-                
+                completion(true)
             }
         }
-        
     }
     
     func firebase_like_post(post: inout Post, user: String) {
@@ -494,6 +498,7 @@ class ViewModel: ObservableObject {
                                     completion(!done)
                                 }
                         } else {
+                            let docId = UUID()
                             self.db.collection("POSTS").document(docId.uuidString).setData(data) { error in
                                 if let error = error {
                                     print("Error: \(error.localizedDescription) ")
@@ -539,9 +544,10 @@ class ViewModel: ObservableObject {
                 // Error getting comments
                 print("Error in the get post comments: \(error.localizedDescription)")
             } else {
+                print("\(documents!.count) comments found")
                 for document in documents!.documents {
                     let data = document.data()
-                    let comment = Comment(id: data["id"] as! String, userID: data["userID"] as! String, text: data["text"] as! String, date: data["date"] as! String)
+                    let comment = Comment(id: data["id"] as! String, userID: data["user_id"] as! String, text: data["text"] as! String, date: self.dateFormatter.date(from: data["date"] as! String)!, profilePicture: data["profilePicture"] as! String)
                     comments.append(comment)
                 }
             }
@@ -613,7 +619,6 @@ class ViewModel: ObservableObject {
         } else {
             completion(false)
         }
-        
     }
     
     
@@ -760,6 +765,7 @@ class ViewModel: ObservableObject {
         return recipe ?? []
     }
     
+
     
     func convertToComments(postID: String) -> [Comment] {
         var comment: [Comment]?
@@ -781,6 +787,7 @@ class ViewModel: ObservableObject {
         })
         return comment ?? []
     }
+
     
     func firebase_get_url_from_image(image: UIImage, completion: @escaping (URL?) -> Void) {
         guard let imageData = image.jpegData(compressionQuality: 0.8) else {
@@ -853,6 +860,7 @@ class ViewModel: ObservableObject {
         return Image(uiImage: uiImage)
     }
     
+
     func firebase_add_pin(postID: String, completion: @escaping (Bool) -> Void) {
         let docRef = db.collection("USERS").document(self.current_user!.id)
             
@@ -886,6 +894,19 @@ class ViewModel: ObservableObject {
                 })
                 completion(true)
             }
+          }
+    }
+
+    func updateUserField(field: String, value: String) {
+        db.collection("USERS").document(current_user!.id).updateData(
+            [field: value]) { err in
+                if let err = err {
+                    print(err.localizedDescription)
+                } else {
+                    self.setCurrentUser(userId: self.current_user!.id) {
+                        
+                    }
+                }
         }
     }
 }
