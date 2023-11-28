@@ -450,7 +450,7 @@ class ViewModel: ObservableObject {
         }
     }
     
-    func publish_post(caption: String, location: String, recipe: Recipe, completion: @escaping (Bool) -> Void) {
+    func publish_post(caption: String, location: String, recipe: Recipe?, completion: @escaping (Bool) -> Void) {
         let date = Date()
         // add logic to check if first post of today
         // for now just create new document
@@ -545,10 +545,17 @@ class ViewModel: ObservableObject {
                 print("Error in the get post comments: \(error.localizedDescription)")
             } else {
                 print("\(documents!.count) comments found")
+                print()
                 for document in documents!.documents {
                     let data = document.data()
-                    let comment = Comment(id: data["id"] as! String, userID: data["user_id"] as! String, text: data["text"] as! String, date: self.dateFormatter.date(from: data["date"] as! String)!, profilePicture: data["profilePicture"] as! String)
-                    comments.append(comment)
+                    print("doc ID: \(document.documentID)")
+                    do {
+                        let comment = try Comment(id: data["id"] as! String, userID: data["user_id"] as! String, text: data["text"] as! String, date: self.dateFormatter.date(from: data["date"] as! String)!, profilePicture: data["profilePicture"] as! String)
+                        comments.append(comment)
+                    } catch {
+                        print(error.localizedDescription)
+                    }
+                    
                 }
             }
             completion(comments)
