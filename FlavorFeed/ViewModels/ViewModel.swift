@@ -215,17 +215,11 @@ class ViewModel: ObservableObject {
     }
     
     func refreshFeed(_ completion: @escaping () -> Void) {
-        print("REFRESH FEED TOP")
-        
         get_todays_posts() { postIDs in
             // Create post models
-            print(postIDs)
-            print("REFRESH FEED MID")
             self.todays_posts.removeAll()
             self.fetchPosts(postIDs: postIDs) { posts in
-                print("POSTS:\(posts)")
                 self.todays_posts = posts
-                print("REFRESH FEED BOTTOM")
                 completion()
             }
         }
@@ -251,23 +245,25 @@ class ViewModel: ObservableObject {
                     let data = document.data()!
                     
                     self?.getFriend(userID: data["userID"] as! String) { friend in
-                        print("FOUND FRIEND \(friend.name)")
-                        posts.append(Post(
-                            id: document.documentID,
-                            userID: data["userID"] as! String,
-                            images: data["images"] as! [String],
-                            date: data["date"] as! [String],
-                            day: data["day"] as! String,
-                            comments: self?.convertToComments(postID: postID) ?? [],
-                            caption: data["caption"] as? [String] ?? [],
-                            likes: data["likes"] as? [String] ?? [],
-                            locations: data["location"] as? [String] ?? [],
-                            recipes: self?.convertToRecipe(postID: postID) ?? [],
-                            friend: friend
-                        ))
-                        
-                        // Notify that this specific task is complete
-                        dispatchGroup.leave()
+                        self?.get_post_comments(postID: postID, completion: { comments in
+                            
+                            print("FOUND FRIEND \(friend.name)")
+                            posts.append(Post(
+                                id: document.documentID,
+                                userID: data["userID"] as! String,
+                                images: data["images"] as! [String],
+                                date: data["date"] as! [String],
+                                day: data["day"] as! String,
+                                comments: comments,
+                                caption: data["caption"] as? [String] ?? [],
+                                likes: data["likes"] as? [String] ?? [],
+                                locations: data["location"] as? [String] ?? [],
+                                recipes: self?.convertToRecipe(postID: postID) ?? [],
+                                friend: friend
+                            ))
+                            // Notify that this specific task is complete
+                            dispatchGroup.leave()
+                        })
                     }
                 } else {
                     // Notify that this specific task is complete even if there is an error
@@ -330,13 +326,15 @@ class ViewModel: ObservableObject {
         }
     }
     
-    func firebase_delete_comment(post: Post, comment: Comment) {
+    func firebase_delete_comment(post: Post, comment: Comment, completion: @escaping (Bool) -> Void) {
         self.db.collection("POSTS").document(post.id).collection("COMMENTS").document(comment.id).delete { err in
             if let err = err {
                 print("Error: \(err.localizedDescription)")
+                completion(false)
             } else {
                 // comment deleted
                 // UI Changes
+                completion(true)
                 
             }
         }
@@ -352,18 +350,20 @@ class ViewModel: ObservableObject {
                 if let doc = document {
                     if let data = doc.data() {
                         self.getFriend(userID: data["userID"] as! String) { friend in
-                            completion(Post(id: doc.documentID,
-                                            userID: data["userID"] as! String,
-                                            images: data["images"] as! [String],
-                                            date: data["date"] as! [String],
-                                            day: data["day"] as! String,
-                                            comments: self.convertToComments(postID: doc.documentID),
-                                            caption: data["caption"] as? [String] ?? [],
-                                            likes: data["likes"] as? [String] ?? [],
-                                            locations: data["location"] as? [String] ?? [],
-                                            recipes: self.convertToRecipe(postID: doc.documentID),
-                                            friend: friend
-                                           ))
+                            self.get_post_comments(postID: postID) { comments in
+                                completion(Post(id: doc.documentID,
+                                                userID: data["userID"] as! String,
+                                                images: data["images"] as! [String],
+                                                date: data["date"] as! [String],
+                                                day: data["day"] as! String,
+                                                comments: comments,
+                                                caption: data["caption"] as? [String] ?? [],
+                                                likes: data["likes"] as? [String] ?? [],
+                                                locations: data["location"] as? [String] ?? [],
+                                                recipes: self.convertToRecipe(postID: doc.documentID),
+                                                friend: friend
+                                               ))
+                            }
                         }
                     }
                 }
@@ -372,27 +372,27 @@ class ViewModel: ObservableObject {
     }
     
     
-    func firebase_add_comment(post: Post, text: String, date: String) {
+    func firebase_add_comment(postID: String, text: String, date: Date, completion: @escaping (Bool) -> Void) {
         
-        let id = UUID()
+        let comment_id = UUID()
+        let dateString = self.dateFormatter.string(from: date)
         
-        self.db.collection("POSTS").document(post.id).collection("COMMENTS").document(id.uuidString).setData(
-            ["id": id.uuidString,
+        self.db.collection("POSTS").document(postID).collection("COMMENTS").document(comment_id.uuidString).setData(
+            ["id": comment_id.uuidString,
              "user_id" : current_user!.id,
              "text": text,
-             "date": date,
+             "date": dateString,
+             "profilePicture" : current_user!.profilePicture,
              "replies": []
             ] as [String : Any]
         ) { error in
             if let error = error {
                 print("Error: \(error.localizedDescription)")
+                completion(false)
             } else {
-                
-                
-                
+                completion(true)
             }
         }
-        
     }
     
     func firebase_like_post(post: inout Post, user: String) {
@@ -429,7 +429,7 @@ class ViewModel: ObservableObject {
         dateFormatter.dateFormat = "MM-dd-yyyy HH:mm:ss"
         let dateFormatted = dateFormatter.string(from: date) // get string from date
         
-
+        
         let data = ["images" : selfie + " " + foodPic,
                     "caption" : caption,
                     "recipes" : recipe,
@@ -498,7 +498,7 @@ class ViewModel: ObservableObject {
                                     completion(!done)
                                 }
                         } else {
-                        let docId = UUID()
+                            let docId = UUID()
                             self.db.collection("POSTS").document(docId.uuidString).setData(data) { error in
                                 if let error = error {
                                     print("Error: \(error.localizedDescription) ")
@@ -544,16 +544,17 @@ class ViewModel: ObservableObject {
                 // Error getting comments
                 print("Error in the get post comments: \(error.localizedDescription)")
             } else {
+                print("\(documents!.count) comments found")
                 for document in documents!.documents {
                     let data = document.data()
-                    let comment = Comment(id: data["id"] as! String, userID: data["userID"] as! String, text: data["text"] as! String, date: data["date"] as! String)
+                    let comment = Comment(id: data["id"] as! String, userID: data["user_id"] as! String, text: data["text"] as! String, date: self.dateFormatter.date(from: data["date"] as! String)!, profilePicture: data["profilePicture"] as! String)
                     comments.append(comment)
                 }
             }
             completion(comments)
         }
     }
-
+    
     
     func get_friend_requests(completion: @escaping ([Friend]) -> Void) {
         let userRef = self.db.collection("USERS").document(current_user!.id)
@@ -569,8 +570,8 @@ class ViewModel: ObservableObject {
             }
         }
     }
-
-
+    
+    
     
     
     
@@ -635,7 +636,7 @@ class ViewModel: ObservableObject {
         let dateTodayString = dateFormatterSimple.string(from: date)
         
         var postList: [String] = [String]()
-
+        
         get_friends_ids() { friends in
             var allUsersToFetch = friends
             allUsersToFetch.append(self.current_user!.id)
@@ -658,7 +659,7 @@ class ViewModel: ObservableObject {
         }
     }
     
-
+    
     func get_friends_ids(completion: @escaping ([String]) -> Void) {
         let userRef = self.db.collection("USERS").document(current_user!.id)
         userRef.getDocument { document, err in
@@ -743,49 +744,28 @@ class ViewModel: ObservableObject {
         }
     }
     
- 
+    
     func convertToRecipe(postID: String) -> [Recipe] {
         var recipe: [Recipe]?
         
         self.db.collection("POSTS").document(postID).collection("RECIPES").getDocuments(completion: { [weak self] documents, error in
-                if let error = error {
-                    self?.errorText = "Cannot get list of recipes from Firebase."
-                } else {
-                    for document in documents!.documents {
-                        recipe?.append(Recipe(id: document.documentID,
+            if let error = error {
+                self?.errorText = "Cannot get list of recipes from Firebase."
+            } else {
+                for document in documents!.documents {
+                    recipe?.append(Recipe(id: document.documentID,
                                           title: document["title"] as! String,
                                           link: document["link"] as? String ?? nil,
                                           ingredients: document["ingredients"] as! [String],
                                           directions: document["directions"] as! String?
                                          ))
-                        UserDefaults.standard.setValue(true, forKey: "log_Status")
-                    }
+                    UserDefaults.standard.setValue(true, forKey: "log_Status")
                 }
-            })
+            }
+        })
         return recipe ?? []
     }
     
-
-    func convertToComments(postID: String) -> [Comment] {
-        var comment: [Comment]?
-        
-        self.db.collection("POSTS").document(postID).collection("COMMENTS").getDocuments(completion: { [weak self] documents, error in
-                if let error = error {
-                    self?.errorText = "Cannot get list of recipes from Firebase."
-                } else {
-                    for document in documents!.documents {
-                        comment?.append(Comment(id: document.documentID,
-                                          userID: document["userID"] as! String,
-                                          text: document["text"] as! String,
-                                          date: document["date"] as! String,
-                                          replies: document["directions"] as? [Comment] ?? []
-                                         ))
-                        UserDefaults.standard.setValue(true, forKey: "log_Status")
-                    }
-                }
-            })
-        return comment ?? []
-    }
     
     func firebase_get_url_from_image(image: UIImage, completion: @escaping (URL?) -> Void) {
         guard let imageData = image.jpegData(compressionQuality: 0.8) else {
