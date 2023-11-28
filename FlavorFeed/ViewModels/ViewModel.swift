@@ -205,6 +205,7 @@ class ViewModel: ObservableObject {
                                           bio: document["bio"] as! String,
                                           phoneNumber: document["phone_number"] as! String,
                                           friends: document["friends"] as! [String],
+                                          requests: document["incomingRequests"] as! [String],
                                           pins: document["pins"] as? [String] ?? [],
                                           myPosts: document["myPosts"] as! [String])
                 completion()
@@ -733,6 +734,9 @@ class ViewModel: ObservableObject {
                             suggestions.formUnion(friends!)
                         }
                         suggestions.subtract(friends)
+                        //make sure current user doesn't show up in suggestions
+                        let userid: Set<String> = [self.current_user!.id]
+                        suggestions.subtract(userid)
                         self.get_friends(userIDs: Array(suggestions)) { friends in
                             completion(friends)
                         }

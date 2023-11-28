@@ -67,7 +67,7 @@ struct AddFriendsView: View {
                     
                    
                         
-                    UserListView(vm: vm, suggestions: suggestions, friends: friends, requests: requests, searchText: $searchText, selectedOption: $selectedOption)
+                    UserListView(vm: vm, suggestions: $suggestions, friends: $friends, requests: $requests, searchText: $searchText, selectedOption: $selectedOption)
 
                         
                         

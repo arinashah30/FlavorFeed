@@ -24,6 +24,7 @@ struct User: Identifiable, Hashable {
     
     // OPTIONAL PROPERTIES (could be empty arrays)
     var friends: [String] // array of userIDs (usernames)
+    var requests: [String]
     var pins: [String] // array of post IDs
     var myPosts: [String] // array of all user posts (may not always need all of your posts)
 }
