@@ -210,7 +210,8 @@ struct PublishPostView: View {
                 })
             }
             Spacer()
-        }.onDisappear() {
+        }
+        .onDisappear() {
             vm.photo_1 = nil
             vm.photo_2 = nil
             vm.bothImagesCaptured = false
@@ -218,6 +219,7 @@ struct PublishPostView: View {
         .sheet(isPresented: $isShowingRecipeForm) {
             RecipeFormView(recipe: $recipe, isPresentingRecipeForm: $isShowingRecipeForm)
         }
+        
     }
     
     func getBigImage() -> UIImage {
