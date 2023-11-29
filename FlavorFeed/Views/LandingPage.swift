@@ -9,9 +9,9 @@ import SwiftUI
 
 enum Tabs {
     case mainScrollView
-    case contactsView
     case selfProfileView
     case addFriendsView
+    case settingsView
 }
 
 struct LandingPage: View {
@@ -29,6 +29,9 @@ struct LandingPage: View {
                 
                 SelfProfileView(tabSelection: $tabSelection, vm: vm)
                     .tag(Tabs.selfProfileView)
+                
+                SettingsView(vm: vm, tabSelection: $tabSelection)
+                    .tag(Tabs.settingsView)
                 
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
