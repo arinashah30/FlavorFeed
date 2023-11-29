@@ -25,8 +25,6 @@ struct FullCalendarView: View {
         for daysAgo in 0..<30 {
             dates.append(getNDaysFromNow(days: -1 * daysAgo))
         }
-        
-        print("INIT FINISH")
     }
     
     var body: some View {
@@ -75,6 +73,7 @@ struct FullCalendarView: View {
                 }
             }
         }.background(.black)
+            
     }
     
     func getNDaysFromNow(days: Int) -> Date {
