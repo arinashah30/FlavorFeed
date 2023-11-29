@@ -32,6 +32,8 @@ import SwiftUI
 
 class ViewModel: ObservableObject {
     
+    @ObservedObject var imageLoader = ImageLoader()
+    
     @Published var current_user: User? = nil
     @Published var errorText: String? = nil
     
@@ -130,7 +132,7 @@ class ViewModel: ObservableObject {
                 self?.db.collection("USERS").document(username).setData(
                     ["id" : username,
                      "name" : displayName,
-                     "profilePicture" : "",
+                     "profilePicture" : "https://static-00.iconduck.com/assets.00/person-crop-circle-icon-256x256-02mzjh1k.png", // default icon
                      "email" : email,
                      "bio" : "",
                      "phone_number" : phoneNumber,

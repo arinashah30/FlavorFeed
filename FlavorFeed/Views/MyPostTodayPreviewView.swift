@@ -37,16 +37,12 @@ struct MyPostTodayPreviewView: View {
                         } label: {
                             ZStack {
                                 VStack {
-                                    AsyncImage(url: URL(string: post.images[i][0])) { image in
+                                    vm.imageLoader.img(url: URL(string: post.images[i][0])!) { image in
                                         image.resizable()
-                                            .aspectRatio(contentMode: .fit)
-                                            .frame(width: 112, height: 149)
-                                            .clipShape(RoundedRectangle(cornerRadius: 10))
-                                    } placeholder: {
-                                        ProgressView()
-                                            .frame(width: 112, height: 149)
-                                            .clipShape(RoundedRectangle(cornerRadius: 10))
-                                    }
+                                    }.aspectRatio(contentMode: .fit)
+                                        .frame(width: 112, height: 149)
+                                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                                    
                                     if (post.comments.count > 0) {
                                         Spacer()
                                     }
@@ -54,26 +50,16 @@ struct MyPostTodayPreviewView: View {
                                 
                                 HStack {
                                     VStack {
-                                        AsyncImage(url: URL(string: post.images[i][1])) { image in
+                                        vm.imageLoader.img(url: URL(string: post.images[i][1])!) { image in
                                             image.resizable()
-                                                .aspectRatio(contentMode: .fit)
-                                                .frame(width: 37, height: 50)
-                                                .cornerRadius(5)
-                                                .overlay(
-                                                    RoundedRectangle(cornerRadius: 5)
-                                                        .stroke(Color.ffPrimary, lineWidth: 1)
-                                                )
-                                                .padding(7)
-                                        } placeholder: {
-                                            ProgressView()
-                                                .frame(width: 37, height: 50)
-                                                .cornerRadius(5)
-                                                .overlay(
-                                                    RoundedRectangle(cornerRadius: 5)
-                                                        .stroke(Color.ffPrimary, lineWidth: 1)
-                                                )
-                                                .padding(7)
-                                        }
+                                        }.aspectRatio(contentMode: .fit)
+                                            .frame(width: 37, height: 50)
+                                            .cornerRadius(5)
+                                            .overlay(
+                                                RoundedRectangle(cornerRadius: 5)
+                                                    .stroke(Color.ffPrimary, lineWidth: 1)
+                                            )
+                                            .padding(7)
                                         
                                         Spacer()
                                     }

@@ -25,15 +25,10 @@ struct PostView: View {
     @State private var myNewComment = ""
     @State private var isShowingSheet = false
     
-    
-    let person_circle_address = "https://www.iconbolt.com/preview/facebook/ionicons-outline/person-circle.svg"
-    
     init(vm: ViewModel, post: Post) {
         self.vm = vm
         
         self.post = post
-        print("CREATING POST")
-        print(vm.todays_posts.count)
         
         self.post.comments = self.post.comments.sorted { this, next in
             this.date < next.date
@@ -44,27 +39,12 @@ struct PostView: View {
         GeometryReader { geo in
             VStack {
                 HStack {
-                    AsyncImage(url: URL(string: post.friend!.profilePicture)) { image in
-                        image.resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .scaledToFill()
-                            .frame(width: geo.size.height * 0.08, height: geo.size.height * 0.08)
-                            .clipShape(.circle)
-                    } placeholder: {
-                        ProgressView()
-                            .frame(width: geo.size.height * 0.08, height: geo.size.height * 0.08)
-                            .clipShape(.circle)
-                        
-                    }.task {
-                        do {
-                            _ = try await URLSession.shared.data(from: URL(string: post.friend!.profilePicture)!)
-                            // The image loaded successfully
-                            print("Image loaded successfully")
-                        } catch {
-                            print("Error loading image: \(error.localizedDescription)")
-                        }
-                    }
-                    
+                    vm.imageLoader.img(url: URL(string: post.friend!.profilePicture)!) { image in
+                        image
+                            .resizable()
+                    }.aspectRatio(contentMode: .fill)
+                        .frame(width: geo.size.height * 0.08, height: geo.size.height * 0.08)
+                        .clipShape(Circle())
                     
                     VStack (alignment: .leading) {
                         Text(post.friend!.name)
@@ -93,19 +73,11 @@ struct PostView: View {
                     ForEach(0..<post.images.count) { index in
                         
                         ZStack (){
-                            AsyncImage(url: URL(string: bigImage(index))) { image in
+                            vm.imageLoader.img(url: URL(string: bigImage(index))!) { image in
                                 image.resizable()
-                                    .aspectRatio(contentMode: .fill)
-                                    .frame(width: geo.size.width*0.98, height: geo.size.height*0.66)
-                                    .clipped()
-                            } placeholder: {
-                                ProgressView()
-                                    .frame(width: geo.size.width*0.98, height: geo.size.height*0.66)
-                                    .clipped()
-                                
-                                
-                                
-                            }
+                            }.aspectRatio(contentMode: .fill)
+                                .frame(width: geo.size.width*0.98, height: geo.size.height*0.66)
+                                .clipped()
                             
                             
                             VStack {
@@ -114,29 +86,18 @@ struct PostView: View {
                                         Button {
                                             self.showSelfieFirst.toggle()
                                         } label: {
-                                            AsyncImage(url: URL(string: smallImage(index))) { image in
+                                            vm.imageLoader.img(url: URL(string: smallImage(index))!) { image in
                                                 image.resizable()
-                                                    .aspectRatio(contentMode: .fill)
-                                                    .frame(width: geo.size.width * 0.30, height: geo.size.height * 0.2)
-                                                    .clipped()
-                                                    .cornerRadius(10)
-                                                    .overlay(
-                                                        RoundedRectangle(cornerRadius: 10)
-                                                            .stroke(Color.ffPrimary, lineWidth: 2)
-                                                    )
-                                                    .padding()
-                                            } placeholder: {
-                                                ProgressView()
-                                                    .frame(width: geo.size.width * 0.30, height: geo.size.height * 0.2)
-                                                    .clipped()
-                                                    .cornerRadius(10)
-                                                    .overlay(
-                                                        RoundedRectangle(cornerRadius: 10)
-                                                            .stroke(Color.ffPrimary, lineWidth: 2)
-                                                    )
-                                                    .padding()
-                                            }
-                                            
+                                            }.aspectRatio(contentMode: .fill)
+                                                .frame(width: geo.size.width * 0.30, height: geo.size.height * 0.2)
+                                                .background(.black)
+                                                .clipped()
+                                                .cornerRadius(10)
+                                                .overlay(
+                                                    RoundedRectangle(cornerRadius: 10)
+                                                        .stroke(Color.ffPrimary, lineWidth: 2)
+                                                )
+                                                .padding()
                                         }
                                         Spacer()
                                     }
@@ -223,16 +184,12 @@ struct PostView: View {
                         VStack {
                             ForEach(post.comments, id: \.self) { comment in
                                 HStack{
-                                    AsyncImage(url: URL(string: comment.profilePicture)) { image in
-                                        image
-                                            .resizable()
-                                            .frame(width: 60, height: 60)
-                                            .clipShape(.circle)
-                                    } placeholder: {
-                                        ProgressView()
-                                            .frame(width: 60, height: 60)
-                                            .clipShape(.circle)
+                                    vm.imageLoader.img(url: URL(string: comment.profilePicture)!) { image in
+                                            image.resizable()
                                     }
+                                    .frame(width: 60, height: 60)
+                                    .clipShape(.circle)
+                                    
                                     Spacer()
                                     
                                     ZStack{
@@ -303,12 +260,10 @@ struct PostView: View {
     }
     
     func bigImage(_ i: Int) -> String {
-        print("BIG IMAGE: \(showSelfieFirst ? post.images[i][0] : post.images[i][1])")
         return showSelfieFirst ? post.images[i][0] : post.images[i][1]
     }
     
     func smallImage(_ i: Int) -> String {
-        print("SMALL IMAGE: \(showSelfieFirst ? post.images[i][1] : post.images[i][0])")
         return showSelfieFirst ? post.images[i][1] : post.images[i][0]
     }
 }
