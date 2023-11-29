@@ -54,6 +54,7 @@
 		B270544D2B06BBA400BC7174 /* Camera-SwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = B270544C2B06BBA400BC7174 /* Camera-SwiftUI */; };
 		B270544F2B06BC7A00BC7174 /* CameraModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B270544E2B06BC7A00BC7174 /* CameraModel.swift */; };
 		B27054512B06CFBD00BC7174 /* PublishPostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B27054502B06CFBD00BC7174 /* PublishPostView.swift */; };
+		B2A09FBB2B16CEE800393770 /* ImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A09FBA2B16CEE800393770 /* ImageLoader.swift */; };
 		B2BACCCD2ACF12B300F942A3 /* SelfProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6602DD8B2AC625EF008C3177 /* SelfProfileView.swift */; };
 		B2BACCCF2ACF132000F942A3 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2BACCCE2ACF132000F942A3 /* ContentView.swift */; };
 		B2C5E46C2AF2A476000EA620 /* Friend.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C5E46B2AF2A476000EA620 /* Friend.swift */; };
@@ -119,6 +120,7 @@
 		B27054492B06B5A300BC7174 /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
 		B270544E2B06BC7A00BC7174 /* CameraModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraModel.swift; sourceTree = "<group>"; };
 		B27054502B06CFBD00BC7174 /* PublishPostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublishPostView.swift; sourceTree = "<group>"; };
+		B2A09FBA2B16CEE800393770 /* ImageLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageLoader.swift; sourceTree = "<group>"; };
 		B2BACCCE2ACF132000F942A3 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		B2BACCD22ACF15C000F942A3 /* FlavorFeed.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FlavorFeed.entitlements; sourceTree = "<group>"; };
 		B2BACCD32ACF161100F942A3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -285,6 +287,7 @@
 			isa = PBXGroup;
 			children = (
 				B21292502ACD21500064AE5D /* ViewModel.swift */,
+				B2A09FBA2B16CEE800393770 /* ImageLoader.swift */,
 				A91C89B12AFEAB01002146FF /* LocationManager.swift */,
 				B270544E2B06BC7A00BC7174 /* CameraModel.swift */,
 			);
@@ -457,6 +460,7 @@
 				B2FCB8FF2AC63AA200865FCF /* FFColors.swift in Sources */,
 				665113502AC601E900027654 /* Post.swift in Sources */,
 				B2164D532B15891200F269C8 /* FullCalendarView.swift in Sources */,
+				B2A09FBB2B16CEE800393770 /* ImageLoader.swift in Sources */,
 				666AE2C72AF47508003EF7B6 /* MainScrollView.swift in Sources */,
 				F75D1E8F2AC63EF40054F7EC /* PostView.swift in Sources */,
 				48D942A92B09677000456526 /* SettingsView.swift in Sources */,

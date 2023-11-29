@@ -110,18 +110,11 @@ struct UserRow: View {
     var body: some View {
         HStack {
 
-            AsyncImage(url: URL(string: user.profilePicture)) { image in
-                image
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: 70, height: 70)
-                    .clipShape(Circle())
-                
-            } placeholder: {
-                Color.gray
-                    .frame(width: 70, height: 70)
-                    .clipShape(Circle())
-            }
+            vm.imageLoader.img(url: URL(string: user.profilePicture)!) { image in
+                image.resizable()
+            }.scaledToFill()
+                .frame(width: 70, height: 70)
+                .clipShape(Circle())
             
 
             VStack(alignment: .leading) {
