@@ -142,6 +142,10 @@ class ViewModel: ObservableObject {
                     ] as [String : Any]) { error in
                         if let error = error {
                             self?.errorText = error.localizedDescription
+                        } else {
+                            self?.setCurrentUser(userId: username) {
+                                UserDefaults.standard.setValue(true, forKey: "log_Status")
+                            }
                         }
                     }
             }
