@@ -19,23 +19,18 @@ struct CalendarItemView: View {
         self.date = date
         self.vm = vm
         self.frame = frame
+        print("drawing calendar item")
     }
     var body: some View {
         ZStack(alignment: .topLeading){
             
-            AsyncImage(
-                url: URL(string: url),
-                content: { image in
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: frame, height: frame)
-                        .clipped()
-                },
-                placeholder: {
-                    ProgressView()
-                }
-            )
+            vm.imageLoader.img(url: URL(string: url)!) { image in
+                image.resizable()
+            }
+            .aspectRatio(contentMode: .fill)
+            .frame(width: frame, height: frame)
+            .clipped()
+            
             if post_id != nil {
                 HStack {
                     Spacer()
@@ -45,7 +40,7 @@ struct CalendarItemView: View {
                     }, label: {
                         Image(systemName: postIsPinned() ? "pin.fill" : "pin")
                             .foregroundColor(.ffTertiary)
-                            .padding()
+                            .padding(5)
                     })
                 }
             }
@@ -59,7 +54,6 @@ struct CalendarItemView: View {
                         print(getDayformatted(date: date))
                         vm.firebase_get_post(postID: postID) { post in
                             self.url = post.images[0][0]
-                            print("Showing image for \(getDayformatted(date: date)): \(post.images[0][0])")
                         }
                     }
                 }
@@ -80,10 +74,22 @@ struct CalendarItemView: View {
                 if postIsPinned() {
                     vm.firebase_remove_pin(postID: id) { removed in
                         // nothing for now
+                        if removed {
+                            print("removing")
+                            vm.current_user?.pins.removeAll(where: { pinID in
+                                pinID == id
+                            })
+                        }
                     }
                 } else {
                     vm.firebase_add_pin(postID: id) { added in
                         // nothing for now
+                        if added {
+                            if !vm.current_user!.pins.contains(id) {
+                                print("adding")
+                                vm.current_user!.pins.append(id)
+                            }
+                        }
                     }
                 }
             }

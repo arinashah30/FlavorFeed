@@ -42,7 +42,7 @@ struct SelfProfileView: View {
             ScrollView {
                 if let user = vm.current_user {
                     BioView(profilePicture: user.profilePicture, name: user.name, id: user.id, bio: user.bio)
-                    PinsView(vm: vm, pinIDs: user.pins, id: user.id)
+                    PinsView(vm: vm, id: user.id)
                     CalendarView(vm: vm, user: user)
                     
                     Button {
