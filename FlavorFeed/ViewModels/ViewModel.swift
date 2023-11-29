@@ -351,11 +351,14 @@ class ViewModel: ObservableObject {
                 print(err.localizedDescription)
                 return
             } else {
-                if let doc = document {
+                
+                guard let doc = document, doc.exists else { print("doc not found"); return }
+                    print(doc.documentID)
                     if let data = doc.data() {
                         self.getFriend(userID: data["userID"] as! String) { friend in
+                            print("3")
                             self.get_post_comments(postID: postID) { comments in
-                                completion(Post(id: doc.documentID,
+                                let post = Post(id: doc.documentID,
                                                 userID: data["userID"] as! String,
                                                 images: data["images"] as! [String],
                                                 date: data["date"] as! [String],
@@ -366,9 +369,10 @@ class ViewModel: ObservableObject {
                                                 locations: data["location"] as? [String] ?? [],
                                                 recipes: self.convertToRecipe(postID: doc.documentID),
                                                 friend: friend
-                                               ))
+                                )
+                                completion(post)
                             }
-                        }
+                        
                     }
                 }
             }
@@ -481,7 +485,7 @@ class ViewModel: ObservableObject {
                 if let foodPic = url_1 {
                     if let selfie = url_2 {
                         let docId = UUID()
-
+                        
                         let data = ["id" : docId.uuidString,
                                     "userID" : self.current_user!.id,
                                     "images" : ["\(foodPic) \(selfie)"],
@@ -505,7 +509,6 @@ class ViewModel: ObservableObject {
                                     completion(!done)
                                 }
                         } else {
-                            let docId = UUID()
                             self.db.collection("POSTS").document(docId.uuidString).setData(data) { error in
                                 if let error = error {
                                     print("Error: \(error.localizedDescription) ")
@@ -775,7 +778,7 @@ class ViewModel: ObservableObject {
         return recipe ?? []
     }
     
-
+    
     
     func convertToComments(postID: String) -> [Comment] {
         var comment: [Comment]?
@@ -798,7 +801,7 @@ class ViewModel: ObservableObject {
         })
         return comment ?? []
     }
-
+    
     
     func firebase_get_url_from_image(image: UIImage, completion: @escaping (URL?) -> Void) {
         guard let imageData = image.jpegData(compressionQuality: 0.8) else {
@@ -840,6 +843,7 @@ class ViewModel: ObservableObject {
             } else if let docs = documents?.documents {
                 if docs.count == 1 {
                     if let postID = docs[0]["id"] as? String {
+                        print(postID)
                         completion(postID)
                     } else {
                         completion("")
@@ -852,7 +856,7 @@ class ViewModel: ObservableObject {
                 completion("")
             }
         })
-            
+        
         
         
     }
@@ -873,10 +877,10 @@ class ViewModel: ObservableObject {
         
     }
     
-
+    
     func firebase_add_pin(postID: String, completion: @escaping (Bool) -> Void) {
         let docRef = db.collection("USERS").document(self.current_user!.id)
-            
+        
         docRef.updateData(
             ["pins" : FieldValue.arrayUnion([postID])] // append pins
         ) { err in
@@ -893,7 +897,7 @@ class ViewModel: ObservableObject {
     
     func firebase_remove_pin(postID: String, completion: @escaping (Bool) -> Void) {
         let docRef = db.collection("USERS").document(self.current_user!.id)
-            
+        
         docRef.updateData(
             ["pins" : FieldValue.arrayRemove([postID])] // remove pins
         ) { err in
@@ -907,9 +911,9 @@ class ViewModel: ObservableObject {
                 })
                 completion(true)
             }
-          }
+        }
     }
-
+    
     func updateUserField(field: String, value: String) {
         db.collection("USERS").document(current_user!.id).updateData(
             [field: value]) { err in
@@ -920,7 +924,7 @@ class ViewModel: ObservableObject {
                         
                     }
                 }
-        }
+            }
     }
     
     func firebase_search_for_friends(username: String, completionHandler: @escaping (([Friend]) -> Void)) {

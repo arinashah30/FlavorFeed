@@ -14,12 +14,9 @@ import SwiftUI
 //  Created by Austin Huguenard on 10/3/23.
 //
 
-import SwiftUI
-
 struct PinsView: View {
     @ObservedObject var vm: ViewModel
     @State var pins = [Post]()
-    var pinIDs: [String]
     let id: String
     
     
@@ -57,20 +54,17 @@ struct PinsView: View {
                     
                     ForEach(pins) { post in
                         VStack {
-                            AsyncImage(url: URL(string: post.images[0][0])) { image in
-                                image
-                                    .resizable()
-                            } placeholder: {
-                                ProgressView()
-                            }.frame(width: 110, height: 136)
+                            vm.imageLoader.img(url: URL(string: post.images[0][0])!) { image in
+                                image.resizable()
+                            }
+                            .frame(width: 110, height: 136)
                                 .clipped()
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 10)
                                         .stroke(Color.ffTertiary, lineWidth: 5)
                                 )
                                 .cornerRadius(10)
-
-                               
+                            
                             ZStack {
                                 RoundedRectangle(cornerRadius: 12.5)
                                     .frame(width: 100, height: 25)
@@ -83,30 +77,27 @@ struct PinsView: View {
                     .frame(maxHeight: 200)
                 }
                 .padding(.top,1)
+            }.onChange(of: vm.current_user!.pins, initial: true) { oldValue, newValue in
+                vm.fetchPosts(postIDs: newValue) { posts in
+                    self.pins = posts
+                    print(posts.count)
+                }
             }
-        }.onAppear {
-            vm.fetchPosts(postIDs: pinIDs) { posts in
-                pins = posts
-            }
+            
         }
     }
     
-}
-
-
-func postDate(post: Post) -> String {
-    let dateString = post.date[0].prefix(10)
-    let dateFormatter = DateFormatter()
-    dateFormatter.dateFormat = "MM-dd-yyyy"
-    if let date = dateFormatter.date(from: String(dateString)) {
-        dateFormatter.dateFormat = "MMM d, yyyy"
-        let formattedDate = dateFormatter.string(from: date)
-        return formattedDate
-    } else {
-        return "Invalid date"
+    
+    func postDate(post: Post) -> String {
+        let dateString = post.date[0].prefix(10)
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MM-dd-yyyy"
+        if let date = dateFormatter.date(from: String(dateString)) {
+            dateFormatter.dateFormat = "MMM d, yyyy"
+            let formattedDate = dateFormatter.string(from: date)
+            return formattedDate
+        } else {
+            return "Invalid date"
+        }
     }
-}
-
-#Preview {
-    PinsView(vm: ViewModel(), pinIDs: [], id: "arinashah")
 }

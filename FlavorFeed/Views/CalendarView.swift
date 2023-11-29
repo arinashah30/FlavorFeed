@@ -61,21 +61,17 @@ struct CalendarCollectionViewCell: View {
     
     var body: some View {
         ZStack {
-            AsyncImage(url: URL(string: url)) { image in
-                image
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: 45, height: 55)
-                    .clipped()
-                    .cornerRadius(7)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 7)
-                            .stroke(Color.ffTertiary, lineWidth: 1)
-                            .frame(width: 45, height: 55)
-                    )
-            } placeholder: {
-                ProgressView()
-            }
+            vm.imageLoader.img(url: URL(string: url)!) { image in
+                image.resizable()
+            }.scaledToFill()
+                .frame(width: 45, height: 55)
+                .clipped()
+                .cornerRadius(7)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 7)
+                        .stroke(Color.ffTertiary, lineWidth: 1)
+                        .frame(width: 45, height: 55)
+                )
 
             Text("\(getDay(date: date))")
                 .fontWeight(.heavy)
@@ -86,7 +82,7 @@ struct CalendarCollectionViewCell: View {
                 let dayFormatted = getDayformatted(date: date)
                 vm.get_post_from_day(day: dayFormatted) { postID in
                     if postID.count > 0 {
-                        print(dayFormatted)
+                        print("Post found for \(dayFormatted)")
                         vm.firebase_get_post(postID: postID) { post in
                             self.url = post.images[0][0]
                             print("Showing image for \(dayFormatted): \(post.images[0][0])")
