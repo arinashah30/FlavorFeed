@@ -103,14 +103,16 @@ struct PostView: View {
                                     }
                                     Spacer()
                                     VStack {
-                                        Button {
-                                            isShowingSheet = true
-                                        } label: {
-                                            Image("fork_and_knife")
-                                                .resizable()
-                                                .aspectRatio(contentMode: .fit)
-                                                .frame(width: 35)
-                                                .foregroundColor(.ffTertiary)
+                                        if (post.recipes[tabSelection] != nil) {
+                                            Button {
+                                                isShowingSheet = true
+                                            } label: {
+                                                Image("fork_and_knife")
+                                                    .resizable()
+                                                    .aspectRatio(contentMode: .fit)
+                                                    .frame(width: 35)
+                                                    .foregroundColor(.ffTertiary)
+                                            }
                                         }
                                         
                                         
@@ -144,10 +146,9 @@ struct PostView: View {
                             .padding([.leading, .trailing] , 20)
                             .tag(index)
                             .sheet(isPresented: $isShowingSheet) {
-                                if (index <= post.recipes.endIndex) { //temporary fix need to make sure there's always something in recipe array
-                                    RecipeSheetView(recipe: post.recipes[index], isShowingSheet: $isShowingSheet)
+                                if let recipe = post.recipes[tabSelection] {
+                                    RecipeSheetView(recipe: recipe, isShowingSheet: $isShowingSheet)
                                 }
-                                
                             }
                     }.frame(height: geo.size.height * 0.69)
                     

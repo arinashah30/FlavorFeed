@@ -251,23 +251,24 @@ class ViewModel: ObservableObject {
                     
                     self?.getFriend(userID: data["userID"] as! String) { friend in
                         self?.get_post_comments(postID: postID, completion: { comments in
-                            
-                            print("FOUND FRIEND \(friend.name)")
-                            posts.append(Post(
-                                id: document.documentID,
-                                userID: data["userID"] as! String,
-                                images: data["images"] as! [String],
-                                date: data["date"] as! [String],
-                                day: data["day"] as! String,
-                                comments: comments,
-                                caption: data["caption"] as? [String] ?? [],
-                                likes: data["likes"] as? [String] ?? [],
-                                locations: data["location"] as? [String] ?? [],
-                                recipes: self?.convertToRecipe(postID: postID) ?? [],
-                                friend: friend
-                            ))
-                            // Notify that this specific task is complete
-                            dispatchGroup.leave()
+                            self?.get_post_recipes(postID: postID, completion: { recipes in
+                                print("FOUND FRIEND \(friend.name)")
+                                posts.append(Post(
+                                    id: document.documentID,
+                                    userID: data["userID"] as! String,
+                                    images: data["images"] as! [String],
+                                    date: data["date"] as! [String],
+                                    day: data["day"] as! String,
+                                    comments: comments,
+                                    caption: data["caption"] as? [String] ?? [],
+                                    likes: data["likes"] as? [String] ?? [],
+                                    locations: data["location"] as? [String] ?? [],
+                                    recipes: recipes,
+                                    friend: friend
+                                ))
+                                // Notify that this specific task is complete
+                                dispatchGroup.leave()
+                            })
                         })
                     }
                 } else {
@@ -353,11 +354,12 @@ class ViewModel: ObservableObject {
             } else {
                 
                 guard let doc = document, doc.exists else { print("doc not found"); return }
-                    print(doc.documentID)
-                    if let data = doc.data() {
-                        self.getFriend(userID: data["userID"] as! String) { friend in
-                            print("3")
-                            self.get_post_comments(postID: postID) { comments in
+                print(doc.documentID)
+                if let data = doc.data() {
+                    self.getFriend(userID: data["userID"] as! String) { friend in
+                        print("3")
+                        self.get_post_comments(postID: postID) { comments in
+                            self.get_post_recipes(postID: postID) { recipes in
                                 let post = Post(id: doc.documentID,
                                                 userID: data["userID"] as! String,
                                                 images: data["images"] as! [String],
@@ -367,11 +369,12 @@ class ViewModel: ObservableObject {
                                                 caption: data["caption"] as? [String] ?? [],
                                                 likes: data["likes"] as? [String] ?? [],
                                                 locations: data["location"] as? [String] ?? [],
-                                                recipes: self.convertToRecipe(postID: doc.documentID),
+                                                recipes: recipes,
                                                 friend: friend
                                 )
                                 completion(post)
                             }
+                        }
                         
                     }
                 }
@@ -396,6 +399,24 @@ class ViewModel: ObservableObject {
         ) { error in
             if let error = error {
                 print("Error: \(error.localizedDescription)")
+                completion(false)
+            } else {
+                completion(true)
+            }
+        }
+    }
+    
+    func firebase_add_recipe(postID: String, recipe: Recipe, recipe_id: String, completion: @escaping (Bool) -> Void) {
+        self.db.collection("POSTS").document(postID).collection("RECIPES").document(recipe_id).setData(
+            ["id": recipe_id,
+             "title": recipe.title,
+             "link": recipe.link ?? "",
+             "ingredients": recipe.ingredients ?? "",
+             "directions": recipe.directions ?? ""
+            ] as [String: Any]
+        ) { error in
+            if let error = error {
+                print("Error adding recipe: \(error.localizedDescription)")
                 completion(false)
             } else {
                 completion(true)
@@ -429,36 +450,8 @@ class ViewModel: ObservableObject {
         }
     }
     
-    func firebase_create_post(userID: String, selfie: String, foodPic: String, caption: String, recipe: String, location: String) {
-        
-        let date = Date()
-        
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "MM-dd-yyyy HH:mm:ss"
-        let dateFormatted = dateFormatter.string(from: date) // get string from date
-        
-        
-        let data = ["images" : selfie + " " + foodPic,
-                    "caption" : caption,
-                    "recipes" : recipe,
-                    "date" : dateFormatted,
-                    "likes" : [],
-                    "location" : location]
-        as [String : Any]
-        
-        let docId = UUID()
-        self.db.collection("POSTS").document(docId.uuidString).setData(data) { error in
-            if let error = error {
-                print("Error: \(error.localizedDescription) ")
-                return
-            } else {
-                self.db.collection("USERS").document(userID).updateData(["myPosts": FieldValue.arrayUnion([docId.uuidString])])
-            }
-            
-        }
-    }
     
-    func publish_post(caption: String, location: String, recipe: Recipe, completion: @escaping (Bool) -> Void) {
+    func publish_post(caption: String, location: String, recipe: Recipe?, completion: @escaping (Bool) -> Void) {
         let date = Date()
         // add logic to check if first post of today
         // for now just create new document
@@ -484,13 +477,15 @@ class ViewModel: ObservableObject {
                 
                 if let foodPic = url_1 {
                     if let selfie = url_2 {
+                        let recipeId = (recipe != nil) ? UUID().uuidString : ""
+                        
                         let docId = UUID()
                         
                         let data = ["id" : docId.uuidString,
                                     "userID" : self.current_user!.id,
                                     "images" : ["\(foodPic) \(selfie)"],
                                     "caption" : [caption],
-                                    "recipes" : [""],
+                                    "recipes" : [recipeId],
                                     "date" : [dateFormatted],
                                     "day" : dayFormatted,
                                     "likes" : [],
@@ -498,12 +493,12 @@ class ViewModel: ObservableObject {
                                     "location" : [location]]
                         as [String : Any]
                         
-                        if self.my_post_today != nil {
+                        if let myPostToday = self.my_post_today {
                             self.firebase_add_entry_post(
                                 selfie: selfie.absoluteString,
                                 foodPic: foodPic.absoluteString,
                                 caption: caption,
-                                recipe: "RECIPE STRING REPLACE SOON",
+                                recipe: recipeId,
                                 location: location) { done in
                                     // if entry upload is done, show camera view sheet should close (false)
                                     completion(!done)
@@ -517,6 +512,12 @@ class ViewModel: ObservableObject {
                                     self.db.collection("USERS").document(self.current_user!.id).updateData(["myPosts": FieldValue.arrayUnion([docId.uuidString])])
                                     completion(false)
                                 }
+                            }
+                        }
+                        
+                        if let recipe = recipe {
+                            self.firebase_add_recipe(postID: self.my_post_today?.id ?? docId.uuidString, recipe: recipe, recipe_id: recipeId) {_ in
+                                print("Added recipe \(recipeId) to postID: \(docId.uuidString)")
                             }
                         }
                     }
@@ -555,14 +556,76 @@ class ViewModel: ObservableObject {
                 print("Error in the get post comments: \(error.localizedDescription)")
             } else {
                 print("\(documents!.count) comments found")
+                print()
                 for document in documents!.documents {
                     let data = document.data()
-                    let comment = Comment(id: data["id"] as! String, userID: data["user_id"] as! String, text: data["text"] as! String, date: self.dateFormatter.date(from: data["date"] as! String)!, profilePicture: data["profilePicture"] as! String)
-                    comments.append(comment)
+                    print("doc ID: \(document.documentID)")
+                    do {
+                        let comment = try Comment(id: data["id"] as! String, userID: data["user_id"] as! String, text: data["text"] as! String, date: self.dateFormatter.date(from: data["date"] as! String)!, profilePicture: data["profilePicture"] as! String)
+                        comments.append(comment)
+                    } catch {
+                        print(error.localizedDescription)
+                    }
+                    
                 }
             }
             completion(comments)
         }
+    }
+    
+    func get_post_recipes(postID: String, completion: @escaping ([Recipe?]) -> Void) {
+            var recipeIDs: [String] = []
+
+            let idRef = self.db.collection("POSTS").document(postID)
+            idRef.getDocument { (document, error) in
+                if let error = error {
+                    print("Error getting recipes \(error.localizedDescription)")
+                    completion([])
+                } else {
+                    if let doc = document, let data = doc.data() {
+                        recipeIDs = data["recipes"] as? [String] ?? []
+                    }
+                    let dispatchGroup = DispatchGroup()
+                    var recipes: [Recipe?] = Array(repeating: nil, count: recipeIDs.count)
+
+                    for (index, recipeID) in recipeIDs.enumerated() {
+                        dispatchGroup.enter()
+
+                        if recipeID.isEmpty {
+                            dispatchGroup.leave()
+                        } else {
+                            let recipesRef = self.db.collection("POSTS").document(postID).collection("RECIPES").document(recipeID)
+                            recipesRef.getDocument { (document, error) in
+                                defer {
+                                    dispatchGroup.leave()
+                                }
+
+                                if let error = error {
+                                    print("Error in getting recipe with id: \(recipeID)")
+                                } else {
+                                    if let doc = document, let data = doc.data() {
+                                        let recipe = Recipe(
+                                            id: data["id"] as? String ?? "",
+                                            title: data["title"] as? String ?? "",
+                                            link: (data["link"] as? String)?.isEmpty == true ? nil : data["link"] as? String,
+                                            ingredients: (data["ingredients"] as? [String])?.isEmpty == true ? nil : data["ingredients"] as? [String],
+                                            directions: (data["directions"] as? String)?.isEmpty == true ? nil : data["directions"] as? String
+                                        )
+                                        recipes[index] = recipe
+                                    } else {
+                                        print("Error getting data for recipe with id \(recipeID)")
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    dispatchGroup.notify(queue: .main) {
+                        completion(recipes)
+                    }
+                }
+        }
+
     }
     
     
@@ -614,7 +677,7 @@ class ViewModel: ObservableObject {
                         var recipeArr = []
                         recipeArr = data["recipes"] as! [String]
                         recipeArr.append(recipe)
-                        self.db.collection("POSTS").document(id).updateData(["recipe": recipeArr])
+                        self.db.collection("POSTS").document(id).updateData(["recipes": recipeArr])
                         
                         completion(true)
                     } else {
@@ -785,7 +848,7 @@ class ViewModel: ObservableObject {
         
         self.db.collection("POSTS").document(postID).collection("COMMENTS").getDocuments(completion: { [weak self] documents, error in
             if let error = error {
-                self?.errorText = "Cannot get list of recipes from Firebase."
+                self?.errorText = "Cannot get list of comments from Firebase."
             } else {
                 for document in documents!.documents {
                     comment?.append(Comment(id: document.documentID,
