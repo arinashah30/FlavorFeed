@@ -68,25 +68,45 @@ struct mapAnnotationView: View {
 
 struct MapView: View {
     //    @State var region: MKCoordinateRegion
-    @State var restaurants: [CLLocationCoordinate2D]
+    @StateObject var locationManager = LocationManager()
+    
+    @ObservedObject var vm: ViewModel
+    @State private var posts: [Post] = [Post]()
+    @Binding var showFullMap: Bool
+    
+    init(vm: ViewModel, showFullMap: Binding<Bool>) {
+        self.vm = vm
+        self._showFullMap = showFullMap
+    }
+    
     var body: some View{
         VStack{
             HStack {
+                Button(action: {
+                    self.showFullMap.toggle()
+                }, label: {
+                    Image(systemName: "chevron.left")
+                        .padding()
+                })
                 Text("Your Restaurants")
                     .font(.title2)
                     .padding()
                 Spacer()
-                Image(systemName: "person.2.fill")
-                    .padding()
-            }
+            }.foregroundColor(.black)
+            
             Map() {
-                ForEach(restaurants, id: \.self) { restaurant in
-                    Annotation("", coordinate: restaurant) {
-                        mapAnnotationView(imageName: "waffles")
+                UserAnnotation()
+                ForEach(self.posts, id: \.self) { post in
+                    ForEach(0..<post.locations.count) { entry in
+                        
                     }
                 }
             }
-        }
+                     }.onAppear() {
+                    vm.fetchPosts(postIDs: vm.current_user!.myPosts) { posts in
+                        self.posts = posts
+                    }
+                }
     }
 }
 
@@ -94,7 +114,7 @@ struct MapView_Previews: PreviewProvider {
     static var previews: some View {
         VStack {
             MyView()
-            MapView(restaurants: [])
+            MapView(vm: ViewModel(), showFullMap: Binding.constant(true))
         }
     }
 }

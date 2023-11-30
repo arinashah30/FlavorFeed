@@ -41,12 +41,22 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
 
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         locationStatus = status
-        print(#function, statusString)
+        //print(#function, statusString)
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.last else { return }
         lastLocation = location
-        print(#function, location)
+       // print(#function, location)
+    }
+    
+    func get_my_location() -> CLLocationCoordinate2D? {
+        if let lat = self.lastLocation?.coordinate.latitude {
+            if let long = self.lastLocation?.coordinate.longitude {
+                let my_location = CLLocationCoordinate2D(latitude: lat, longitude: long)
+                return my_location
+            }
+        }
+        return nil
     }
 }

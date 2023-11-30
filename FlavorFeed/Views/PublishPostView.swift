@@ -11,17 +11,18 @@ struct PublishPostView: View {
     @ObservedObject var vm: ViewModel
     
     @Binding var showCameraViewSheet: Bool
+    @State private var showPickRestaurantSheet = false
     @State private var showSelfieFirst = false
     
     @State private var caption: String = ""
+    @State private var restaurant: Place?
     
     var body: some View {
         VStack {
             ZStack(alignment: .center) {
                 HStack {
                     Button(action: {
-                        vm.bothImagesCaptured = false
-                        
+                        self.showCameraViewSheet = false
                     }, label: {
                         Image(systemName: "chevron.left")
                             .frame(width: 15.07, height: 8.64)
@@ -155,7 +156,7 @@ struct PublishPostView: View {
                     }
                     
                     Button {
-                        //
+                        self.showPickRestaurantSheet.toggle()
                     } label: {
                         HStack {
                             Image("storefront")
@@ -163,7 +164,7 @@ struct PublishPostView: View {
                                 .aspectRatio(contentMode: .fill)
                                 .frame(width: 20, height: 20)
                             
-                            Text("Add Restaurant")
+                            Text(restaurant == nil ? "Add Restaurant" : restaurant!.name)
                                 .foregroundStyle(Color.ffSecondary)
                                 .font(.system(size: 14))
                         }
@@ -177,7 +178,7 @@ struct PublishPostView: View {
                 
                 Button(action: {
                     // PUBLISH POST
-                    vm.publish_post(caption: caption, location: "Atlanta, GA", recipe: Recipe(id: "1", title: "Recipe")) { close in
+                    vm.publish_post(caption: caption, location: restaurant?.name ?? "Atlanta, GA", recipe: Recipe(id: "1", title: "Recipe")) { close in
                         print("Recipe uploaded: \((!close).description)")
                         if !close {
                             vm.refreshFeed() {
@@ -208,11 +209,15 @@ struct PublishPostView: View {
                 })
             }
             Spacer()
-        }.onDisappear() {
+        }
+        .onDisappear() {
             vm.photo_1 = nil
             vm.photo_2 = nil
             vm.bothImagesCaptured = false
-        }
+        }.sheet(isPresented: $showPickRestaurantSheet, content: {
+            PickRestaurantView(vm: vm, restaurant: $restaurant)
+                
+        })
     }
     
     func getBigImage() -> UIImage {

@@ -13,6 +13,7 @@ struct SelfProfileView: View {
     @Binding var tabSelection: Tabs
     @ObservedObject var vm: ViewModel
     @State var showFullCalendar = false
+    @State var showFullMap = false
 
     var body: some View {
         VStack(alignment: .center) {
@@ -60,11 +61,19 @@ struct SelfProfileView: View {
                     .buttonStyle(PlainButtonStyle())
                     .padding(.top, 20)
                     
-                    MapView(restaurants: [CLLocationCoordinate2D(latitude: 43, longitude: 100), CLLocationCoordinate2D(latitude: -10, longitude: 30), CLLocationCoordinate2D(latitude: 20, longitude: -50), CLLocationCoordinate2D(latitude: 17, longitude: -40)])
-                        .frame(minHeight: 400)
+                    
+                    Button(action: {
+                        self.showFullMap.toggle()
+                    }, label: {
+                        MapView(vm: vm, showFullMap: $showFullMap)
+                            .frame(minHeight: 400)
+                    })
                 }
                     }.fullScreenCover(isPresented: $showFullCalendar, content: {
                         FullCalendarView(vm: vm, showFullCalendar: $showFullCalendar)
+                    })
+                    .fullScreenCover(isPresented: $showFullMap, content: {
+                        MapView(vm: vm, showFullMap: $showFullMap)
                     })
                 
             }
