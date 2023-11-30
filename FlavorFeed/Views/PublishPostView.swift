@@ -18,6 +18,7 @@ struct PublishPostView: View {
     @State private var isShowingRecipeForm: Bool = false
     @State private var recipe: Recipe?
     @State private var restaurant: Place?
+    @State private var pinned: Bool = false
     
     var body: some View {
         VStack {
@@ -95,12 +96,12 @@ struct PublishPostView: View {
             VStack(spacing: -15) {
                 HStack {
                     Button {
-                        //
+                        pinned.toggle()
                     } label: {
                         HStack {
-                            Image(systemName: "pin.fill")
+                            Image(systemName: pinned ? "pin.fill" : "pin")
                                 .font(.system(size: 15))
-                            Text("Pin Post")
+                            Text(pinned ? "Pinned" : "Pin Post")
                         }.foregroundStyle(Color.ffSecondary)
                             .font(.system(size: 14))
                         
@@ -120,7 +121,7 @@ struct PublishPostView: View {
                                 .aspectRatio(contentMode: .fill)
                                 .frame(width: 15, height: 15)
                             
-                            Text("Moraine Lake, Alberta")
+                            Text("Atlanta, Georgia")
                                 .foregroundStyle(Color.ffSecondary)
                                 .font(.system(size: 14))
                         }
@@ -186,7 +187,7 @@ struct PublishPostView: View {
                     } else {
                         locationString = "Atlanta, GA"
                     }
-                    vm.publish_post(caption: caption, location: locationString, recipe: recipe) { close in
+                    vm.publish_post(caption: caption, location: locationString, recipe: recipe, pinned: pinned) { close in
                         print("Recipe uploaded: \((!close).description)")
                         if !close {
                             vm.refreshFeed() {
@@ -217,6 +218,8 @@ struct PublishPostView: View {
                 })
             }
             Spacer()
+        }.onAppear {
+            self.pinned = vm.current_user?.pins.contains(vm.my_post_today?.id ?? "") ?? false
         }
         .onDisappear() {
             vm.photo_1 = nil
