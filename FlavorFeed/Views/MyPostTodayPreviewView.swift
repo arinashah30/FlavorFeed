@@ -65,7 +65,7 @@ struct MyPostTodayPreviewView: View {
                                     }
                                     Spacer()
                                 }
-                                if (post.comments.count > 0) {
+                                if (post.comments.count > 0 && i == index.myPostIndex) {
                                     VStack {
                                         Spacer()
                                         ZStack(alignment: .center) {

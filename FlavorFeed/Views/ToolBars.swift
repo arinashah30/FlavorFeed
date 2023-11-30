@@ -44,10 +44,23 @@ struct BottomBar: View {
                     .resizable()
                     .frame(width: 57.77, height: 57.77)
                     .foregroundStyle(Color.ffPrimary)
-            }
+            }.disabled(
+                disableCamera()
+            )
             
         }.fullScreenCover(isPresented: $showCameraViewSheet) {
             CameraView(vm: vm, showCameraViewSheet: $showCameraViewSheet)
+        }
+    }
+    func disableCamera() -> Bool {
+        if let my_post = vm.my_post_today {
+            if my_post.images.count >= 3 {
+                return true
+            } else {
+                return false
+            }
+        } else {
+            return false
         }
     }
 }
