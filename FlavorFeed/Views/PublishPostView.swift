@@ -6,14 +6,17 @@
 //
 
 import SwiftUI
+import CoreLocation
+
 
 struct PublishPostView: View {
     @ObservedObject var vm: ViewModel
+    @ObservedObject var locationManager = LocationManager()
     
     @Binding var showCameraViewSheet: Bool
     @State private var showPickRestaurantSheet = false
     @State private var showSelfieFirst = false
-    
+    @State private var locationText = "Atlanta, GA"
     @State private var caption: String = ""
     @State private var isShowingRecipeForm: Bool = false
     @State private var recipe: Recipe?
@@ -121,7 +124,7 @@ struct PublishPostView: View {
                                 .aspectRatio(contentMode: .fill)
                                 .frame(width: 15, height: 15)
                             
-                            Text("Atlanta, Georgia")
+                            Text(self.locationText)
                                 .foregroundStyle(Color.ffSecondary)
                                 .font(.system(size: 14))
                         }
@@ -185,7 +188,7 @@ struct PublishPostView: View {
                     if let restaurant = restaurant {
                         locationString = "\(restaurant.name)|||||\(restaurant.link)"
                     } else {
-                        locationString = "Atlanta, GA"
+                        locationString = locationText
                     }
                     vm.publish_post(caption: caption, location: locationString, recipe: recipe, pinned: pinned) { close in
                         print("Recipe uploaded: \((!close).description)")
@@ -221,6 +224,9 @@ struct PublishPostView: View {
         }.onAppear {
             self.pinned = vm.current_user?.pins.contains(vm.my_post_today?.id ?? "") ?? false
         }
+        .task {
+            await get_my_location_description()
+        }
         .onDisappear() {
             vm.photo_1 = nil
             vm.photo_2 = nil
@@ -241,6 +247,22 @@ struct PublishPostView: View {
     
     func getSmallImage() -> UIImage {
         return showSelfieFirst ? vm.photo_1! : vm.photo_2!
+    }
+    
+    func get_my_location_description() async {
+        let geocoder = locationManager.geocoder
+        if let location = locationManager.lastLocation {
+            do {
+                let place = try await geocoder.reverseGeocodeLocation(location)
+                
+                if let city = place[0].locality, let state = place[0].administrativeArea {
+                    self.locationText = "\(city), \(state)"
+                    print("\(city), \(state)")
+                }
+            } catch {
+                print(error)
+            }
+        }
     }
 }
 
