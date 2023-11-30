@@ -36,14 +36,13 @@ struct PostView: View {
     }
     
     var body: some View {
-        GeometryReader { geo in
             VStack {
                 HStack {
                     vm.imageLoader.img(url: URL(string: post.friend!.profilePicture)!) { image in
                         image
                             .resizable()
                     }.aspectRatio(contentMode: .fill)
-                        .frame(width: geo.size.height * 0.08, height: geo.size.height * 0.08)
+                        .frame(width: UIScreen.main.bounds.size.width * 0.08, height: UIScreen.main.bounds.size.height * 0.08)
                         .clipShape(Circle())
                     
                     VStack (alignment: .leading) {
@@ -76,8 +75,7 @@ struct PostView: View {
                             vm.imageLoader.img(url: URL(string: bigImage(index))!) { image in
                                 image.resizable()
                             }.aspectRatio(contentMode: .fill)
-                                .frame(width: geo.size.width*0.98, height: geo.size.height*0.66)
-                                .clipped()
+                                .frame(width: UIScreen.main.bounds.size.width*0.98, height: UIScreen.main.bounds.size.height*0.66)
                             
                             
                             VStack {
@@ -89,7 +87,7 @@ struct PostView: View {
                                             vm.imageLoader.img(url: URL(string: smallImage(index))!) { image in
                                                 image.resizable()
                                             }.aspectRatio(contentMode: .fill)
-                                                .frame(width: geo.size.width * 0.30, height: geo.size.height * 0.2)
+                                                .frame(width: UIScreen.main.bounds.size.width * 0.30, height: UIScreen.main.bounds.size.height * 0.2)
                                                 .background(.black)
                                                 .clipped()
                                                 .cornerRadius(10)
@@ -134,7 +132,7 @@ struct PostView: View {
                                     if (!post.caption[index].isEmpty) {
                                         Text(post.caption[index])
                                             .background(RoundedRectangle(cornerRadius: 10.0)
-                                                .frame(width: geo.size.width * 0.7, height: geo.size.height * 0.05)
+                                                .frame(width: UIScreen.main.bounds.size.width * 0.7, height: UIScreen.main.bounds.size.height * 0.05)
                                                 .foregroundColor(.ffTertiary))
                                             .padding(20)
                                     }
@@ -150,10 +148,10 @@ struct PostView: View {
                                     RecipeSheetView(recipe: recipe, isShowingSheet: $isShowingSheet)
                                 }
                             }
-                    }.frame(height: geo.size.height * 0.69)
+                    }.frame(height: UIScreen.main.bounds.size.height * 0.69)
                     
                 }.tabViewStyle(.page).indexViewStyle(.page(backgroundDisplayMode: .always))
-                    .frame(height: geo.size.height * 0.725)
+                    .frame(height: UIScreen.main.bounds.size.height * 0.725)
                     .onAppear {
                         setupAppearance()
                     }
@@ -220,9 +218,6 @@ struct PostView: View {
                             vm.firebase_add_comment(postID: post.id, text: myNewComment, date: Date()) { uploaded in
                                 if uploaded {
                                     myNewComment = ""
-                                    vm.refreshFeed {
-                                        // do nothing
-                                    }
                                 }
                             }
                         } label: {
@@ -241,7 +236,6 @@ struct PostView: View {
                 .padding(.top, -7)
                 Spacer()
             }.frame(maxHeight: .infinity)
-        }
     }
     
     func setupAppearance() {

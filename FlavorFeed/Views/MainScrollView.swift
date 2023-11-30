@@ -11,10 +11,10 @@ struct MainScrollView: View {
     @ObservedObject var vm: ViewModel
     @Binding var tabSelection: Tabs
     @StateObject var myPostVars = MyPostTodayPreviewVariables()
+    @State private var showMyPostView = false
     
     
     var body: some View {
-        GeometryReader { geometry in
             ZStack {
                 VStack {
                     TopBar(tabSelection: $tabSelection)
@@ -25,22 +25,31 @@ struct MainScrollView: View {
                                 .foregroundStyle(Color.ffSecondary)
                                 .underline()
                             MyPostTodayPreviewView(post: myPost, vm: vm)
-                            Text(myPost.caption[myPostVars.myPostIndex])
-                                .font(.system(size: 12, weight: .semibold))
-                                .foregroundStyle(Color.ffSecondary)
-                            Text(myPost.locations[myPostVars.myPostIndex])
-                                .font(.system(size: 12, weight: .none))
-                                .foregroundStyle(Color.gray)
+                            Button {
+                                self.showMyPostView.toggle()
+                            } label: {
+                                VStack {
+                                    Text(myPost.caption[myPostVars.myPostIndex])
+                                        .font(.system(size: 12, weight: .semibold))
+                                        .foregroundStyle(Color.ffSecondary)
+                                    Text(myPost.locations[myPostVars.myPostIndex])
+                                        .font(.system(size: 12, weight: .none))
+                                        .foregroundStyle(Color.gray)
+                                }
+                            }
+                            
+                            
                         } else {
                             Text("You have not posted yet today.")
                         }
                         
                         ForEach(vm.todays_posts, id: \.self) { post in
                             PostView(vm: vm, post: post)
-                                .frame(idealWidth: geometry.size.width, minHeight: 700, idealHeight: 750, maxHeight: .infinity)
+                            
                         }
-                        Spacer()
-                            .frame(height: geometry.size.height * 0.5)
+                        Rectangle()
+                            .frame(height: UIScreen.main.bounds.size.height * 0.2)
+                            .background(Color.clear)
                     }
                     .refreshable {
                         DispatchQueue.main.async {
@@ -55,7 +64,8 @@ struct MainScrollView: View {
                     BottomBar(messagesRemaing: (3 - (vm.my_post_today?.images.count ?? 0)), vm: vm).frame(height: 100).edgesIgnoringSafeArea(.bottom)
                 }.edgesIgnoringSafeArea(.bottom).frame(maxHeight: .infinity)
                 
-            }
+            }.fullScreenCover(isPresented: $showMyPostView) {
+                MyPostView(vm: vm, showMyPostView: $showMyPostView)
         }.environmentObject(myPostVars)
             .ignoresSafeArea(.keyboard, edges: .bottom)
     }
