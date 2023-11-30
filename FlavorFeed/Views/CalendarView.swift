@@ -14,9 +14,6 @@ struct CalendarView: View {
     @State var posts: [Post] = []
     private var dates = [Date]()
     
-    @State var showPostViewSheet = false
-    @State var selectedPost: Post? = nil
-    
     init(vm: ViewModel, user: User) {
         self.vm = vm
         self.user = user
@@ -26,38 +23,35 @@ struct CalendarView: View {
     }
     
     var body: some View {
-            VStack {
-                HStack {
-                    Text("Your Memories")
-                        .font(.title2)
-                    Spacer()
-                    Image(systemName: "lock.fill")
-                        .foregroundColor(.gray)
-                        .font(.system(size: 13))
-                    Text("Only visible to you")
-                        .foregroundColor(.gray)
-                        .font(.system(size: 15))
-                }
-                HStack (alignment: .top) {
-                    VStack {
-                        LazyVGrid(columns: Array(repeating: GridItem(), count: 7)){
-                            ForEach(dates, id: \.self) { date in
-                                CalendarCollectionViewCell(date: date, vm: vm, showPostViewSheet: $showPostViewSheet, selectedPost: $selectedPost)
-                            }
+        VStack {
+            HStack {
+                Text("Your Memories")
+                    .font(.title2)
+                Spacer()
+                Image(systemName: "lock.fill")
+                    .foregroundColor(.gray)
+                    .font(.system(size: 13))
+                Text("Only visible to you")
+                    .foregroundColor(.gray)
+                    .font(.system(size: 15))
+            }
+            HStack (alignment: .top) {
+                VStack {
+                    LazyVGrid(columns: Array(repeating: GridItem(), count: 7)){
+                        ForEach(dates, id: \.self) { date in
+                            CalendarCollectionViewCell(date: date, vm: vm)
                         }
                     }
                 }
-            }.sheet(item: $selectedPost, content: { post in
-                    Text(post.day)
-                // my post view (REPLACE)
-            })
-            .padding([.leading, .trailing, .top], 20)
-            .onAppear {
-                vm.fetchPosts(postIDs: user.myPosts) { posts in
-                    self.posts = posts
-                }
             }
         }
+        .padding([.leading, .trailing, .top], 20)
+        .onAppear {
+            vm.fetchPosts(postIDs: user.myPosts) { posts in
+                self.posts = posts
+            }
+        }
+    }
 }
 
 struct CalendarCollectionViewCell: View {
@@ -66,34 +60,24 @@ struct CalendarCollectionViewCell: View {
     @State var url = "https://imageio.forbes.com/specials-images/imageserve/5ed6636cdd5d320006caf841/0x0.jpg?format=jpg&height=900&width=1600&fit=bounds"
     @State var post: Post? = nil
     
-    @Binding var showPostViewSheet: Bool
-    @Binding var selectedPost: Post?
-    
     var body: some View {
-        Button {
-            print(post)
-            self.selectedPost = post
-            print(self.selectedPost)
-            self.showPostViewSheet = true
-        } label: {
-            ZStack {
-                vm.imageLoader.img(url: URL(string: url)!) { image in
-                    image.resizable()
-                }.scaledToFill()
-                    .frame(width: 45, height: 55)
-                    .clipped()
-                    .cornerRadius(7)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 7)
-                            .stroke(Color.ffTertiary, lineWidth: 1)
-                            .frame(width: 45, height: 55)
-                    )
-
-                Text("\(getDay(date: date))")
-                    .fontWeight(.heavy)
-                    .foregroundStyle(.white)
-
-            }
+        ZStack {
+            vm.imageLoader.img(url: URL(string: url)!) { image in
+                image.resizable()
+            }.scaledToFill()
+                .frame(width: 45, height: 55)
+                .clipped()
+                .cornerRadius(7)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 7)
+                        .stroke(Color.ffTertiary, lineWidth: 1)
+                        .frame(width: 45, height: 55)
+                )
+            
+            Text("\(getDay(date: date))")
+                .fontWeight(.heavy)
+                .foregroundStyle(.white)
+            
         }
         .onAppear() {
             DispatchQueue.main.async {

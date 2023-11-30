@@ -15,6 +15,9 @@ struct CalendarItemView: View {
     @State var url = "https://imageio.forbes.com/specials-images/imageserve/5ed6636cdd5d320006caf841/0x0.jpg?format=jpg&height=900&width=1600&fit=bounds" // black square
     
     
+    @State var showPostViewSheet = false
+    @State var post: Post? = nil
+    
     init(date: Date, vm: ViewModel, frame: CGFloat) {
         self.date = date
         self.vm = vm
@@ -24,12 +27,19 @@ struct CalendarItemView: View {
     var body: some View {
         ZStack(alignment: .topLeading){
             
-            vm.imageLoader.img(url: URL(string: url)!) { image in
-                image.resizable()
+            Button {
+                // oopen mypost view
+                self.showPostViewSheet = true
+            } label: {
+                vm.imageLoader.img(url: URL(string: url)!) { image in
+                    image.resizable()
+                }
+                .aspectRatio(contentMode: .fill)
+                .frame(width: frame, height: frame)
+                .clipped()
+            }.fullScreenCover(isPresented: $showPostViewSheet) {
+                MyPostView(vm: vm, showMyPostView: $showPostViewSheet, post: post!)
             }
-            .aspectRatio(contentMode: .fill)
-            .frame(width: frame, height: frame)
-            .clipped()
             
             if post_id != nil {
                 HStack {
@@ -53,6 +63,7 @@ struct CalendarItemView: View {
                         self.post_id = postID
                         print(getDayformatted(date: date))
                         vm.firebase_get_post(postID: postID) { post in
+                            self.post = post
                             self.url = post.images[0][0]
                         }
                     }

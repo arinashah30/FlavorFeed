@@ -93,9 +93,8 @@ struct MapView: View {
                          Task {
                              await self.populateAllPlaces(posts: posts)
                          }
-                     }.sheet(isPresented: $showPostSheet, content: {
-                         Text("My Post")
-                         // view my post
+                     }.sheet(item: $selectedPost, content: { post in
+                         MyPostView(vm: vm, showMyPostView: $showPostSheet, post: post)
                      })
     }
     func populateAllPlaces(posts: [Post]) async {

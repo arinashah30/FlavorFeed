@@ -65,7 +65,7 @@ struct MainScrollView: View {
                 }.edgesIgnoringSafeArea(.bottom).frame(maxHeight: .infinity)
                 
             }.fullScreenCover(isPresented: $showMyPostView) {
-                MyPostView(vm: vm, showMyPostView: $showMyPostView)
+                MyPostView(vm: vm, showMyPostView: $showMyPostView, post: vm.my_post_today)
         }.environmentObject(myPostVars)
             .ignoresSafeArea(.keyboard, edges: .bottom)
     }
