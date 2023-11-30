@@ -407,9 +407,9 @@ class ViewModel: ObservableObject {
                     post.id == postID
                 }
                 if let index = postIndex {
-                        print("APPENDING COMMENTS")
+                    print("APPENDING COMMENTS")
                     self.todays_posts[index].comments.append(Comment(id: comment_id.uuidString, userID: self.current_user!.id, text: text, date: date, profilePicture: self.current_user!.profilePicture))
-                        completion(true)
+                    completion(true)
                 } else {
                     if let my_post = self.my_post_today {
                         if my_post.id == postID {
@@ -428,392 +428,400 @@ class ViewModel: ObservableObject {
             }
         }
     }
-        
-        func firebase_add_recipe(postID: String, recipe: Recipe, recipe_id: String, completion: @escaping (Bool) -> Void) {
-            self.db.collection("POSTS").document(postID).collection("RECIPES").document(recipe_id).setData(
-                ["id": recipe_id,
-                 "title": recipe.title,
-                 "link": recipe.link ?? "",
-                 "ingredients": recipe.ingredients ?? "",
-                 "directions": recipe.directions ?? ""
-                ] as [String: Any]
-            ) { error in
-                if let error = error {
-                    print("Error adding recipe: \(error.localizedDescription)")
-                    completion(false)
-                } else {
-                    completion(true)
-                }
+    
+    func firebase_add_recipe(postID: String, recipe: Recipe, recipe_id: String, completion: @escaping (Bool) -> Void) {
+        self.db.collection("POSTS").document(postID).collection("RECIPES").document(recipe_id).setData(
+            ["id": recipe_id,
+             "title": recipe.title,
+             "link": recipe.link ?? "",
+             "ingredients": recipe.ingredients ?? "",
+             "directions": recipe.directions ?? ""
+            ] as [String: Any]
+        ) { error in
+            if let error = error {
+                print("Error adding recipe: \(error.localizedDescription)")
+                completion(false)
+            } else {
+                completion(true)
             }
         }
-        
-        func firebase_like_post(post: inout Post, user: String) {
-            let postRef = self.db.collection("POSTS").document(post.id)
-            postRef.updateData([
-                "likes": FieldValue.arrayUnion([user])
-            ]) { error in
-                if let error = error {
-                    print("Error: \(error.localizedDescription)")
-                } else {
-                    // UI Changes
-                }
+    }
+    
+    func firebase_like_post(post: inout Post, user: String) {
+        let postRef = self.db.collection("POSTS").document(post.id)
+        postRef.updateData([
+            "likes": FieldValue.arrayUnion([user])
+        ]) { error in
+            if let error = error {
+                print("Error: \(error.localizedDescription)")
+            } else {
+                // UI Changes
             }
         }
-        
-        func firebase_unlike_post(post: Post, user: String) {
-            let postRef = self.db.collection("POSTS").document(post.id)
-            postRef.updateData([
-                "likes": FieldValue.arrayRemove([user])
-            ]) { error in
-                if let error = error {
-                    print("Error: \(error.localizedDescription)")
-                } else {
-                    // UI Changes
-                }
+    }
+    
+    func firebase_unlike_post(post: Post, user: String) {
+        let postRef = self.db.collection("POSTS").document(post.id)
+        postRef.updateData([
+            "likes": FieldValue.arrayRemove([user])
+        ]) { error in
+            if let error = error {
+                print("Error: \(error.localizedDescription)")
+            } else {
+                // UI Changes
             }
         }
+    }
+    
+    
+    func publish_post(caption: String, location: String, recipe: Recipe?, completion: @escaping (Bool) -> Void) {
+        let date = Date()
+        // add logic to check if first post of today
+        // for now just create new document
         
+        let dateFormatted = dateFormatter.string(from: date) // get string from date
+        let dayFormatted = dayFormatter.string(from: date) // get string from date
         
-        func publish_post(caption: String, location: String, recipe: Recipe?, completion: @escaping (Bool) -> Void) {
-            let date = Date()
-            // add logic to check if first post of today
-            // for now just create new document
-            
-            let dateFormatted = dateFormatter.string(from: date) // get string from date
-            let dayFormatted = dayFormatter.string(from: date) // get string from date
-            
-            self.firebase_get_url_from_image(image: self.photo_1!) { url_1 in
-                if url_1 == nil {
-                    print("Error uploading photo_1")
+        self.firebase_get_url_from_image(image: self.photo_1!) { url_1 in
+            if url_1 == nil {
+                print("Error uploading photo_1")
+                completion(true)
+                return
+            } else {
+                print("URL_1: \(url_1?.absoluteString)")
+            }
+            self.firebase_get_url_from_image(image: self.photo_2!) { url_2 in
+                
+                if url_2 == nil {
+                    print("Error uploading photo_2")
                     completion(true)
                     return
-                } else {
-                    print("URL_1: \(url_1?.absoluteString)")
                 }
-                self.firebase_get_url_from_image(image: self.photo_2!) { url_2 in
-                    
-                    if url_2 == nil {
-                        print("Error uploading photo_2")
-                        completion(true)
-                        return
-                    }
-                    
-                    if let foodPic = url_1 {
-                        if let selfie = url_2 {
-                            let recipeId = (recipe != nil) ? UUID().uuidString : ""
-                            
-                            let docId = UUID()
-                            
-                            let data = ["id" : docId.uuidString,
-                                        "userID" : self.current_user!.id,
-                                        "images" : ["\(foodPic) \(selfie)"],
-                                        "caption" : [caption],
-                                        "recipes" : [recipeId],
-                                        "date" : [dateFormatted],
-                                        "day" : dayFormatted,
-                                        "likes" : [],
-                                        "comments" : [],
-                                        "location" : [location]]
-                            as [String : Any]
-                            
-                            if let myPostToday = self.my_post_today {
-                                self.firebase_add_entry_post(
-                                    selfie: selfie.absoluteString,
-                                    foodPic: foodPic.absoluteString,
-                                    caption: caption,
-                                    recipe: recipeId,
-                                    location: location) { done in
-                                        // if entry upload is done, show camera view sheet should close (false)
-                                        completion(!done)
-                                    }
-                            } else {
-                                self.db.collection("POSTS").document(docId.uuidString).setData(data) { error in
-                                    if let error = error {
-                                        print("Error: \(error.localizedDescription) ")
-                                        completion(true)
-                                    } else {
-                                        self.db.collection("USERS").document(self.current_user!.id).updateData(["myPosts": FieldValue.arrayUnion([docId.uuidString])])
-                                        completion(false)
-                                    }
-                                }
-                            }
-                            
-                            if let recipe = recipe {
-                                self.firebase_add_recipe(postID: self.my_post_today?.id ?? docId.uuidString, recipe: recipe, recipe_id: recipeId) {_ in
-                                    print("Added recipe \(recipeId) to postID: \(docId.uuidString)")
-                                }
-                            }
-                        }
-                    }
-                    
-                }
-            }
-        }
-        
-        
-        func firebase_search_for_username(username: String, completionHandler: @escaping (([String]) -> Void)) {
-            var arr: [String] = []
-            self.db.collection("USERS").whereField("id", isGreaterThanOrEqualTo: username).whereField("id", isLessThanOrEqualTo: username + "\u{f7ff}")
-                .getDocuments() { (querySnapshot, error) in
-                    if let error = error {
-                        print("Error: \(error.localizedDescription)")
-                        return
-                    } else {
-                        for document in querySnapshot!.documents {
-                            let data = document.data()
-                            arr.append(data["id"] as! String)
-                        }
-                    }
-                    completionHandler(arr)
-                }
-            
-        }
-        
-        
-        func get_post_comments(postID: String, completion: @escaping ([Comment]) -> Void) {
-            let commentsRef = self.db.collection("POSTS").document(postID).collection("COMMENTS")
-            commentsRef.getDocuments() { (documents, error) in
-                var comments: [Comment] = [Comment]()
-                if let error = error {
-                    // Error getting comments
-                    print("Error in the get post comments: \(error.localizedDescription)")
-                } else {
-                    print("\(documents!.count) comments found")
-                    print()
-                    for document in documents!.documents {
-                        let data = document.data()
-                        print("doc ID: \(document.documentID)")
-                        do {
-                            let comment = try Comment(id: data["id"] as! String, userID: data["user_id"] as! String, text: data["text"] as! String, date: self.dateFormatter.date(from: data["date"] as! String)!, profilePicture: data["profilePicture"] as! String)
-                            comments.append(comment)
-                        } catch {
-                            print(error.localizedDescription)
-                        }
+                
+                if let foodPic = url_1 {
+                    if let selfie = url_2 {
+                        let recipeId = (recipe != nil) ? UUID().uuidString : ""
                         
-                    }
-                }
-                completion(comments)
-            }
-        }
-        
-        func get_post_recipes(postID: String, completion: @escaping ([Recipe?]) -> Void) {
-            var recipeIDs: [String] = []
-            
-            let idRef = self.db.collection("POSTS").document(postID)
-            idRef.getDocument { (document, error) in
-                if let error = error {
-                    print("Error getting recipes \(error.localizedDescription)")
-                    completion([])
-                } else {
-                    if let doc = document, let data = doc.data() {
-                        recipeIDs = data["recipes"] as? [String] ?? []
-                    }
-                    let dispatchGroup = DispatchGroup()
-                    var recipes: [Recipe?] = Array(repeating: nil, count: recipeIDs.count)
-                    
-                    for (index, recipeID) in recipeIDs.enumerated() {
-                        dispatchGroup.enter()
+                        let docId = UUID()
                         
-                        if recipeID.isEmpty {
-                            dispatchGroup.leave()
+                        let data = ["id" : docId.uuidString,
+                                    "userID" : self.current_user!.id,
+                                    "images" : ["\(foodPic) \(selfie)"],
+                                    "caption" : [caption],
+                                    "recipes" : [recipeId],
+                                    "date" : [dateFormatted],
+                                    "day" : dayFormatted,
+                                    "likes" : [],
+                                    "comments" : [],
+                                    "location" : [location]]
+                        as [String : Any]
+                        
+                        if let myPostToday = self.my_post_today {
+                            self.firebase_add_entry_post(
+                                selfie: selfie.absoluteString,
+                                foodPic: foodPic.absoluteString,
+                                caption: caption,
+                                recipe: recipeId,
+                                location: location) { done in
+                                    // if entry upload is done, show camera view sheet should close (false)
+                                    completion(!done)
+                                }
                         } else {
-                            let recipesRef = self.db.collection("POSTS").document(postID).collection("RECIPES").document(recipeID)
-                            recipesRef.getDocument { (document, error) in
-                                defer {
-                                    dispatchGroup.leave()
-                                }
-                                
+                            self.db.collection("POSTS").document(docId.uuidString).setData(data) { error in
                                 if let error = error {
-                                    print("Error in getting recipe with id: \(recipeID)")
+                                    print("Error: \(error.localizedDescription) ")
+                                    completion(true)
                                 } else {
-                                    if let doc = document, let data = doc.data() {
-                                        let recipe = Recipe(
-                                            id: data["id"] as? String ?? "",
-                                            title: data["title"] as? String ?? "",
-                                            link: (data["link"] as? String)?.isEmpty == true ? nil : data["link"] as? String,
-                                            ingredients: (data["ingredients"] as? [String])?.isEmpty == true ? nil : data["ingredients"] as? [String],
-                                            directions: (data["directions"] as? String)?.isEmpty == true ? nil : data["directions"] as? String
-                                        )
-                                        recipes[index] = recipe
-                                    } else {
-                                        print("Error getting data for recipe with id \(recipeID)")
-                                    }
+                                    self.db.collection("USERS").document(self.current_user!.id).updateData(["myPosts": FieldValue.arrayUnion([docId.uuidString])])
+                                    completion(false)
+                                }
+                            }
+                        }
+                        
+                        if let recipe = recipe {
+                            self.firebase_add_recipe(postID: self.my_post_today?.id ?? docId.uuidString, recipe: recipe, recipe_id: recipeId) {_ in
+                                print("Added recipe \(recipeId) to postID: \(docId.uuidString)")
+                            }
+                        }
+                    }
+                }
+                
+            }
+        }
+    }
+    
+    
+    func firebase_search_for_username(username: String, completionHandler: @escaping (([String]) -> Void)) {
+        var arr: [String] = []
+        self.db.collection("USERS").whereField("id", isGreaterThanOrEqualTo: username).whereField("id", isLessThanOrEqualTo: username + "\u{f7ff}")
+            .getDocuments() { (querySnapshot, error) in
+                if let error = error {
+                    print("Error: \(error.localizedDescription)")
+                    return
+                } else {
+                    for document in querySnapshot!.documents {
+                        let data = document.data()
+                        arr.append(data["id"] as! String)
+                    }
+                }
+                completionHandler(arr)
+            }
+        
+    }
+    
+    
+    func get_post_comments(postID: String, completion: @escaping ([Comment]) -> Void) {
+        let commentsRef = self.db.collection("POSTS").document(postID).collection("COMMENTS")
+        commentsRef.getDocuments() { (documents, error) in
+            var comments: [Comment] = [Comment]()
+            if let error = error {
+                // Error getting comments
+                print("Error in the get post comments: \(error.localizedDescription)")
+            } else {
+                print("\(documents!.count) comments found")
+                print()
+                for document in documents!.documents {
+                    let data = document.data()
+                    print("doc ID: \(document.documentID)")
+                    do {
+                        let comment = try Comment(id: data["id"] as! String, userID: data["user_id"] as! String, text: data["text"] as! String, date: self.dateFormatter.date(from: data["date"] as! String)!, profilePicture: data["profilePicture"] as! String)
+                        comments.append(comment)
+                    } catch {
+                        print(error.localizedDescription)
+                    }
+                    
+                }
+            }
+            completion(comments)
+        }
+    }
+    
+    func get_post_recipes(postID: String, completion: @escaping ([Recipe?]) -> Void) {
+        var recipeIDs: [String] = []
+        
+        let idRef = self.db.collection("POSTS").document(postID)
+        idRef.getDocument { (document, error) in
+            if let error = error {
+                print("Error getting recipes \(error.localizedDescription)")
+                completion([])
+            } else {
+                if let doc = document, let data = doc.data() {
+                    recipeIDs = data["recipes"] as? [String] ?? []
+                }
+                let dispatchGroup = DispatchGroup()
+                var recipes: [Recipe?] = Array(repeating: nil, count: recipeIDs.count)
+                
+                for (index, recipeID) in recipeIDs.enumerated() {
+                    dispatchGroup.enter()
+                    
+                    if recipeID.isEmpty {
+                        dispatchGroup.leave()
+                    } else {
+                        let recipesRef = self.db.collection("POSTS").document(postID).collection("RECIPES").document(recipeID)
+                        recipesRef.getDocument { (document, error) in
+                            defer {
+                                dispatchGroup.leave()
+                            }
+                            
+                            if let error = error {
+                                print("Error in getting recipe with id: \(recipeID)")
+                            } else {
+                                if let doc = document, let data = doc.data() {
+                                    let recipe = Recipe(
+                                        id: data["id"] as? String ?? "",
+                                        title: data["title"] as? String ?? "",
+                                        link: (data["link"] as? String)?.isEmpty == true ? nil : data["link"] as? String,
+                                        ingredients: (data["ingredients"] as? [String])?.isEmpty == true ? nil : data["ingredients"] as? [String],
+                                        directions: (data["directions"] as? String)?.isEmpty == true ? nil : data["directions"] as? String
+                                    )
+                                    recipes[index] = recipe
+                                } else {
+                                    print("Error getting data for recipe with id \(recipeID)")
                                 }
                             }
                         }
                     }
-                    
-                    dispatchGroup.notify(queue: .main) {
-                        completion(recipes)
-                    }
                 }
-            }
-            
-        }
-        
-        
-        func get_friend_requests(completion: @escaping ([Friend]) -> Void) {
-            let userRef = self.db.collection("USERS").document(current_user!.id)
-            userRef.getDocument { (document, error) in
-                if let error = error {
-                    print("Error in the get friend requests: \(error.localizedDescription)")
-                } else {
-                    let data = document!.data()
-                    let requests = data!["incomingRequests"] as? [String]
-                    self.get_friends(userIDs: requests ?? []) { friends in
-                        completion(friends)
-                    }
+                
+                dispatchGroup.notify(queue: .main) {
+                    completion(recipes)
                 }
             }
         }
         
+    }
+    
+    
+    func get_friend_requests(completion: @escaping ([Friend]) -> Void) {
+        let userRef = self.db.collection("USERS").document(current_user!.id)
+        userRef.getDocument { (document, error) in
+            if let error = error {
+                print("Error in the get friend requests: \(error.localizedDescription)")
+            } else {
+                let data = document!.data()
+                let requests = data!["incomingRequests"] as? [String]
+                self.get_friends(userIDs: requests ?? []) { friends in
+                    completion(friends)
+                }
+            }
+        }
+    }
+    
+    
+    
+    
+    
+    func firebase_add_entry_post(selfie: String, foodPic: String, caption: String, recipe: String, location: String, completion: @escaping (Bool) -> Void) {
+        let date = Date()
+        let entry_date = dateFormatter.string(from: date)
         
-        
-        
-        
-        func firebase_add_entry_post(selfie: String, foodPic: String, caption: String, recipe: String, location: String, completion: @escaping (Bool) -> Void) {
-            let date = Date()
-            let entry_date = dateFormatter.string(from: date)
-            
-            if let id = self.my_post_today?.id {
-                self.db.collection("POSTS").document(id).getDocument { (document, error) in
-                    if let doc = document {
-                        if let data = doc.data() {
-                            // ADD NEW DATE FIELD
-                            self.db.collection("POSTS").document(id).updateData(["date": FieldValue.arrayUnion([entry_date])])
-                            
-                            var myCaptions = []
-                            myCaptions = data["caption"] as! [String]
-                            myCaptions.append(caption)
-                            self.db.collection("POSTS").document(id).updateData(["caption": myCaptions])
-                            
-                            var imagesArr = []
-                            imagesArr = data["images"] as! [String]
-                            imagesArr.append("\(foodPic) \(selfie)")
-                            self.db.collection("POSTS").document(id).updateData(["images": imagesArr])
-                            
-                            var locationArr = []
-                            locationArr = data["location"] as! [String]
-                            locationArr.append(location)
-                            self.db.collection("POSTS").document(id).updateData(["location": locationArr])
-                            
-                            var recipeArr = []
-                            recipeArr = data["recipes"] as! [String]
-                            recipeArr.append(recipe)
-                            self.db.collection("POSTS").document(id).updateData(["recipes": recipeArr])
-                            
-                            completion(true)
-                        } else {
-                            print("Document does not exist")
-                            completion(false)
-                        }
+        if let id = self.my_post_today?.id {
+            self.db.collection("POSTS").document(id).getDocument { (document, error) in
+                if let doc = document {
+                    if let data = doc.data() {
+                        // ADD NEW DATE FIELD
+                        self.db.collection("POSTS").document(id).updateData(["date": FieldValue.arrayUnion([entry_date])])
+                        
+                        var myCaptions = []
+                        myCaptions = data["caption"] as! [String]
+                        myCaptions.append(caption)
+                        self.db.collection("POSTS").document(id).updateData(["caption": myCaptions])
+                        
+                        var imagesArr = []
+                        imagesArr = data["images"] as! [String]
+                        imagesArr.append("\(foodPic) \(selfie)")
+                        self.db.collection("POSTS").document(id).updateData(["images": imagesArr])
+                        
+                        var locationArr = []
+                        locationArr = data["location"] as! [String]
+                        locationArr.append(location)
+                        self.db.collection("POSTS").document(id).updateData(["location": locationArr])
+                        
+                        var recipeArr = []
+                        recipeArr = data["recipes"] as! [String]
+                        recipeArr.append(recipe)
+                        self.db.collection("POSTS").document(id).updateData(["recipes": recipeArr])
+                        
+                        completion(true)
                     } else {
                         print("Document does not exist")
                         completion(false)
                     }
-                }
-            } else {
-                completion(false)
-            }
-        }
-
-        
-        
-        
-        
-        func get_todays_posts(completion: @escaping ([String]) -> Void) {
-            print("GET TODAYS POST TOP")
-            
-            let date = Date()
-            
-            let dateFormatterSimple = DateFormatter()
-            dateFormatterSimple.dateFormat = "MM-dd-yyyy"
-            
-            let dateTodayString = dateFormatterSimple.string(from: date)
-            
-            var postList: [String] = [String]()
-            
-            get_friends_ids() { friends in
-                var allUsersToFetch = friends
-                allUsersToFetch.append(self.current_user!.id)
-                
-                self.db.collection("POSTS").whereField("userID", in: allUsersToFetch).whereField("day", isEqualTo: dateTodayString).getDocuments() {documents, err in
-                    if let err = err {
-                        // Unable to get posts, error screen
-                        print("In Get Todays Posts: \(err.localizedDescription)")
-                    } else {
-                        print("GET TODAYS POST BOTTOM")
-                        for document in documents!.documents {
-                            postList.append(document.documentID)
-                            print("Document found: \(document.documentID)")
-                        }
-                        print("DONE")
-                        completion(postList)
- 
-                    }
-                }
-            }
-        }
-
-        
-        
-        func get_friends_ids(completion: @escaping ([String]) -> Void) {
-            let userRef = self.db.collection("USERS").document(current_user!.id)
-            userRef.getDocument { document, err in
-                if let err = err  {
-                    print("In Get Friends: \(err.localizedDescription)")
-                    completion([])
                 } else {
-                    let data = document!.data()!
-                    let friends = data["friends"] as? [String]
+                    print("Document does not exist")
+                    completion(false)
                 }
             }
+        } else {
+            completion(false)
         }
+    }
+    
+    
+    
+    
+    
+    func get_todays_posts(completion: @escaping ([String]) -> Void) {
+        print("GET TODAYS POST TOP")
         
-        func get_friends(userIDs: [String], completion: @escaping (([Friend])-> Void)) {
-            if userIDs.isEmpty {
-                completion([Friend]())
-            } else {
-                self.db.collection("USERS").whereField("id", in: userIDs).getDocuments { (documents, error) in
-                    if let error = error {
-                        print("SetCurrentUserError: \(error.localizedDescription)")
-                    } else {
-                        var friends: [Friend] = [Friend]()
-                        for document in documents!.documents {
-                            let data = document.data()
-                            friends.append(Friend(id: document.documentID,
-                                                  name: data["name"] as? String ?? "Name not Found",
-                                                  profilePicture: data["profilePicture"] as? String ?? "Profile picture not found",
-                                                  bio: data["bio"] as? String ?? "",
-                                                  mutualFriends: [],
-                                                  pins: data["pins"] as? [String] ?? [],
-                                                  todaysPosts: []))
-                        }
-                        completion(friends)
+        let date = Date()
+        
+        let dateFormatterSimple = DateFormatter()
+        dateFormatterSimple.dateFormat = "MM-dd-yyyy"
+        
+        let dateTodayString = dateFormatterSimple.string(from: date)
+        
+        var postList: [String] = [String]()
+        
+        get_friends_ids() { friends in
+            var allUsersToFetch = friends
+            allUsersToFetch.append(self.current_user!.id)
+            
+            self.db.collection("POSTS").whereField("userID", in: allUsersToFetch).whereField("day", isEqualTo: dateTodayString).getDocuments() {documents, err in
+                if let err = err {
+                    // Unable to get posts, error screen
+                    print("In Get Todays Posts: \(err.localizedDescription)")
+                } else {
+                    print("GET TODAYS POST BOTTOM")
+                    for document in documents!.documents {
+                        postList.append(document.documentID)
+                        print("Document found: \(document.documentID)")
                     }
+                    print("DONE")
+                    completion(postList)
+                    
                 }
             }
         }
-
-        
-        func getFriend(userID: String, completion: @escaping ((Friend)-> Void)) {
-            self.db.collection("USERS").document(userID).getDocument { document, error in
+    }
+    
+    
+    
+    func get_friends_ids(completion: @escaping ([String]) -> Void) {
+        let userRef = self.db.collection("USERS").document(current_user!.id)
+        userRef.getDocument { document, err in
+            if let err = err  {
+                print("In Get Friends: \(err.localizedDescription)")
+                completion([])
+            } else {
+                let data = document!.data()!
+                let friends = data["friends"] as? [String]
+            }
+        }
+    }
+    
+    func get_friends(userIDs: [String], completion: @escaping (([Friend])-> Void)) {
+        if userIDs.isEmpty {
+            completion([Friend]())
+        } else {
+            self.db.collection("USERS").whereField("id", in: userIDs).getDocuments { (documents, error) in
                 if let error = error {
                     print("SetCurrentUserError: \(error.localizedDescription)")
-                } else if let document = document {
-                    if let data = document.data() {
-                        completion(Friend(id: document.documentID,
-                                          name: data["name"] as? String ?? "Name not Found",
-                                          profilePicture: data["profilePicture"] as? String ?? "Profile picture not found",
-                                          bio: data["bio"] as? String ?? "",
-                                          mutualFriends: [],
-                                          pins: data["pins"] as? [String] ?? [],
-                                          todaysPosts: []))
+                } else {
+                    var friends: [Friend] = [Friend]()
+                    for document in documents!.documents {
+                        let data = document.data()
+                        let currentUserFriends = Set(self.current_user!.friends.map { $0 })
+                        let user2FriendIDs = Set((data["friends"] as? [String] ?? []).map { $0 })
+                        
+                        // Find mutual friends by taking the intersection of the two sets
+                        let mutualFriendIDs = Array(currentUserFriends.intersection(user2FriendIDs))
+                        var friendsPostToday: String? = self.todays_posts.first(where: { $0.userID == document.documentID })?.id
+                        
+                        friends.append(Friend(id: document.documentID,
+                                              name: data["name"] as? String ?? "Name not Found",
+                                              profilePicture: data["profilePicture"] as? String ?? "Profile picture not found",
+                                              bio: data["bio"] as? String ?? "",
+                                              mutualFriends: mutualFriendIDs,
+                                              pins: data["pins"] as? [String] ?? [],
+                                              todaysPost: friendsPostToday))
                     }
+                    completion(friends)
                 }
             }
         }
-
+    }
+    
+    
+    
+    func getFriend(userID: String, completion: @escaping ((Friend)-> Void)) {
+        self.db.collection("USERS").document(userID).getDocument { document, error in
+            if let error = error {
+                print("SetCurrentUserError: \(error.localizedDescription)")
+            } else if let document = document {
+                if let data = document.data() {
+                    var friendsPostToday: String? = self.todays_posts.first(where: { $0.userID == userID })?.id
+                    
+                    completion(Friend(id: document.documentID,
+                                      name: data["name"] as? String ?? "Name not Found",
+                                      profilePicture: data["profilePicture"] as? String ?? "Profile picture not found",
+                                      bio: data["bio"] as? String ?? "",
+                                      mutualFriends: [],
+                                      pins: data["pins"] as? [String] ?? [],
+                                      todaysPost: friendsPostToday))
+                }
+            }
+        }
     }
     
     func getUserProfilePic(userIDs: [String], completion: @escaping ([URL]) -> Void) {
@@ -859,231 +867,184 @@ class ViewModel: ObservableObject {
     
     
     
-    
-    func convertToComments(postID: String) -> [Comment] {
-        var comment: [Comment]?
->>
-        
-        func get_friend_suggestions(completion: @escaping ([Friend]) -> Void) {
-            get_friends_ids() { friends in
-                if friends.isEmpty {
-                    completion([Friend]())
-                } else {
-                    self.db.collection("USERS").whereField("id", in: friends).getDocuments() {documents, err in
-                        if let err = err {
-                            // Unable to get posts, error screen
-                            print("In Get Friend Suggestions: \(err.localizedDescription)")
-                        } else {
-                            var suggestions = Set<String>()
-                            for document in documents!.documents {
-                                let data = document.data()
-                                let friends = data["friends"] as? [String]
-                                suggestions.formUnion(friends!)
-                            }
-                            suggestions.subtract(friends)
-                            //make sure current user doesn't show up in suggestions
-                            let userid: Set<String> = [self.current_user!.id]
-                            suggestions.subtract(userid)
-                            self.get_friends(userIDs: Array(suggestions)) { friends in
-                                completion(friends)
-                            }
-                        }
-                    }
-                }
-                
-            }
-        }
-        
-        
-        func convertToRecipe(postID: String) -> [Recipe] {
-            var recipe: [Recipe]?
-            
-            self.db.collection("POSTS").document(postID).collection("RECIPES").getDocuments(completion: { [weak self] documents, error in
-                if let error = error {
-                    self?.errorText = "Cannot get list of recipes from Firebase."
-                } else {
-                    for document in documents!.documents {
-                        recipe?.append(Recipe(id: document.documentID,
-                                              title: document["title"] as! String,
-                                              link: document["link"] as? String ?? nil,
-                                              ingredients: document["ingredients"] as! [String],
-                                              directions: document["directions"] as! String?
-                                             ))
-                        UserDefaults.standard.setValue(true, forKey: "log_Status")
-                    }
-                }
-            })
-            return recipe ?? []
-        }
-        
-        
-        
-        func convertToComments(postID: String) -> [Comment] {
-            var comment: [Comment]?
-            
-            self.db.collection("POSTS").document(postID).collection("COMMENTS").getDocuments(completion: { [weak self] documents, error in
-                if let error = error {
-                    self?.errorText = "Cannot get list of comments from Firebase."
-                } else {
-                    for document in documents!.documents {
-                        comment?.append(Comment(id: document.documentID,
-                                                userID: document["userID"] as! String,
-                                                text: document["text"] as! String,
-                                                date: self?.dayFormatter.date(from: document["date"] as! String)  ?? Date(),
-                                                profilePicture: document["profilePicture"] as! String,
-                                                replies: document["directions"] as? [Comment] ?? []
-                                               ))
-                        UserDefaults.standard.setValue(true, forKey: "log_Status")
-                    }
-                }
-            })
-            return comment ?? []
-        }
-        
-        
-        func firebase_get_url_from_image(image: UIImage, completion: @escaping (URL?) -> Void) {
-            guard let imageData = image.jpegData(compressionQuality: 0.8) else {
-                completion(nil)
-                return
-            }
-            // create random image path
-            let imagePath = "images/\(UUID()).jpg"
-            
-            // create reference to file you want to upload
-            let imageRef = storageRef.child(imagePath)
-            
-            //upload image
-            DispatchQueue.main.async {
-                let uploadTask = imageRef.putData(imageData, metadata: nil) { (metadata, error) in
-                    if let error = error {
-                        print("Error uploading image: \(error.localizedDescription)")
-                        completion(nil)
+    func get_friend_suggestions(completion: @escaping ([Friend]) -> Void) {
+        get_friends_ids() { friends in
+            if friends.isEmpty {
+                completion([Friend]())
+            } else {
+                self.db.collection("USERS").whereField("id", in: friends).getDocuments() {documents, err in
+                    if let err = err {
+                        // Unable to get posts, error screen
+                        print("In Get Friend Suggestions: \(err.localizedDescription)")
                     } else {
-                        // Image successfully uploaded
-                        imageRef.downloadURL { url, error in
-                            if let downloadURL = url {
-                                completion(downloadURL)
-                            } else {
-                                print("Error getting download URL: \(String(describing: error?.localizedDescription))")
-                            }
+                        var suggestions = Set<String>()
+                        for document in documents!.documents {
+                            let data = document.data()
+                            let friends = data["friends"] as? [String]
+                            suggestions.formUnion(friends!)
+                        }
+                        suggestions.subtract(friends)
+                        //make sure current user doesn't show up in suggestions
+                        let userid: Set<String> = [self.current_user!.id]
+                        suggestions.subtract(userid)
+                        self.get_friends(userIDs: Array(suggestions)) { friends in
+                            completion(friends)
+                        }
+                    }
+                }
+            }
+            
+        }
+    }
+    
+    
+    
+    
+    
+    
+    func firebase_get_url_from_image(image: UIImage, completion: @escaping (URL?) -> Void) {
+        guard let imageData = image.jpegData(compressionQuality: 0.8) else {
+            completion(nil)
+            return
+        }
+        // create random image path
+        let imagePath = "images/\(UUID()).jpg"
+        
+        // create reference to file you want to upload
+        let imageRef = storageRef.child(imagePath)
+        
+        //upload image
+        DispatchQueue.main.async {
+            let uploadTask = imageRef.putData(imageData, metadata: nil) { (metadata, error) in
+                if let error = error {
+                    print("Error uploading image: \(error.localizedDescription)")
+                    completion(nil)
+                } else {
+                    // Image successfully uploaded
+                    imageRef.downloadURL { url, error in
+                        if let downloadURL = url {
+                            completion(downloadURL)
+                        } else {
+                            print("Error getting download URL: \(String(describing: error?.localizedDescription))")
                         }
                     }
                 }
             }
         }
-        
-        // returns post ID
-        func get_post_from_day(day: String, completion: @escaping (String) -> Void) {
-            db.collection("POSTS").whereField("userID", isEqualTo: self.current_user!.id).whereField("day", isEqualTo: day).getDocuments(completion: { documents, error in
-                if let err = error {
-                    print(err.localizedDescription)
-                    completion("")
-                } else if let docs = documents?.documents {
-                    if docs.count == 1 {
-                        if let postID = docs[0]["id"] as? String {
-                            print(postID)
-                            completion(postID)
-                        } else {
-                            completion("")
-                        }
+    }
+    
+    // returns post ID
+    func get_post_from_day(day: String, completion: @escaping (String) -> Void) {
+        db.collection("POSTS").whereField("userID", isEqualTo: self.current_user!.id).whereField("day", isEqualTo: day).getDocuments(completion: { documents, error in
+            if let err = error {
+                print(err.localizedDescription)
+                completion("")
+            } else if let docs = documents?.documents {
+                if docs.count == 1 {
+                    if let postID = docs[0]["id"] as? String {
+                        print(postID)
+                        completion(postID)
                     } else {
                         completion("")
                     }
-                    completion("")
                 } else {
                     completion("")
                 }
-            })
-            
-            
-            
-        }
-        
-        //synchronous approach
-        func load_image_from_url(url: String) -> Image? {
-            if (url == "NIL" || url.isEmpty) {
-                return nil
-            }
-            guard let url = URL(string: url) else { return nil }
-            
-            guard let imageData = try? Data(contentsOf: url) else { return nil }
-            if let uiImage = UIImage(data: imageData) {
-                return Image(uiImage: uiImage)
+                completion("")
             } else {
-                return nil
+                completion("")
             }
-            
+        })
+        
+        
+        
+    }
+    
+    //synchronous approach
+    func load_image_from_url(url: String) -> Image? {
+        if (url == "NIL" || url.isEmpty) {
+            return nil
+        }
+        guard let url = URL(string: url) else { return nil }
+        
+        guard let imageData = try? Data(contentsOf: url) else { return nil }
+        if let uiImage = UIImage(data: imageData) {
+            return Image(uiImage: uiImage)
+        } else {
+            return nil
         }
         
+    }
+    
+    
+    func firebase_add_pin(postID: String, completion: @escaping (Bool) -> Void) {
+        let docRef = db.collection("USERS").document(self.current_user!.id)
         
-        func firebase_add_pin(postID: String, completion: @escaping (Bool) -> Void) {
-            let docRef = db.collection("USERS").document(self.current_user!.id)
-            
-            docRef.updateData(
-                ["pins" : FieldValue.arrayUnion([postID])] // append pins
-            ) { err in
-                if let err = err {
-                    print(err.localizedDescription)
-                    completion(false) // not added
-                } else {
-                    print("Added Pin")
-                    self.current_user?.pins.append(postID)
-                    completion(true)
-                }
+        docRef.updateData(
+            ["pins" : FieldValue.arrayUnion([postID])] // append pins
+        ) { err in
+            if let err = err {
+                print(err.localizedDescription)
+                completion(false) // not added
+            } else {
+                print("Added Pin")
+                self.current_user?.pins.append(postID)
+                completion(true)
             }
-        }
-        
-        func firebase_remove_pin(postID: String, completion: @escaping (Bool) -> Void) {
-            let docRef = db.collection("USERS").document(self.current_user!.id)
-            
-            docRef.updateData(
-                ["pins" : FieldValue.arrayRemove([postID])] // remove pins
-            ) { err in
-                if let err = err {
-                    print(err.localizedDescription)
-                    completion(false) // not removed
-                } else {
-                    print("Removed Pin")
-                    self.current_user?.pins.removeAll(where: { id in
-                        id == postID
-                    })
-                    completion(true)
-                }
-            }
-        }
-        
-        func updateUserField(field: String, value: String) {
-            db.collection("USERS").document(current_user!.id).updateData(
-                [field: value]) { err in
-                    if let err = err {
-                        print(err.localizedDescription)
-                    } else {
-                        self.setCurrentUser(userId: self.current_user!.id) {
-                            
-                        }
-                    }
-                }
-        }
-        
-        func firebase_search_for_friends(username: String, completionHandler: @escaping (([Friend]) -> Void)) {
-            var arr: [String] = []
-            
-            self.db.collection("USERS").whereField("id", isGreaterThanOrEqualTo: username).whereField("id", isLessThanOrEqualTo: username + "\u{f7ff}")
-                .getDocuments() { (querySnapshot, error) in
-                    if let error = error {
-                        print("Error: \(error.localizedDescription)")
-                        return
-                    } else {
-                        for document in querySnapshot!.documents {
-                            let data = document.data()
-                            arr.append(data["id"] as! String)
-                        }
-                    }
-                    self.get_friends(userIDs: arr) { friends in
-                        print(friends.count)
-                        
-                        completionHandler(friends)
-                    }
-                }
         }
     }
+    
+    func firebase_remove_pin(postID: String, completion: @escaping (Bool) -> Void) {
+        let docRef = db.collection("USERS").document(self.current_user!.id)
+        
+        docRef.updateData(
+            ["pins" : FieldValue.arrayRemove([postID])] // remove pins
+        ) { err in
+            if let err = err {
+                print(err.localizedDescription)
+                completion(false) // not removed
+            } else {
+                print("Removed Pin")
+                self.current_user?.pins.removeAll(where: { id in
+                    id == postID
+                })
+                completion(true)
+            }
+        }
+    }
+    
+    func updateUserField(field: String, value: String) {
+        db.collection("USERS").document(current_user!.id).updateData(
+            [field: value]) { err in
+                if let err = err {
+                    print(err.localizedDescription)
+                } else {
+                    self.setCurrentUser(userId: self.current_user!.id) {
+                        
+                    }
+                }
+            }
+    }
+    
+    func firebase_search_for_friends(username: String, completionHandler: @escaping (([Friend]) -> Void)) {
+        var arr: [String] = []
+        
+        self.db.collection("USERS").whereField("id", isGreaterThanOrEqualTo: username).whereField("id", isLessThanOrEqualTo: username + "\u{f7ff}")
+            .getDocuments() { (querySnapshot, error) in
+                if let error = error {
+                    print("Error: \(error.localizedDescription)")
+                    return
+                } else {
+                    for document in querySnapshot!.documents {
+                        let data = document.data()
+                        arr.append(data["id"] as! String)
+                    }
+                }
+                self.get_friends(userIDs: arr) { friends in
+                    print(friends.count)
+                    
+                    completionHandler(friends)
+                }
+            }
+    }
+}
