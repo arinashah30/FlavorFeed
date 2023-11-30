@@ -14,6 +14,8 @@ struct SelfProfileView: View {
     @ObservedObject var vm: ViewModel
     @State var showFullCalendar = false
     @State var showFullMap = false
+    
+    @State var myPosts = [Post]()
 
     var body: some View {
         VStack(alignment: .center) {
@@ -65,7 +67,7 @@ struct SelfProfileView: View {
                     Button(action: {
                         self.showFullMap.toggle()
                     }, label: {
-                        MapView(vm: vm, showFullMap: $showFullMap)
+                        MapView(vm: vm, showFullMap: $showFullMap, posts: myPosts)
                             .frame(minHeight: 400)
                     })
                 }
@@ -73,10 +75,14 @@ struct SelfProfileView: View {
                         FullCalendarView(vm: vm, showFullCalendar: $showFullCalendar)
                     })
                     .fullScreenCover(isPresented: $showFullMap, content: {
-                        MapView(vm: vm, showFullMap: $showFullMap)
+                        MapView(vm: vm, showFullMap: $showFullMap, posts: myPosts)
                     })
                 
+        }.onAppear() {
+            vm.fetchPosts(postIDs: vm.current_user!.myPosts) { posts in
+                self.myPosts = posts
             }
+        }
                     .ignoresSafeArea()
             }
         

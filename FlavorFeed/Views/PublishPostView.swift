@@ -180,8 +180,13 @@ struct PublishPostView: View {
                 
                 Button(action: {
                     // PUBLISH POST
-                    vm.publish_post(caption: caption, location: restaurant?.link ?? "Atlanta, GA", recipe: Recipe(id: "1", title: "Recipe")) { close in
-                    vm.publish_post(caption: caption, location: "Atlanta, GA", recipe: recipe) { close in
+                    var locationString = ""
+                    if let restaurant = restaurant {
+                        locationString = "\(restaurant.name)|||||\(restaurant.link)"
+                    } else {
+                        locationString = "Atlanta, GA"
+                    }
+                    vm.publish_post(caption: caption, location: locationString, recipe: recipe) { close in
                         print("Recipe uploaded: \((!close).description)")
                         if !close {
                             vm.refreshFeed() {
@@ -221,7 +226,6 @@ struct PublishPostView: View {
             PickRestaurantView(vm: vm, restaurant: $restaurant)
                 
         })
-        }
         .sheet(isPresented: $isShowingRecipeForm) {
             RecipeFormView(recipe: $recipe, isPresentingRecipeForm: $isShowingRecipeForm)
         }

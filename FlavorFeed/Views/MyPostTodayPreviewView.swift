@@ -80,11 +80,11 @@ struct MyPostTodayPreviewView: View {
                                 }
                                 
                             }.frame(width: 112, height: 160)
-                            .task {
-                                Task {
-                                    self.post.location?[i] = try await vm.locationManager.getPlaceFromLink(link: post.locations[i])
-                                }
-                            }
+//                            .task {
+//                                Task {
+//                                    self.post.location?[i] = try await vm.locationManager.getPlaceFromLink(link: post.locations[i])
+//                                }
+//                            }
                         }
                             .padding(5)
                             .id(i)

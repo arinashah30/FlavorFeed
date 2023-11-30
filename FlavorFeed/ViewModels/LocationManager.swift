@@ -59,48 +59,4 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         }
         return nil
     }
-    
-    func getPlaceFromLink(link: String) async -> Place? {
-        let urlString = "https://api.foursquare.com\(link)"
-        
-        guard var urlComponents = URLComponents(string: urlString) else {
-            print("Invalid URL")
-            return nil
-        }
-        
-        print(urlComponents.url?.absoluteString)
-        var request = URLRequest(url: urlComponents.url!)
-        
-        // setting headers
-        request.setValue("application/json", forHTTPHeaderField: "accept")
-        request.setValue("fsq3WNw5aEH2EMpBBI2iRc4FU2sJHHQr/xJUhdvCYp/dHgI=", forHTTPHeaderField: "Authorization")
-        request.httpMethod = "GET"
-        
-        request.timeoutInterval = 5
-        
-        do {
-            let (data, _) = try await URLSession.shared.data(for: request)
-            
-            print("Data received (Size: \(data.count))")
-            
-            let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
-            
-            print("DATA: \(String(data: data, encoding: .utf8) ?? "Invalid JSON data")")
-            
-            let decodedResponse = try decoder.decode(Results.self, from: data)
-            
-            print("Places found: \(decodedResponse.results.count)")
-            if decodedResponse.results.count == 1 {
-                return decodedResponse.results[0]
-            } else {
-                return nil
-            }
-            
-        } catch {
-            print("Error: \(error)")
-        }
-        return nil
-    }
-
 }
