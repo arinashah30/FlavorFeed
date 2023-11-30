@@ -802,13 +802,18 @@ class ViewModel: ObservableObject {
                 print("SetCurrentUserError: \(error.localizedDescription)")
             } else if let document = document {
                 if let data = document.data() {
+                    let currentUserFriends = Set(self.current_user!.friends.map { $0 })
+                    let user2FriendIDs = Set((data["friends"] as? [String] ?? []).map { $0 })
+
+                    // Find mutual friends by taking the intersection of the two sets
+                    let mutualFriendIDs = Array(currentUserFriends.intersection(user2FriendIDs))
                     var friendsPostToday: String? = self.todays_posts.first(where: { $0.userID == userID })?.id
                     
                     completion(Friend(id: document.documentID,
                                       name: data["name"] as? String ?? "Name not Found",
                                       profilePicture: data["profilePicture"] as? String ?? "Profile picture not found",
                                       bio: data["bio"] as? String ?? "",
-                                      mutualFriends: [],
+                                      mutualFriends: mutualFriendIDs,
                                       pins: data["pins"] as? [String] ?? [],
                                       todaysPost: friendsPostToday))
                 }

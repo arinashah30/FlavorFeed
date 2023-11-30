@@ -17,6 +17,13 @@ struct FriendProfileView: View {
     @State var showFullMap = false
     @State var posts : [Post]? = nil
     
+    init(vm: ViewModel, friend: Binding<Friend?>, showFriendProfile: Binding<Bool>) {
+        self.vm = vm
+        self._friend = friend
+        self._showFriendProfile = showFriendProfile
+    }
+    
+    
     var body: some View {
         VStack {
             Spacer(minLength: 30)
@@ -54,7 +61,7 @@ struct FriendProfileView: View {
                     }.frame(maxWidth: .infinity, alignment: .leading)
                     VStack {
                         Text("Today's Post").font(.title2).foregroundColor(Color.ffPrimary)
-                        if let postID = friend?.todaysPost, let post = vm.todays_posts.first(where: { $0.id == postID }) {
+                        if let post = vm.todays_posts.first(where: { $0.userID == friend?.id }) {
                             FriendPostToday(post: post, vm: vm)
                         } else {
                             Text("\(friend?.name ?? "") hasn't posted today 😢").foregroundColor(Color.ffPrimary)

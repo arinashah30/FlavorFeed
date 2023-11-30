@@ -25,6 +25,9 @@ struct PostView: View {
     @State private var myNewComment = ""
     @State private var isShowingSheet = false
     
+    @State private var friendSelected: Friend? = nil
+    @State private var showingFriendProfileView = false
+    
     init(vm: ViewModel, post: Post) {
         self.vm = vm
         
@@ -39,22 +42,31 @@ struct PostView: View {
         GeometryReader { geo in
             VStack {
                 HStack {
-                    vm.imageLoader.img(url: URL(string: post.friend!.profilePicture)!) { image in
-                        image
-                            .resizable()
-                    }.aspectRatio(contentMode: .fill)
-                        .frame(width: geo.size.height * 0.08, height: geo.size.height * 0.08)
-                        .clipShape(Circle())
-                    
-                    VStack (alignment: .leading) {
-                        Text(post.friend!.name)
-                            .font(.system(size: 18))
-                            .foregroundColor(.ffSecondary)
-                            .fontWeight(.semibold)
-                        Text("\(post.locations[tabSelection]) • \(formatPostTime(time: post.date[tabSelection]))")
-                            .font(.system(size: 15))
-                            .fontWeight(.light)
+                    Button {
+                        self.friendSelected = post.friend!
+                        self.showingFriendProfileView = true
+                    } label: {
+                        HStack {
+                            vm.imageLoader.img(url: URL(string: post.friend!.profilePicture)!) { image in
+                                image
+                                    .resizable()
+                            }.aspectRatio(contentMode: .fill)
+                                .frame(width: geo.size.height * 0.08, height: geo.size.height * 0.08)
+                                .clipShape(Circle())
+                            
+                            VStack (alignment: .leading) {
+                                Text(post.friend!.name)
+                                    .font(.system(size: 18))
+                                    .foregroundColor(.ffSecondary)
+                                    .fontWeight(.semibold)
+                                Text("\(post.locations[tabSelection]) • \(formatPostTime(time: post.date[tabSelection]))")
+                                    .font(.system(size: 15))
+                                    .fontWeight(.light)
+                                    .foregroundStyle(Color.gray)
+                            }
+                        }
                     }
+
                     
                     Spacer()
                     Button {
@@ -238,7 +250,13 @@ struct PostView: View {
                 .padding(.top, -7)
                 Spacer()
             }.frame(maxHeight: .infinity)
+        }.fullScreenCover(isPresented: $showingFriendProfileView) {
+            self.friendSelected = nil
+            self.showingFriendProfileView = false
+        } content: {
+            FriendProfileView(vm: vm, friend: $friendSelected, showFriendProfile: $showingFriendProfileView)
         }
+
     }
     
     func setupAppearance() {
