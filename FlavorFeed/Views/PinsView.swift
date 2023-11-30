@@ -95,7 +95,7 @@ struct PinsView: View {
             }
             
         }.sheet(item: $selectedPost) { post in
-            Text(post.day)
+            MyPostView(vm: vm, showMyPostView: $showPostViewSheet, post: post)
         }
         .onAppear {
             if friend == nil {

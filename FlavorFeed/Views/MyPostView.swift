@@ -11,12 +11,14 @@ import SwiftUI
 struct MyPostView: View {
     @ObservedObject var vm: ViewModel
     @Binding var showMyPostView: Bool
+    @State var post: Post?
     
     var body: some View {
         ScrollView {
             HStack {
                 Button {
                     self.showMyPostView.toggle()
+                    
                 } label: {
                     Image(systemName: "chevron.left")
                         .font(.system(size: 20))
@@ -28,7 +30,7 @@ struct MyPostView: View {
                 Spacer()
             }.foregroundStyle(Color.black)
                 .padding()
-            PostView(vm: vm, post: vm.my_post_today!)
+            PostView(vm: vm, post: post!)
             
         }
     }
