@@ -128,17 +128,17 @@ struct PostView: View {
                                         }
                                     }
                                     
-                                    
-                                    
-                                    Button {
-                                        
-                                    } label: {
-                                        Image("Restaurant_logo")
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fit)
-                                            .frame(width: 35)
+                                    if (!(post.locationLink?[tabSelection] ?? "").isEmpty) {
+                                        Button {
+                                            
+                                        } label: {
+                                            Image("Restaurant_logo")
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fit)
+                                                .frame(width: 35)
+                                        }
+                                        Spacer()
                                     }
-                                    Spacer()
                                 }.padding()
                                 
                             }
@@ -201,18 +201,17 @@ struct PostView: View {
                                 vm.imageLoader.img(url: URL(string: comment.profilePicture)!) { image in
                                     image.resizable()
                                 }
-                                .frame(width: 60, height: 60)
+                                .aspectRatio(contentMode: .fit)
                                 .clipShape(.circle)
+                                .frame(width: 80, height: 80)
                                 .padding(.leading, 10)
                                 
-                                ZStack{
-                                    RoundedRectangle(cornerRadius: 10)
-                                        .fill(gold)
-                                    Text("**\(comment.userID)**: \(comment.text)")
-                                        .frame(maxWidth: .infinity, alignment: .leading)
-                                        .multilineTextAlignment(.leading)
-                                        .padding(.horizontal, 10)
-                                }.padding(.trailing, 10)
+                                Text("**\(comment.userID)**: \(comment.text)")
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .multilineTextAlignment(.leading)
+                                    .padding(10)
+                                    .background(Color.ffTertiary.cornerRadius(10))
+                                    .padding(.trailing, 10)
                             }
                             
                         }

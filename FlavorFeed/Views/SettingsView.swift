@@ -41,14 +41,15 @@ struct SettingsView: View {
                 Text("Settings")
                     .font(.title2)
                     .foregroundColor(.ffSecondary)
-                Spacer(minLength: 30)
+                Spacer()
                 Button {
                     showAccountSettingsView = true
                 } label: {
                     Image(systemName: "ellipsis")
                         .foregroundColor(.black)
                         .font(.system(size: 30))
-                }.padding()
+                }.frame(width: 15)
+                    .padding(.trailing, 20)
                 
             }
             ProfilePhotoView(vm: vm, avatarImage: vm.current_user!.profilePicture)

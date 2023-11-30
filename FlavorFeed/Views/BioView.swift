@@ -34,6 +34,7 @@ struct BioView: View {
             Text(bio)
                 .font(.system(size: 20))
                 .foregroundColor(Color.ffSecondary)
+                .padding(.top, 10)
         }
     }
 }
