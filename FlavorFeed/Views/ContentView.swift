@@ -24,7 +24,7 @@ struct ContentView: View {
         } else {
             NavigationStack {
                 LoginView(vm: vm).onAppear {
-                    isActive = true
+                    isActive = false
                 }
             }
         }
