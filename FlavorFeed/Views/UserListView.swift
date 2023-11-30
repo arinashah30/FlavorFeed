@@ -110,7 +110,7 @@ struct UserRow: View {
     var body: some View {
         HStack {
 
-            vm.imageLoader.img(url: URL(string: user.profilePicture)!) { image in
+            vm.imageLoader.img(url: URL(string: user.profilePicture)) { image in
                 image.resizable()
             }.scaledToFill()
                 .frame(width: 70, height: 70)

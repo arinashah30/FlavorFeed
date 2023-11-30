@@ -127,6 +127,7 @@ struct PickRestaurantView: View {
             print("Places found: \(decodedResponse.results.count)")
             
             self.places = decodedResponse.results
+
             
         } catch {
             print("Error: \(error)")
@@ -154,11 +155,35 @@ struct Results: Decodable, Hashable {
 struct Place: Decodable, Hashable {
     let link: String
     let name: String
+    let geocodes: Geocodes
     
+    struct Geocodes: Decodable, Hashable {
+        let main: DropOff
+        
+        struct DropOff: Decodable, Hashable {
+            let latitude: Double
+            let longitude: Double
+        }
+    }
     enum CodingKeys: String, CodingKey {
         case link
         case name
+        case geocodes
         
+        enum GeocodesCodingKeys: String, CodingKey {
+                    case main
+                    
+                    enum DropOffCodingKeys: String, CodingKey {
+                        case latitude
+                        case longitude
+                    }
+                }
     }
+    init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            link = try container.decode(String.self, forKey: .link)
+            name = try container.decode(String.self, forKey: .name)
+            geocodes = try container.decode(Geocodes.self, forKey: .geocodes)
+        }
 
 }

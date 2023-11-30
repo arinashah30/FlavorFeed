@@ -43,4 +43,5 @@ struct Post: Identifiable, Hashable {
     var recipes: [Recipe] //Recipe, if applicable [recipe_1, recipe_2, recipe_3]
 
     var friend: Friend?
+    var location: [Place?]?
 }

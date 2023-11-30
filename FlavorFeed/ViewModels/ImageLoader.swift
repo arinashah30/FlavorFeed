@@ -11,11 +11,15 @@ import SwiftUI
 class ImageLoader: ObservableObject {
     @Published var loadedImages: [URL: UIImage] = [:]
     
-    func img(url: URL, properties: @escaping (Image) -> Image) -> some View {
-        if let image = loadedImages[url] {
-            return AnyView(properties(Image(uiImage: image)))
+    func img(url: URL?, properties: @escaping (Image) -> Image) -> some View {
+        if let url = url {
+            if let image = loadedImages[url] {
+                return AnyView(properties(Image(uiImage: image)))
+            } else {
+                return AnyView(ImageLoaderView(url: url, imageLoader: self, properties: properties))
+            }
         } else {
-            return AnyView(ImageLoaderView(url: url, imageLoader: self, properties: properties))
+            return AnyView(properties(Image(systemName: "squareshape.fill")).foregroundColor(.black))
         }
     }
     
