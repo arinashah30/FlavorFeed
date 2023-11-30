@@ -452,7 +452,7 @@ class ViewModel: ObservableObject {
     }
     
     
-    func publish_post(caption: String, location: String, recipe: Recipe?, completion: @escaping (Bool) -> Void) {
+    func publish_post(caption: String, location: String, recipe: Recipe?, pinned: Bool, completion: @escaping (Bool) -> Void) {
         let date = Date()
         // add logic to check if first post of today
         // for now just create new document
@@ -520,6 +520,23 @@ class ViewModel: ObservableObject {
                             self.firebase_add_recipe(postID: self.my_post_today?.id ?? docId.uuidString, recipe: recipe, recipe_id: recipeId) {_ in
                                 print("Added recipe \(recipeId) to postID: \(docId.uuidString)")
                             }
+                        }
+                        
+                        if (pinned) {
+                            if let pins = self.current_user?.pins {
+                                if (!pins.contains(self.my_post_today?.id ?? docId.uuidString)) {
+                                    self.firebase_add_pin(postID: self.my_post_today?.id ?? docId.uuidString) { added in
+                                        // nothing for now
+                                        if added {
+                                            if !self.current_user!.pins.contains(self.my_post_today?.id ?? docId.uuidString) {
+                                                print("adding")
+                                                self.current_user!.pins.append(self.my_post_today?.id ?? docId.uuidString)
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            
                         }
                     }
                 }
