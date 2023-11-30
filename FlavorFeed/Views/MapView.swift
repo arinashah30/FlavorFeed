@@ -46,6 +46,9 @@ struct MapView: View {
     @State private var myPins = [Pin]()
     @Binding var showFullMap: Bool
     
+    @State private var showPostSheet = false
+    @State private var selectedPost: Post? = nil
+    
     init(vm: ViewModel, showFullMap: Binding<Bool>, posts: [Post] = [], friendPosts: Binding<[Post]?> = Binding.constant(nil)) {
         self.vm = vm
         self._showFullMap = showFullMap
@@ -71,19 +74,29 @@ struct MapView: View {
                 UserAnnotation()
                 ForEach(self.myPins, id: \.self) { pin in
                     Annotation(pin.place.name, coordinate: CLLocationCoordinate2D(latitude: pin.place.geocodes.main.latitude, longitude: pin.place.geocodes.main.longitude)) {
-                        vm.imageLoader.img(url: URL(string: pin.post.images[pin.postIndex][0])) { image in
-                            image.resizable()
-                        }.aspectRatio(contentMode: .fit)
-                            .frame(width: 50)
-                            .cornerRadius(10)
+                        Button(action: {
+                            // nothing for now
+                            self.selectedPost = pin.post
+                            self.showPostSheet.toggle()
+                        }, label: {
+                            vm.imageLoader.img(url: URL(string: pin.post.images[pin.postIndex][0])) { image in
+                                image.resizable()
+                            }.aspectRatio(contentMode: .fit)
+                                .frame(width: 50)
+                                .cornerRadius(10)
+                        })
+                        
                     }
                 }
             }
                      }.onAppear() {
                          Task {
-                                 await self.populateAllPlaces(posts: posts)
-                    }
-                }
+                             await self.populateAllPlaces(posts: posts)
+                         }
+                     }.sheet(isPresented: $showPostSheet, content: {
+                         Text("My Post")
+                         // view my post
+                     })
     }
     func populateAllPlaces(posts: [Post]) async {
         for post in posts {

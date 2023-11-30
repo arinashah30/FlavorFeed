@@ -20,6 +20,8 @@ struct PinsView: View {
     let id: String
     var friend: Friend?
     
+    @State var showPostViewSheet = false
+    @State var selectedPost: Post? = nil
     
     var body: some View {
         VStack {
@@ -54,26 +56,31 @@ struct PinsView: View {
                     
                     
                     ForEach(pins) { post in
-                        VStack {
-                            vm.imageLoader.img(url: URL(string: post.images[0][0])!) { image in
-                                image.resizable()
-                            }
-                            .frame(width: 110, height: 136)
+                        Button(action: {
+                            self.selectedPost = post
+                            self.showPostViewSheet.toggle()
+                        }, label: {
+                            VStack {
+                                vm.imageLoader.img(url: URL(string: post.images[0][0])!) { image in
+                                    image.resizable()
+                                }
+                                .frame(width: 110, height: 136)
                                 .clipped()
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 10)
                                         .stroke(Color.ffTertiary, lineWidth: 5)
                                 )
                                 .cornerRadius(10)
-                            
-                            ZStack {
-                                RoundedRectangle(cornerRadius: 12.5)
-                                    .frame(width: 100, height: 25)
-                                    .foregroundColor(.ffTertiary)
-                                Text(postDate(post: post))
-                                    .font(.system(size: 13))
-                            }
-                        }
+                                
+                                ZStack {
+                                    RoundedRectangle(cornerRadius: 12.5)
+                                        .frame(width: 100, height: 25)
+                                        .foregroundColor(.ffTertiary)
+                                    Text(postDate(post: post))
+                                        .font(.system(size: 13))
+                                }
+                            }.foregroundStyle(Color.ffSecondary)
+                        })
                     }
                     .frame(maxHeight: 200)
                 }
@@ -87,7 +94,10 @@ struct PinsView: View {
                 }
             }
             
-        }.onAppear {
+        }.sheet(item: $selectedPost) { post in
+            Text(post.day)
+        }
+        .onAppear {
             if friend == nil {
                 vm.fetchPosts(postIDs: vm.current_user!.pins) { posts in
                     self.pins = posts
