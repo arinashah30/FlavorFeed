@@ -17,6 +17,13 @@ struct FriendProfileView: View {
     @State var showFullMap = false
     @State var posts : [Post]? = nil
     
+    init(vm: ViewModel, friend: Binding<Friend?>, showFriendProfile: Binding<Bool>) {
+        self.vm = vm
+        self._friend = friend
+        self._showFriendProfile = showFriendProfile
+    }
+    
+    
     var body: some View {
         VStack {
             Spacer(minLength: 30)
@@ -44,17 +51,18 @@ struct FriendProfileView: View {
                                     .frame(width: 50, height: 50)
                                     .offset(x: CGFloat(20 * index), y: 0)
                             }
-                        }.padding(.trailing, 40)
+                        }.padding(.trailing, 35)
                         
                         Text("Friends with \(friend?.mutualFriends[0] ?? ""), \(friend?.mutualFriends[1] ?? "") and \((friend?.mutualFriends.count ?? 0) - 2) more")
                             .frame(maxWidth: .infinity)
                             .background(Color.clear)
                             .foregroundColor(.gray)
+                            .padding(.horizontal, 5)
                         
                     }.frame(maxWidth: .infinity, alignment: .leading)
                     VStack {
                         Text("Today's Post").font(.title2).foregroundColor(Color.ffPrimary)
-                        if let postID = friend?.todaysPost, let post = vm.todays_posts.first(where: { $0.id == postID }) {
+                        if let post = vm.todays_posts.first(where: { $0.userID == friend?.id }) {
                             FriendPostToday(post: post, vm: vm)
                         } else {
                             Text("\(friend?.name ?? "") hasn't posted today 😢").foregroundColor(Color.ffPrimary)
@@ -64,7 +72,7 @@ struct FriendProfileView: View {
                     .background(RoundedRectangle(cornerRadius: 25.0).fill(Color(.systemGray6)).frame(maxWidth: .infinity))
                 }.padding()
 
-                PinsView(vm: vm, id: (friend?.id ?? ""), friend: friend)
+                PinsView(vm: vm, id: (friend?.id ?? ""), friend: friend).padding(.horizontal, 10)
                 Button(action: {
                     if (posts != nil) {
                         showFullMap.toggle()
