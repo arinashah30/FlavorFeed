@@ -15,6 +15,8 @@ struct PublishPostView: View {
     @State private var showSelfieFirst = false
     
     @State private var caption: String = ""
+    @State private var isShowingRecipeForm: Bool = false
+    @State private var recipe: Recipe?
     @State private var restaurant: Place?
     
     var body: some View {
@@ -136,7 +138,7 @@ struct PublishPostView: View {
                 
                 HStack {
                     Button {
-                        //
+                        isShowingRecipeForm = true
                     } label: {
                         HStack {
                             Image("spoon_and_knife")
@@ -179,6 +181,7 @@ struct PublishPostView: View {
                 Button(action: {
                     // PUBLISH POST
                     vm.publish_post(caption: caption, location: restaurant?.link ?? "Atlanta, GA", recipe: Recipe(id: "1", title: "Recipe")) { close in
+                    vm.publish_post(caption: caption, location: "Atlanta, GA", recipe: recipe) { close in
                         print("Recipe uploaded: \((!close).description)")
                         if !close {
                             vm.refreshFeed() {
@@ -218,6 +221,11 @@ struct PublishPostView: View {
             PickRestaurantView(vm: vm, restaurant: $restaurant)
                 
         })
+        }
+        .sheet(isPresented: $isShowingRecipeForm) {
+            RecipeFormView(recipe: $recipe, isPresentingRecipeForm: $isShowingRecipeForm)
+        }
+        
     }
     
     func getBigImage() -> UIImage {
