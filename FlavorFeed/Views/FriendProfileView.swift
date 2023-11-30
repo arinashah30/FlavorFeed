@@ -11,92 +11,76 @@ import Foundation
 
 struct FriendProfileView: View {
     @ObservedObject var vm: ViewModel
-    var friend: Friend
-    
+    @Binding var friend: Friend?
+    @Binding var showFriendProfile: Bool
+    @State var mutualFriendProfilePics: [URL] = []
+    @StateObject var myPostVars = MyPostTodayPreviewVariables()
     
     var body: some View {
         VStack {
-            Spacer(minLength: 50)
-            ScrollView{
-                BioView(profilePicture: friend.profilePicture, name: friend.name, id: friend.id, bio: friend.bio)
-                VStack {
-                    ZStack{
-                        RoundedRectangle(cornerRadius: /*@START_MENU_TOKEN@*/25.0/*@END_MENU_TOKEN@*/)
-                            .fill(Color(.systemGray6))
-                        HStack {
-                            ZStack{
-                                Image("food_example")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 120)
-                                    .border(Color.yellow)
-                                    .cornerRadius(20)
-                                Image("person_example")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 40, alignment: .leading)
-                                    .border(Color.red)
-                                    .cornerRadius(10)
-                                    .offset(x:-30,y:-50)
-                            }
-                            VStack {
-                                Text("Today's Flavor Feed")
-                                    .font(.system(size:20)).bold()
-                                Text("Washington, Georgetown - 5 hrs late")
-                                    .minimumScaleFactor(0.4).lineLimit(1)
-                                Spacer()
-                                Button(action: {
-                                }) {
-                                    Text("Add a comment...")
-                                        .padding()
-                                        .background(Color.red)
-                                        .foregroundColor(.white)
-                                        .font(.system(size:15))
-                                        .cornerRadius(20)
-                                }
-                            }
-                        }.padding()
-                    }
+            Spacer(minLength: 30)
+            HStack {
+                Button {
+                    showFriendProfile = false
+                } label: {
+                    Image(systemName: "chevron.left")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 15)
                 }.padding()
-                
-                HStack{
-                    if (friend.mutualFriends.count > 2) {
-                        ZStack {
-                            Circle()
-                                .fill(Color.blue)
-                                .frame(width: 100, height: 50) // Adjust width and height as needed
-                                .offset(x: -150, y: 0) // Offset the first ellipse up by half its height
-                            
-                            Circle()
-                                .fill(Color.green)
-                                .frame(width: 100, height: 50)
-                                .offset(x: -120, y: 0)
-                            
-                            Circle()
-                                .fill(Color.red)
-                                .frame(width: 100, height: 50)
-                                .offset(x: -90, y: 0)
-                            
-                            
-                            Text("Friend with \(friend.mutualFriends[0]), \(friend.mutualFriends[1]) and \(friend.mutualFriends.count - 2) more")
-                                .offset(x: 40)
-                                .frame(maxWidth: 200)
-                                .background(Color.clear)
-                                .foregroundColor(.gray)
-                        }.offset(x:0)
-                    }
-                    
-                }
-                .padding()
-                PinsView(vm: vm, id: friend.id)
                 Spacer()
             }
-        }.ignoresSafeArea()
+            
+            ScrollView{
+                BioView(vm: vm, profilePicture: friend?.profilePicture ?? "https://static-00.iconduck.com/assets.00/person-crop-circle-icon-256x256-02mzjh1k.png", name: friend?.name ?? "", id: friend?.id ?? "", bio: friend?.bio ?? "No bio")
+                VStack {
+                    HStack{
+                        ZStack {
+                            ForEach(mutualFriendProfilePics.indices, id: \.self) { index in
+                                vm.imageLoader.img(url: mutualFriendProfilePics[index]) { image in
+                                    image.resizable()
+                                }.clipShape(Circle())
+                                    .frame(width: 50, height: 50)
+                                    .offset(x: CGFloat(20 * index), y: 0)
+                            }
+                        }.padding(.trailing, 40)
+                        
+                        Text("Friends with \(friend?.mutualFriends[0] ?? ""), \(friend?.mutualFriends[1] ?? "") and \((friend?.mutualFriends.count ?? 0) - 2) more")
+                            .frame(maxWidth: .infinity)
+                            .background(Color.clear)
+                            .foregroundColor(.gray)
+                        
+                    }.frame(maxWidth: .infinity, alignment: .leading)
+                    VStack {
+                        Text("Today's Post").font(.title2).foregroundColor(Color.ffPrimary)
+                        if let postID = friend?.todaysPost, let post = vm.todays_posts.first(where: { $0.id == postID }) {
+                            FriendPostToday(post: post, vm: vm)
+                        } else {
+                            Text("\(friend?.name ?? "") hasn't posted today 😢").foregroundColor(Color.ffPrimary)
+                        }
+                    }.frame(maxWidth: .infinity)
+                    .padding()
+                    .background(RoundedRectangle(cornerRadius: 25.0).fill(Color(.systemGray6)).frame(maxWidth: .infinity))
+                }.padding()
+
+                PinsView(vm: vm, id: (friend?.id ?? ""), friend: friend)
+                MapView(restaurants: [CLLocationCoordinate2D(latitude: 43, longitude: 100), CLLocationCoordinate2D(latitude: -10, longitude: 30), CLLocationCoordinate2D(latitude: 20, longitude: -50), CLLocationCoordinate2D(latitude: 17, longitude: -40)])
+                    .frame(height: 400)
+            }
+        }.environmentObject(myPostVars)
+        .ignoresSafeArea()
             .toolbarBackground(.hidden, for: .navigationBar)
+            .onAppear {
+                vm.getUserProfilePic(userIDs: Array(friend?.mutualFriends.prefix(3) ?? [])) { urls in
+                    self.mutualFriendProfilePics = urls
+                }
+            }
         
     }
 }
 
-#Preview {
-    FriendProfileView(vm: ViewModel(), friend: Friend(id: "champagnepapi", name: "Drake", profilePicture: "https://images-prod.dazeddigital.com/463/azure/dazed-prod/1300/0/1300889.jpeg", bio: "I am Drake", mutualFriends: [], pins: [], todaysPosts: []))
-}
+
+
+//#Preview {
+//    FriendProfileView(vm: ViewModel(), friend: Friend(id: "champagnepapi", name: "Drake", profilePicture: "https://images-prod.dazeddigital.com/463/azure/dazed-prod/1300/0/1300889.jpeg", bio: "I am Drake", mutualFriends: [], pins: [], todaysPosts: []), showFriendProfile: Binding.constant(true))
+//}

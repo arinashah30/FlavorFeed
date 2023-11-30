@@ -758,13 +758,20 @@ class ViewModel: ObservableObject {
                     var friends: [Friend] = [Friend]()
                     for document in documents!.documents {
                         let data = document.data()
+                        let currentUserFriends = Set(self.current_user!.friends.map { $0 })
+                        let user2FriendIDs = Set((data["friends"] as? [String] ?? []).map { $0 })
+
+                        // Find mutual friends by taking the intersection of the two sets
+                        let mutualFriendIDs = Array(currentUserFriends.intersection(user2FriendIDs))
+                        var friendsPostToday: String? = self.todays_posts.first(where: { $0.userID == document.documentID })?.id
+
                         friends.append(Friend(id: document.documentID,
                                               name: data["name"] as? String ?? "Name not Found",
                                               profilePicture: data["profilePicture"] as? String ?? "Profile picture not found",
                                               bio: data["bio"] as? String ?? "",
-                                              mutualFriends: [],
+                                              mutualFriends: mutualFriendIDs,
                                               pins: data["pins"] as? [String] ?? [],
-                                              todaysPosts: []))
+                                              todaysPost: friendsPostToday))
                     }
                     completion(friends)
                 }
@@ -778,13 +785,15 @@ class ViewModel: ObservableObject {
                 print("SetCurrentUserError: \(error.localizedDescription)")
             } else if let document = document {
                 if let data = document.data() {
+                    var friendsPostToday: String? = self.todays_posts.first(where: { $0.userID == userID })?.id
+                    
                     completion(Friend(id: document.documentID,
                                       name: data["name"] as? String ?? "Name not Found",
                                       profilePicture: data["profilePicture"] as? String ?? "Profile picture not found",
                                       bio: data["bio"] as? String ?? "",
                                       mutualFriends: [],
                                       pins: data["pins"] as? [String] ?? [],
-                                      todaysPosts: []))
+                                      todaysPost: friendsPostToday))
                 }
             }
         }
@@ -820,27 +829,29 @@ class ViewModel: ObservableObject {
         }
     }
     
-    
-    func convertToRecipe(postID: String) -> [Recipe] {
-        var recipe: [Recipe]?
-        
-        self.db.collection("POSTS").document(postID).collection("RECIPES").getDocuments(completion: { [weak self] documents, error in
-            if let error = error {
-                self?.errorText = "Cannot get list of recipes from Firebase."
-            } else {
-                for document in documents!.documents {
-                    recipe?.append(Recipe(id: document.documentID,
-                                          title: document["title"] as! String,
-                                          link: document["link"] as? String ?? nil,
-                                          ingredients: document["ingredients"] as! [String],
-                                          directions: document["directions"] as! String?
-                                         ))
-                    UserDefaults.standard.setValue(true, forKey: "log_Status")
+    func getUserProfilePic(userIDs: [String], completion: @escaping ([URL]) -> Void) {
+        var pics: [URL] = []
+        var dispatchGroup = DispatchGroup()
+        for userID in userIDs {
+            dispatchGroup.enter()
+            self.db.collection("USERS").document(userID).getDocument { document, error in
+                defer {
+                    dispatchGroup.leave()
+                }
+                if let err = error {
+                    print("Error getting profile picture")
+                } else if let doc = document {
+                    if let data = doc.data() {
+                        pics.append(URL(string: (data["profilePicture"] as? String ?? "")) ?? URL(string: "https://static-00.iconduck.com/assets.00/person-crop-circle-icon-256x256-02mzjh1k.png")!)
+                    }
                 }
             }
-        })
-        return recipe ?? []
+        }
+        dispatchGroup.notify(queue: .main) {
+            completion(pics)
+        }
     }
+    
     
     
     
