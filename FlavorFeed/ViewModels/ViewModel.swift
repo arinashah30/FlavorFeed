@@ -391,27 +391,49 @@ class ViewModel: ObservableObject {
     
     
     func firebase_add_comment(postID: String, text: String, date: Date, completion: @escaping (Bool) -> Void) {
-        
-        let comment_id = UUID()
-        let dateString = self.dateFormatter.string(from: date)
-        
-        self.db.collection("POSTS").document(postID).collection("COMMENTS").document(comment_id.uuidString).setData(
-            ["id": comment_id.uuidString,
-             "user_id" : current_user!.id,
-             "text": text,
-             "date": dateString,
-             "profilePicture" : current_user!.profilePicture,
-             "replies": []
-            ] as [String : Any]
-        ) { error in
-            if let error = error {
-                print("Error: \(error.localizedDescription)")
-                completion(false)
-            } else {
-                completion(true)
+            
+            let comment_id = UUID()
+            let dateString = self.dateFormatter.string(from: date)
+            
+            self.db.collection("POSTS").document(postID).collection("COMMENTS").document(comment_id.uuidString).setData(
+                ["id": comment_id.uuidString,
+                 "user_id" : current_user!.id,
+                 "text": text,
+                 "date": dateString,
+                 "profilePicture" : current_user!.profilePicture,
+                 "replies": []
+                ] as [String : Any]
+            ) { error in
+                if let error = error {
+                    print("Error: \(error.localizedDescription)")
+                    completion(false)
+                    return
+                } else {
+                    var postIndex = self.todays_posts.firstIndex { post in
+                        post.id == postID
+                    }
+                    if let index = postIndex {
+                            print("APPENDING COMMENTS")
+                        self.todays_posts[index].comments.append(Comment(id: comment_id.uuidString, userID: self.current_user!.id, text: text, date: date, profilePicture: self.current_user!.profilePicture))
+                            completion(true)
+                    } else {
+                        if let my_post = self.my_post_today {
+                            if my_post.id == postID {
+                                // commented on my post
+                                self.my_post_today!.comments.append(
+                                    Comment(id: comment_id.uuidString, userID: self.current_user!.id, text: text, date: date, profilePicture: self.current_user!.profilePicture)
+                                )
+                            } else {
+                                completion(false)
+                                return
+                            }
+                        } else {
+                            completion(false)
+                        }
+                    }
+                }
             }
         }
-    }
     
     func firebase_add_recipe(postID: String, recipe: Recipe, recipe_id: String, completion: @escaping (Bool) -> Void) {
         self.db.collection("POSTS").document(postID).collection("RECIPES").document(recipe_id).setData(
