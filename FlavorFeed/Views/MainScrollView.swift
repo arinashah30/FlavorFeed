@@ -37,10 +37,13 @@ struct MainScrollView: View {
                         
                         ForEach(vm.todays_posts, id: \.self) { post in
                             PostView(vm: vm, post: post)
-                                .frame(idealWidth: geometry.size.width, minHeight: 700, idealHeight: 750, maxHeight: .infinity)
+                                .frame(idealWidth: geometry.size.width, minHeight: 750)
+                            Spacer()
+                                .frame(height: CGFloat(post.comments.count * 100) + 30)
+//                                .background(Color.green)
                         }
-                        Spacer()
-                            .frame(height: geometry.size.height * 0.5)
+//                        Spacer()
+//                            .frame(height: geometry.size.height * 0.3)
                     }
                     .refreshable {
                         DispatchQueue.main.async {

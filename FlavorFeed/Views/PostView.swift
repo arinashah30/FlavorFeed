@@ -208,7 +208,6 @@ struct PostView: View {
                             .cornerRadius(20)
                             .padding(.bottom, 8)
                         }.padding(.horizontal, 10)
-                        
                     }
                     HStack {
                         TextField("Add comment here", text: $myNewComment)
@@ -233,11 +232,12 @@ struct PostView: View {
                         .background(Color.ffPrimary)
                         .cornerRadius(10)
                         .padding()
-                    
                 }
                 .padding(.top, -7)
                 Spacer()
             }.frame(maxHeight: .infinity)
+//                    Spacer()
+            //            .frame(height: CGFloat(post.comments.count * 1) + 30)
         }
     }
     
