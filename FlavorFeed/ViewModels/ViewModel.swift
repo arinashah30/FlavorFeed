@@ -61,6 +61,7 @@ class ViewModel: ObservableObject {
     @Published var photo_1: UIImage?
     @Published var photo_2: UIImage?
     @Published var bothImagesCaptured = false
+    @Binding var isActive: Bool
     
     let db = Firestore.firestore()
     let auth = Auth.auth()
@@ -73,9 +74,11 @@ class ViewModel: ObservableObject {
     init(photo1: UIImage? = nil, photo2: UIImage? = nil) {
         self.photo_1 = photo1
         self.photo_2 = photo2
+        self._isActive = Binding.constant(false)
     }
     
-    init() {
+    init(isActive: Binding<Bool>) {
+        self._isActive = isActive
         dateFormatter.dateFormat = "MM-dd-yyyy HH:mm:ss"
         dayFormatter.dateFormat = "MM-dd-yyyy"
         
@@ -89,6 +92,9 @@ class ViewModel: ObservableObject {
                         
                         self?.refreshFeed {
                             // do nothing
+                            if let vm = self {
+                                vm.isActive = false
+                            }
                         }
                     }
                 }
