@@ -55,7 +55,7 @@ class ImageLoader: ObservableObject {
             if let loadedImage = imageLoader.loadedImages[url] {
                 properties(Image(uiImage: loadedImage))
             } else {
-                properties(Image(systemName: "squareshape.fill")).foregroundColor(.black) // Placeholder image while loading
+                properties(Image(systemName: "squareshape.fill").resizable()).foregroundColor(.black).scaledToFill().background(Color.black) // Placeholder image while loading
                     .onAppear {
                         // Load the image asynchronously
                         self.imageLoader.loadImage(from: self.url) { loadedImage in

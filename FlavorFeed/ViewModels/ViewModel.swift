@@ -852,6 +852,24 @@ class ViewModel: ObservableObject {
         }
     }
     
+    func getUserPosts(userID: String, completion: @escaping ([Post]) -> Void) {
+        var postArr : [Post] = []
+        self.db.collection("USERS").document(userID).getDocument { document, error in
+            if let err = error {
+                print("Error getting user's posts \(err.localizedDescription)")
+            } else {
+                if let doc = document, let data = doc.data() {
+                    var postIDs = data["myPosts"] as? [String] ?? []
+                    self.fetchPosts(postIDs: postIDs) { posts in
+                        completion(posts)
+                    }
+                } else {
+                    print("error getting user document \(userID)")
+                }
+            }
+        }
+    }
+    
     
     
     

@@ -46,10 +46,10 @@ struct MapView: View {
     @State private var myPins = [Pin]()
     @Binding var showFullMap: Bool
     
-    init(vm: ViewModel, showFullMap: Binding<Bool>, posts: [Post]) {
+    init(vm: ViewModel, showFullMap: Binding<Bool>, posts: [Post] = [], friendPosts: Binding<[Post]?> = Binding.constant(nil)) {
         self.vm = vm
         self._showFullMap = showFullMap
-        self.posts = posts
+        self.posts = friendPosts.wrappedValue != nil ? friendPosts.wrappedValue! : posts
     }
     
     var body: some View{

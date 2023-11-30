@@ -14,7 +14,6 @@ struct UserListView: View {
     @State var friend: Friend?
     
     
-    
     var body: some View {
         GeometryReader { geometry in
             List {
@@ -45,9 +44,6 @@ struct UserListView: View {
             .listStyle(.plain)
             .fullScreenCover(isPresented: $showFriendProfile, content: {
                 FriendProfileView(vm: vm, friend: $friend, showFriendProfile: $showFriendProfile)
-//                if let friend = $friend.wrappedValue {
-//                    
-//                }
             })
         }
     }

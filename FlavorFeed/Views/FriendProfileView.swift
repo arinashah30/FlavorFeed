@@ -14,7 +14,8 @@ struct FriendProfileView: View {
     @Binding var friend: Friend?
     @Binding var showFriendProfile: Bool
     @State var mutualFriendProfilePics: [URL] = []
-    @StateObject var myPostVars = MyPostTodayPreviewVariables()
+    @State var showFullMap = false
+    @State var posts : [Post]? = nil
     
     var body: some View {
         VStack {
@@ -64,19 +65,43 @@ struct FriendProfileView: View {
                 }.padding()
 
                 PinsView(vm: vm, id: (friend?.id ?? ""), friend: friend)
-                MapView(restaurants: [CLLocationCoordinate2D(latitude: 43, longitude: 100), CLLocationCoordinate2D(latitude: -10, longitude: 30), CLLocationCoordinate2D(latitude: 20, longitude: -50), CLLocationCoordinate2D(latitude: 17, longitude: -40)])
-                    .frame(height: 400)
+                Button(action: {
+                    if (posts != nil) {
+                        showFullMap.toggle()
+                    }
+                }, label: {
+                    MapView(vm: vm, showFullMap: $showFullMap, friendPosts: $posts)
+                        .frame(height: 400)
+                })
+                .fullScreenCover(isPresented: $showFullMap, content: {
+                    MapView(vm: vm, showFullMap: $showFullMap, friendPosts: $posts)
+                })
             }
-        }.environmentObject(myPostVars)
+        }
         .ignoresSafeArea()
             .toolbarBackground(.hidden, for: .navigationBar)
             .onAppear {
+                var dispatchGroup = DispatchGroup()
+                dispatchGroup.enter()
+                vm.getUserPosts(userID: friend?.id ?? "") { posts in
+                    self.posts = posts
+                    dispatchGroup.leave()
+                }
+                dispatchGroup.enter()
                 vm.getUserProfilePic(userIDs: Array(friend?.mutualFriends.prefix(3) ?? [])) { urls in
                     self.mutualFriendProfilePics = urls
+                    dispatchGroup.leave()
                 }
+                dispatchGroup.notify(queue: .main) {
+                        // Code here will run when both getUserPosts and getUserProfilePic are finished
+                        print("Both tasks are complete in FriendProfileView")
+                    }
             }
         
+        
+        
     }
+    
 }
 
 
