@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct BioView: View {
+    @ObservedObject var vm: ViewModel
     var profilePicture: String
     var name: String
     var id: String
@@ -15,33 +16,24 @@ struct BioView: View {
     
     var body: some View {
         VStack (alignment: .center) {
-            AsyncImage(url: URL(string: profilePicture)) { image in
+            vm.imageLoader.img(url: URL(string: profilePicture) ?? URL(string: "https://static-00.iconduck.com/assets.00/person-crop-circle-icon-256x256-02mzjh1k.png")!) { image in
                 image
                     .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: 80)
-                    .clipShape(.circle)
-            } placeholder: {
-                ZStack {
-                    Color.gray
-                    if (!profilePicture.isEmpty) {
-                        ProgressView()
-                    }
-                }.aspectRatio(contentMode: .fill)
-                    .frame(width: 80)
-                    .clipShape(.circle)
-                
             }
+                .aspectRatio(contentMode: .fill)
+                .frame(width: 80)
+                .clipShape(.circle)
                 
             Text(name)
                 .font(.title)
+                .foregroundColor(Color.ffSecondary)
             Text("@" + id)
                 .font(.system(size: 15))
                 .foregroundColor(.gray)
             
             Text(bio)
                 .font(.system(size: 20))
-                .foregroundColor(.black)
+                .foregroundColor(Color.ffSecondary)
         }
     }
 }

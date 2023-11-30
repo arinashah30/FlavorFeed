@@ -10,6 +10,8 @@ struct UserListView: View {
     @Binding var selectedOption: String
     
     @State var filteredUsers = [Friend]()
+    @State var showFriendProfile: Bool = false
+    @State var friend: Friend?
     
     
     
@@ -17,9 +19,16 @@ struct UserListView: View {
         GeometryReader { geometry in
             List {
                 ForEach(self.filteredUsers, id: \.self) { user in
-                    NavigationLink(destination: FriendProfileView(vm: vm, friend: user), label: {
-                        UserRow(suggestions: suggestions, friends: friends, requests: requests, user: user, width: geometry.size.width, vm: vm, selectedOption: $selectedOption, onAccept: {_ in self.accept(user)}, onReject: {_ in self.reject(user)}, onSend: { _ in self.send(user)}).padding(.horizontal, 10)
-                    })
+                        UserRow(user: user, width: geometry.size.width, vm: vm, selectedOption: $selectedOption, onAccept: {_ in self.accept(user)}, onReject: {_ in self.reject(user)}, onSend: { _ in self.send(user)})
+                        .padding(.horizontal, 10)
+                        .onTapGesture {
+                            friend = user
+                            print("BRUH: \($friend.wrappedValue)")
+                            if (friend != nil) {
+                                showFriendProfile = true
+                            }
+                        }
+
                     
                 }
             }.refreshable {
@@ -34,6 +43,12 @@ struct UserListView: View {
                 refresh(newValue)
             }
             .listStyle(.plain)
+            .fullScreenCover(isPresented: $showFriendProfile, content: {
+                FriendProfileView(vm: vm, friend: $friend, showFriendProfile: $showFriendProfile)
+//                if let friend = $friend.wrappedValue {
+//                    
+//                }
+            })
         }
     }
     func accept(_ user: Friend) {
@@ -94,9 +109,6 @@ struct UserListView: View {
 }
 
 struct UserRow: View {
-    var suggestions: [Friend]
-    var friends: [Friend]
-    var requests: [Friend]
     let user: Friend
     let width: CGFloat
     @ObservedObject var vm: ViewModel
@@ -110,7 +122,7 @@ struct UserRow: View {
     var body: some View {
         HStack {
 
-            vm.imageLoader.img(url: URL(string: user.profilePicture)!) { image in
+            vm.imageLoader.img(url: URL(string: user.profilePicture) ?? URL(string: "https://static-00.iconduck.com/assets.00/person-crop-circle-icon-256x256-02mzjh1k.png")!) { image in
                 image.resizable()
             }.scaledToFill()
                 .frame(width: 70, height: 70)
