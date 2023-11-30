@@ -25,6 +25,7 @@ struct PostView: View {
     @State private var myNewComment = ""
     @State private var isShowingSheet = false
     
+    
     @State private var friendSelected: Friend? = nil
     @State private var showingFriendProfileView = false
     
@@ -39,224 +40,221 @@ struct PostView: View {
     }
     
     var body: some View {
-        GeometryReader { geo in
-            VStack {
-                HStack {
-                    Button {
-                        self.friendSelected = post.friend!
-                        self.showingFriendProfileView = true
-                    } label: {
-                        HStack {
-                            vm.imageLoader.img(url: URL(string: post.friend!.profilePicture)!) { image in
-                                image
-                                    .resizable()
-                            }.aspectRatio(contentMode: .fill)
-                                .frame(width: geo.size.height * 0.08, height: geo.size.height * 0.08)
-                                .clipShape(Circle())
-                            
-                            VStack (alignment: .leading) {
-                                Text(post.friend!.name)
-                                    .font(.system(size: 18))
-                                    .foregroundColor(.ffSecondary)
-                                    .fontWeight(.semibold)
-                                Text("\(post.locations[tabSelection]) • \(formatPostTime(time: post.date[tabSelection]))")
-                                    .font(.system(size: 15))
-                                    .fontWeight(.light)
-                                    .foregroundStyle(Color.gray)
-                            }
+        VStack {
+            
+            HStack {
+                Button {
+                    self.friendSelected = post.friend!
+                    self.showingFriendProfileView = true
+                } label: {
+                    HStack {
+                        vm.imageLoader.img(url: URL(string: post.friend!.profilePicture)!) { image in
+                            image
+                                .resizable()
+                        }.aspectRatio(contentMode: .fill)
+                            .frame(width: UIScreen.main.bounds.size.width * 0.08, height: UIScreen.main.bounds.size.height * 0.08)
+                            .clipShape(Circle())
+                        
+                        VStack (alignment: .leading) {
+                            Text(post.friend!.name)
+                                .font(.system(size: 18))
+                                .foregroundColor(.ffSecondary)
+                                .fontWeight(.semibold)
+                            Text("\(post.locations[tabSelection]) • \(formatPostTime(time: post.date[tabSelection]))")
+                                .font(.system(size: 15))
+                                .fontWeight(.light)
                         }
-                    }
-
-                    
-                    Spacer()
-                    Button {
-                        
-                    } label: {
-                        Image(systemName: "ellipsis")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 20)
-                            .foregroundColor(.black)
-                    }
+                    }.foregroundStyle(Color.ffSecondary)
                 }
-                .padding([.leading, .trailing] , 15)
                 
-                TabView(selection: $tabSelection) {
-                    ForEach(0..<post.images.count) { index in
+                
+                
+                
+                Spacer()
+                Button {
+                    
+                } label: {
+                    Image(systemName: "ellipsis")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 20)
+                        .foregroundColor(.black)
+                }
+            }
+            .padding([.leading, .trailing] , 20)
+            
+            TabView(selection: $tabSelection) {
+                ForEach(0..<post.images.count) { index in
+                    
+                    ZStack (){
+                        vm.imageLoader.img(url: URL(string: bigImage(index))!) { image in
+                            image.resizable()
+                        }.aspectRatio(contentMode: .fill)
+                            .frame(width: UIScreen.main.bounds.size.width*0.98, height: UIScreen.main.bounds.size.height*0.66)
                         
-                        ZStack (){
-                            vm.imageLoader.img(url: URL(string: bigImage(index))!) { image in
-                                image.resizable()
-                            }.aspectRatio(contentMode: .fill)
-                                .frame(width: geo.size.width*0.98, height: geo.size.height*0.66)
-                                .clipped()
-                            
-                            
-                            VStack {
-                                HStack {
-                                    VStack {
-                                        Button {
-                                            self.showSelfieFirst.toggle()
-                                        } label: {
-                                            vm.imageLoader.img(url: URL(string: smallImage(index))!) { image in
-                                                image.resizable()
-                                            }.aspectRatio(contentMode: .fill)
-                                                .frame(width: geo.size.width * 0.30, height: geo.size.height * 0.2)
-                                                .background(.black)
-                                                .clipped()
-                                                .cornerRadius(10)
-                                                .overlay(
-                                                    RoundedRectangle(cornerRadius: 10)
-                                                        .stroke(Color.ffPrimary, lineWidth: 2)
-                                                )
-                                                .padding()
-                                        }
-                                        Spacer()
+                        
+                        VStack {
+                            HStack {
+                                VStack {
+                                    Button {
+                                        self.showSelfieFirst.toggle()
+                                    } label: {
+                                        vm.imageLoader.img(url: URL(string: smallImage(index))!) { image in
+                                            image.resizable()
+                                        }.aspectRatio(contentMode: .fill)
+                                            .frame(width: UIScreen.main.bounds.size.width * 0.30, height: UIScreen.main.bounds.size.height * 0.2)
+                                            .background(.black)
+                                            .clipped()
+                                            .cornerRadius(10)
+                                            .overlay(
+                                                RoundedRectangle(cornerRadius: 10)
+                                                    .stroke(Color.ffPrimary, lineWidth: 2)
+                                            )
+                                            .padding()
                                     }
                                     Spacer()
-                                    VStack {
-                                        if (post.recipes[tabSelection] != nil) {
-                                            Button {
-                                                isShowingSheet = true
-                                            } label: {
-                                                Image("fork_and_knife")
-                                                    .resizable()
-                                                    .aspectRatio(contentMode: .fit)
-                                                    .frame(width: 35)
-                                                    .foregroundColor(.ffTertiary)
-                                            }
-                                        }
-                                        
-                                        
-                                        
+                                }
+                                Spacer()
+                                VStack {
+                                    if (post.recipes[tabSelection] != nil) {
                                         Button {
-                                            
+                                            isShowingSheet = true
                                         } label: {
-                                            Image("Restaurant_logo")
+                                            Image("fork_and_knife")
                                                 .resizable()
                                                 .aspectRatio(contentMode: .fit)
                                                 .frame(width: 35)
+                                                .foregroundColor(.ffTertiary)
                                         }
-                                        Spacer()
-                                    }.padding()
-                                    
-                                }
-                                Spacer()
-                                if index < post.caption.count {
-                                    if (!post.caption[index].isEmpty) {
-                                        Text(post.caption[index])
-                                            .background(RoundedRectangle(cornerRadius: 10.0)
-                                                .frame(width: geo.size.width * 0.7, height: geo.size.height * 0.05)
-                                                .foregroundColor(.ffTertiary))
-                                            .padding(20)
                                     }
-                                }
-                            }
-                            
-                        }.cornerRadius(20)
-                            .padding(.bottom, 55)
-                            .padding([.leading, .trailing] , 20)
-                            .tag(index)
-                            .sheet(isPresented: $isShowingSheet) {
-                                if let recipe = post.recipes[tabSelection] {
-                                    RecipeSheetView(recipe: recipe, isShowingSheet: $isShowingSheet)
-                                }
-                            }
-                    }.frame(height: geo.size.height * 0.69)
-                    
-                }.tabViewStyle(.page).indexViewStyle(.page(backgroundDisplayMode: .always))
-                    .frame(height: geo.size.height * 0.725)
-                    .onAppear {
-                        setupAppearance()
-                    }
-                
-                
-                VStack{
-                    HStack{
-                        Text("Top Comments (\(post.comments.count))")
-                            .font(.system(size: 15))
-                            .fontWeight(.light)
-                            .padding(.top, -2)
-                        Spacer()
-                        
-                        Button {
-                            withAnimation (.smooth) {
-                                self.showComments.toggle()
-                            }
-                        } label: {
-                            Image(systemName: self.showComments ? "chevron.down" : "chevron.up")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 15)
-                                .foregroundColor(.black)
-                        }
-                    }
-                    .padding(.horizontal, 20)
-                    .padding(.top, 5)
-                    if showComments && post.comments.count != 0 {
-                        VStack {
-                            ForEach(post.comments, id: \.self) { comment in
-                                HStack {
-                                    vm.imageLoader.img(url: URL(string: comment.profilePicture)!) { image in
-                                            image.resizable()
-                                    }
-                                    .frame(width: 60, height: 60)
-                                    .clipShape(.circle)
-                                    .padding(.leading, 10)
                                     
-                                    ZStack{
-                                        RoundedRectangle(cornerRadius: 10)
-                                            .fill(gold)
-                                        Text("**\(comment.userID)**: \(comment.text)")
-                                            .frame(maxWidth: .infinity, alignment: .leading)
-                                            .multilineTextAlignment(.leading)
-                                            .padding(.horizontal, 10)
-                                    }.padding(.trailing, 10)
-                                }
+                                    
+                                    
+                                    Button {
+                                        
+                                    } label: {
+                                        Image("Restaurant_logo")
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fit)
+                                            .frame(width: 35)
+                                    }
+                                    Spacer()
+                                }.padding()
                                 
                             }
-                            .padding(.vertical)
-                            .background(lightGray)
-                            .cornerRadius(20)
-                            .padding(.bottom, 8)
-                        }.padding(.horizontal, 10)
-                        
-                    }
-                    HStack {
-                        TextField("Add comment here", text: $myNewComment)
-                        Button {
-                            // add comment
-                            vm.firebase_add_comment(postID: post.id, text: myNewComment, date: Date()) { uploaded in
-                                if uploaded {
-                                    myNewComment = ""
-                                    vm.refreshFeed {
-                                        // do nothing
-                                    }
+                            Spacer()
+                            if index < post.caption.count {
+                                if (!post.caption[index].isEmpty) {
+                                    Text(post.caption[index])
+                                        .background(RoundedRectangle(cornerRadius: 10.0)
+                                            .frame(width: UIScreen.main.bounds.size.width * 0.7, height: UIScreen.main.bounds.size.height * 0.05)
+                                            .foregroundColor(.ffTertiary))
+                                        .padding(20)
                                 }
                             }
-                        } label: {
-                            Image(systemName: "paperplane.circle")
-                                .foregroundColor(.ffSecondary)
-                                .font(.system(size: 24))
                         }
-                    }.frame(maxWidth: .infinity)
-                        .padding(.horizontal)
-                        .padding(.vertical, 5)
-                        .background(Color.ffPrimary)
-                        .cornerRadius(10)
-                        .padding()
+                        
+                    }.cornerRadius(20)
+                        .padding(.bottom, 55)
+                        .padding([.leading, .trailing] , 20)
+                        .tag(index)
+                        .sheet(isPresented: $isShowingSheet) {
+                            if let recipe = post.recipes[tabSelection] {
+                                RecipeSheetView(recipe: recipe, isShowingSheet: $isShowingSheet)
+                            }
+                        }
+                }.frame(height: UIScreen.main.bounds.size.height * 0.69)
+                
+            }.tabViewStyle(.page).indexViewStyle(.page(backgroundDisplayMode: .always))
+                .frame(height: UIScreen.main.bounds.size.height * 0.725)
+                .onAppear {
+                    setupAppearance()
+                }
+            
+            
+            VStack{
+                HStack{
+                    Text("Top Comments (\(post.comments.count))")
+                        .font(.system(size: 15))
+                        .fontWeight(.light)
+                        .padding(.top, -2)
+                    Spacer()
+                    
+                    Button {
+                        withAnimation (.smooth) {
+                            self.showComments.toggle()
+                        }
+                    } label: {
+                        Image(systemName: self.showComments ? "chevron.down" : "chevron.up")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 15)
+                            .foregroundColor(.black)
+                    }
+                }
+                .padding(.horizontal, 20)
+                .padding(.top, 5)
+                if showComments && post.comments.count != 0 {
+                    VStack {
+                        ForEach(post.comments, id: \.self) { comment in
+                            HStack {
+                                vm.imageLoader.img(url: URL(string: comment.profilePicture)!) { image in
+                                    image.resizable()
+                                }
+                                .frame(width: 60, height: 60)
+                                .clipShape(.circle)
+                                .padding(.leading, 10)
+                                
+                                ZStack{
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .fill(gold)
+                                    Text("**\(comment.userID)**: \(comment.text)")
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .multilineTextAlignment(.leading)
+                                        .padding(.horizontal, 10)
+                                }.padding(.trailing, 10)
+                            }
+                            
+                        }
+                        .padding(.vertical)
+                        .background(lightGray)
+                        .cornerRadius(20)
+                        .padding(.bottom, 8)
+                    }.padding(.horizontal, 10)
                     
                 }
-                .padding(.top, -7)
-                Spacer()
-            }.frame(maxHeight: .infinity)
-        }.fullScreenCover(isPresented: $showingFriendProfileView) {
-            self.friendSelected = nil
-            self.showingFriendProfileView = false
-        } content: {
-            FriendProfileView(vm: vm, friend: $friendSelected, showFriendProfile: $showingFriendProfileView)
-        }
-
+                HStack {
+                    TextField("Add comment here", text: $myNewComment)
+                    Button {
+                        // add comment
+                        vm.firebase_add_comment(postID: post.id, text: myNewComment, date: Date()) { uploaded in
+                            if uploaded {
+                                myNewComment = ""
+                            }
+                        }
+                    } label: {
+                        Image(systemName: "paperplane.circle")
+                            .foregroundColor(.ffSecondary)
+                            .font(.system(size: 24))
+                    }
+                }.frame(maxWidth: .infinity)
+                    .padding(.horizontal)
+                    .padding(.vertical, 5)
+                    .background(Color.ffPrimary)
+                    .cornerRadius(10)
+                    .padding()
+                
+            }
+            .padding(.top, -7)
+            Spacer()
+        }.frame(maxHeight: .infinity)
+            .fullScreenCover(isPresented: $showingFriendProfileView) {
+                self.friendSelected = nil
+                self.showingFriendProfileView = false
+            } content: {
+                FriendProfileView(vm: vm, friend: $friendSelected, showFriendProfile: $showingFriendProfileView)
+            }
+        
     }
     
     func setupAppearance() {
