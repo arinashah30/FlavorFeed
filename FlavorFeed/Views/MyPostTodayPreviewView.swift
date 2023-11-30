@@ -40,7 +40,7 @@ struct MyPostTodayPreviewView: View {
                                     vm.imageLoader.img(url: URL(string: post.images[i][0])!) { image in
                                         image.resizable()
                                     }.aspectRatio(contentMode: .fit)
-                                        .frame(width: 112, height: 149)
+                                        .frame(width: 112)
                                         .clipShape(RoundedRectangle(cornerRadius: 10))
                                     
                                     if (post.comments.count > 0) {

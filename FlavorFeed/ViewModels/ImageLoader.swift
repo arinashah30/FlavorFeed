@@ -19,7 +19,7 @@ class ImageLoader: ObservableObject {
                 return AnyView(ImageLoaderView(url: url, imageLoader: self, properties: properties))
             }
         } else {
-            return AnyView(properties(Image(systemName: "squareshape.fill")).foregroundColor(.black))
+            return AnyView(properties(Image(systemName: "squareshape.fill").resizable()).foregroundColor(.black).scaledToFill().background(Color.black))
         }
     }
     

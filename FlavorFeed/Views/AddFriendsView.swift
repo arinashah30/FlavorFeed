@@ -25,6 +25,26 @@ struct AddFriendsView: View {
         NavigationStack {
             GeometryReader { geometry in
                 VStack {
+                    ZStack {
+                        HStack {
+                            //Spacer(minLength: UIScreen.main.bounds.size.width / 4).padding(.leading, 5)
+                            Spacer()
+                            
+                            //Spacer(minLength: UIScreen.main.bounds.size.width / 5)
+                            Button {
+                                self.tabSelection = .mainScrollView
+                            } label: {
+                                Image(systemName: "arrow.right")
+                                    .foregroundColor(.black)
+                                    .font(.system(size: 20)).padding(5)
+                            }.padding(.trailing, 5)
+                        }
+                        Image("flavorfeed_logo")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(height:  18.3)
+                            .offset(x: 0)
+                    }
                     Spacer(minLength: 40)
                     HStack {
                         Image(systemName: "magnifyingglass")
@@ -85,33 +105,7 @@ struct AddFriendsView: View {
                     
                 
                 
-                .toolbar {
-                    HStack {
-                        Spacer()
-                        Image("flavorfeed_logo")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(height:  18.3)
-                        
-                        Spacer()
-                        Spacer()
-                        Spacer()
-                        Spacer()
-                        Spacer()
-                        Spacer()
-                        Spacer()
-                        Spacer()
-                        Spacer()
-                        Spacer()
-                        Button {
-                            self.tabSelection = .mainScrollView
-                        } label: {
-                            Image(systemName: "arrow.right")
-                                .foregroundColor(.black)
-                                .font(.system(size: 20)).padding(5)
-                        }
-                    }
-                }
+
             }
         }
         .onAppear {
