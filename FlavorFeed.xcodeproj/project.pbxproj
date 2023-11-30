@@ -28,6 +28,8 @@
 		668CD5212AF03F2F00A64DF1 /* UserListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 668CD5202AF03F2F00A64DF1 /* UserListView.swift */; };
 		669C94B02AE98C770075BE66 /* ToolBars.swift in Sources */ = {isa = PBXBuildFile; fileRef = 669C94AF2AE98C770075BE66 /* ToolBars.swift */; };
 		66BD36BD2B16534E004CCD20 /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21292502ACD21500064AE5D /* ViewModel.swift */; };
+		66D23C692B180B210006F5D1 /* SelfProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66D23C682B180B210006F5D1 /* SelfProfileView.swift */; };
+		66D4A3FA2B183F1600B34B9F /* FriendPostToday.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66D4A3F92B183F1600B34B9F /* FriendPostToday.swift */; };
 		66F125562B0D4D1000CB63A9 /* LandingPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66F125552B0D4D1000CB63A9 /* LandingPage.swift */; };
 		A91C89B22AFEAB01002146FF /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91C89B12AFEAB01002146FF /* LocationManager.swift */; };
 		B212922E2ACD20300064AE5D /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = B212922D2ACD20300064AE5D /* FirebaseAuth */; };
@@ -56,10 +58,10 @@
 		B27054512B06CFBD00BC7174 /* PublishPostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B27054502B06CFBD00BC7174 /* PublishPostView.swift */; };
 		B29C244C2B184F83000A2519 /* MyPostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B29C244B2B184F83000A2519 /* MyPostView.swift */; };
 		B2A09FBB2B16CEE800393770 /* ImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A09FBA2B16CEE800393770 /* ImageLoader.swift */; };
-		B2BACCCD2ACF12B300F942A3 /* SelfProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6602DD8B2AC625EF008C3177 /* SelfProfileView.swift */; };
 		B2BACCCF2ACF132000F942A3 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2BACCCE2ACF132000F942A3 /* ContentView.swift */; };
 		B2C5E46C2AF2A476000EA620 /* Friend.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C5E46B2AF2A476000EA620 /* Friend.swift */; };
 		B2C5E46E2AF2AF02000EA620 /* Recipe.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C5E46D2AF2AF02000EA620 /* Recipe.swift */; };
+		B2ECE1B12B180885001A7305 /* PickRestaurantView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2ECE1B02B180885001A7305 /* PickRestaurantView.swift */; };
 		B2FCB8FF2AC63AA200865FCF /* FFColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FCB8FE2AC63AA100865FCF /* FFColors.swift */; };
 		B624B05F2B058650007B43E5 /* RecipeFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B624B05E2B058650007B43E5 /* RecipeFormView.swift */; };
 		B6903C972AC8D2FF009CCE41 /* AddFriendsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6903C962AC8D2FF009CCE41 /* AddFriendsView.swift */; };
@@ -93,7 +95,6 @@
 		48349B212ACCCAF600F672E3 /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		489E36122AD8ACE900369ECB /* Comment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
 		48D942A82B09677000456526 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
-		6602DD8B2AC625EF008C3177 /* SelfProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelfProfileView.swift; sourceTree = "<group>"; };
 		664B8F022AC5F1AA001E8C7F /* FlavorFeed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlavorFeed.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		664B8F052AC5F1AA001E8C7F /* FlavorFeedApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlavorFeedApp.swift; sourceTree = "<group>"; };
 		664B8F092AC5F1AB001E8C7F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -109,6 +110,8 @@
 		668CD51E2AEC205300A64DF1 /* PinsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PinsView.swift; sourceTree = "<group>"; };
 		668CD5202AF03F2F00A64DF1 /* UserListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserListView.swift; sourceTree = "<group>"; };
 		669C94AF2AE98C770075BE66 /* ToolBars.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToolBars.swift; sourceTree = "<group>"; };
+		66D23C682B180B210006F5D1 /* SelfProfileView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelfProfileView.swift; sourceTree = "<group>"; };
+		66D4A3F92B183F1600B34B9F /* FriendPostToday.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendPostToday.swift; sourceTree = "<group>"; };
 		66F125552B0D4D1000CB63A9 /* LandingPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LandingPage.swift; sourceTree = "<group>"; };
 		A91C89B12AFEAB01002146FF /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		B21292452ACD20480064AE5D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -126,6 +129,7 @@
 		B2BACCD32ACF161100F942A3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		B2C5E46B2AF2A476000EA620 /* Friend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Friend.swift; sourceTree = "<group>"; };
 		B2C5E46D2AF2AF02000EA620 /* Recipe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Recipe.swift; sourceTree = "<group>"; };
+		B2ECE1B02B180885001A7305 /* PickRestaurantView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickRestaurantView.swift; sourceTree = "<group>"; };
 		B2FCB8FE2AC63AA100865FCF /* FFColors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FFColors.swift; sourceTree = "<group>"; };
 		B624B05E2B058650007B43E5 /* RecipeFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeFormView.swift; sourceTree = "<group>"; };
 		B6903C962AC8D2FF009CCE41 /* AddFriendsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFriendsView.swift; sourceTree = "<group>"; };
@@ -184,9 +188,11 @@
 				B2BACCCE2ACF132000F942A3 /* ContentView.swift */,
 				BF0C62DC2ADF43A6003A7553 /* SignupView.swift */,
 				B27054502B06CFBD00BC7174 /* PublishPostView.swift */,
+				B2ECE1B02B180885001A7305 /* PickRestaurantView.swift */,
 				B23FF6B72B0AC3FE00F27AF2 /* MyPostTodayPreviewView.swift */,
+				66D4A3F92B183F1600B34B9F /* FriendPostToday.swift */,
 				B27054492B06B5A300BC7174 /* CameraView.swift */,
-				6602DD8B2AC625EF008C3177 /* SelfProfileView.swift */,
+				66D23C682B180B210006F5D1 /* SelfProfileView.swift */,
 				082052E22B06E40F007BE0CE /* FriendProfileView.swift */,
 				668CD51A2AEC1D6F00A64DF1 /* MainScrollView.swift */,
 				48349B1F2ACCCAEF00F672E3 /* CalendarView.swift */,
@@ -448,14 +454,16 @@
 			files = (
 				48349B202ACCCAEF00F672E3 /* CalendarView.swift in Sources */,
 				48349B222ACCCAF600F672E3 /* MapView.swift in Sources */,
+				B2ECE1B12B180885001A7305 /* PickRestaurantView.swift in Sources */,
 				48349B1C2ACCCADA00F672E3 /* BioView.swift in Sources */,
 				B29C244C2B184F83000A2519 /* MyPostView.swift in Sources */,
 				082052E32B06E40F007BE0CE /* FriendProfileView.swift in Sources */,
 				668CD5212AF03F2F00A64DF1 /* UserListView.swift in Sources */,
 				665113522AC6021800027654 /* User.swift in Sources */,
 				B270544A2B06B5A300BC7174 /* CameraView.swift in Sources */,
-				B2BACCCD2ACF12B300F942A3 /* SelfProfileView.swift in Sources */,
+				66D23C692B180B210006F5D1 /* SelfProfileView.swift in Sources */,
 				B2FCB8FF2AC63AA200865FCF /* FFColors.swift in Sources */,
+				66D4A3FA2B183F1600B34B9F /* FriendPostToday.swift in Sources */,
 				665113502AC601E900027654 /* Post.swift in Sources */,
 				B2164D532B15891200F269C8 /* FullCalendarView.swift in Sources */,
 				B2A09FBB2B16CEE800393770 /* ImageLoader.swift in Sources */,
@@ -650,12 +658,13 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FlavorFeed/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = Photos;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = 6.0;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -683,12 +692,13 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FlavorFeed/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = Photos;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = 6.0;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

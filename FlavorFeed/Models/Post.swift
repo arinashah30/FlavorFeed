@@ -23,7 +23,18 @@ struct Post: Identifiable, Hashable {
         self.comments = comments
         self.caption = caption
         self.likes = likes
-        self.locations = locations
+        self.locations = [String]()
+        self.locationLink = [String]()
+        
+        for i in 0..<locations.count {
+            let comps = locations[i].components(separatedBy: "|||||")
+            self.locations.append(comps[0])
+            if comps.count >= 2 {
+                self.locationLink?.append(comps[1])
+            } else {
+                self.locationLink?.append("")
+            }
+        }
         self.recipes = recipes
         self.friend = friend
     }
@@ -43,4 +54,5 @@ struct Post: Identifiable, Hashable {
     var recipes: [Recipe?] //Recipe, if applicable [recipe_1, recipe_2, recipe_3]
 
     var friend: Friend?
+    var locationLink: [String]?
 }

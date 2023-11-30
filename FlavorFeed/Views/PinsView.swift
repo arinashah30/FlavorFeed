@@ -18,6 +18,7 @@ struct PinsView: View {
     @ObservedObject var vm: ViewModel
     @State var pins = [Post]()
     let id: String
+    var friend: Friend?
     
     
     var body: some View {
@@ -78,12 +79,24 @@ struct PinsView: View {
                 }
                 .padding(.top,1)
             }.onChange(of: vm.current_user!.pins, initial: true) { oldValue, newValue in
-                vm.fetchPosts(postIDs: newValue) { posts in
-                    self.pins = posts
-                    print(posts.count)
+                if (friend == nil) {
+                    vm.fetchPosts(postIDs: newValue) { posts in
+                        self.pins = posts
+                        print(posts.count)
+                    }
                 }
             }
             
+        }.onAppear {
+            if friend == nil {
+                vm.fetchPosts(postIDs: vm.current_user!.pins) { posts in
+                    self.pins = posts
+                }
+            } else {
+                vm.fetchPosts(postIDs: friend!.pins) { posts in
+                    self.pins = posts
+                }
+            }
         }
     }
     

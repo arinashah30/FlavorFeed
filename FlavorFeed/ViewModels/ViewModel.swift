@@ -33,6 +33,7 @@ import SwiftUI
 class ViewModel: ObservableObject {
     
     @ObservedObject var imageLoader = ImageLoader()
+    @ObservedObject var locationManager = LocationManager()
     
     @Published var current_user: User? = nil
     @Published var errorText: String? = nil
@@ -715,6 +716,7 @@ class ViewModel: ObservableObject {
                 completion(false)
             }
         }
+
         
         
         
@@ -747,11 +749,12 @@ class ViewModel: ObservableObject {
                         }
                         print("DONE")
                         completion(postList)
-                        
+ 
                     }
                 }
             }
         }
+
         
         
         func get_friends_ids(completion: @escaping ([String]) -> Void) {
@@ -763,7 +766,6 @@ class ViewModel: ObservableObject {
                 } else {
                     let data = document!.data()!
                     let friends = data["friends"] as? [String]
-                    completion(friends!)
                 }
             }
         }
@@ -792,6 +794,7 @@ class ViewModel: ObservableObject {
                 }
             }
         }
+
         
         func getFriend(userID: String, completion: @escaping ((Friend)-> Void)) {
             self.db.collection("USERS").document(userID).getDocument { document, error in
@@ -810,6 +813,56 @@ class ViewModel: ObservableObject {
                 }
             }
         }
+
+    }
+    
+    func getUserProfilePic(userIDs: [String], completion: @escaping ([URL]) -> Void) {
+        var pics: [URL] = []
+        var dispatchGroup = DispatchGroup()
+        for userID in userIDs {
+            dispatchGroup.enter()
+            self.db.collection("USERS").document(userID).getDocument { document, error in
+                defer {
+                    dispatchGroup.leave()
+                }
+                if let err = error {
+                    print("Error getting profile picture")
+                } else if let doc = document {
+                    if let data = doc.data() {
+                        pics.append(URL(string: (data["profilePicture"] as? String ?? "")) ?? URL(string: "https://static-00.iconduck.com/assets.00/person-crop-circle-icon-256x256-02mzjh1k.png")!)
+                    }
+                }
+            }
+        }
+        dispatchGroup.notify(queue: .main) {
+            completion(pics)
+        }
+    }
+    
+    func getUserPosts(userID: String, completion: @escaping ([Post]) -> Void) {
+        var postArr : [Post] = []
+        self.db.collection("USERS").document(userID).getDocument { document, error in
+            if let err = error {
+                print("Error getting user's posts \(err.localizedDescription)")
+            } else {
+                if let doc = document, let data = doc.data() {
+                    var postIDs = data["myPosts"] as? [String] ?? []
+                    self.fetchPosts(postIDs: postIDs) { posts in
+                        completion(posts)
+                    }
+                } else {
+                    print("error getting user document \(userID)")
+                }
+            }
+        }
+    }
+    
+    
+    
+    
+    func convertToComments(postID: String) -> [Comment] {
+        var comment: [Comment]?
+>>
         
         func get_friend_suggestions(completion: @escaping ([Friend]) -> Void) {
             get_friends_ids() { friends in

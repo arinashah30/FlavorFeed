@@ -66,7 +66,7 @@ struct PostView: View {
                             .foregroundColor(.black)
                     }
                 }
-                .padding([.leading, .trailing] , 20)
+                .padding([.leading, .trailing] , 15)
                 
                 TabView(selection: $tabSelection) {
                     ForEach(0..<post.images.count) { index in
@@ -182,14 +182,13 @@ struct PostView: View {
                     if showComments && post.comments.count != 0 {
                         VStack {
                             ForEach(post.comments, id: \.self) { comment in
-                                HStack{
+                                HStack {
                                     vm.imageLoader.img(url: URL(string: comment.profilePicture)!) { image in
                                             image.resizable()
                                     }
                                     .frame(width: 60, height: 60)
                                     .clipShape(.circle)
-                                    
-                                    Spacer()
+                                    .padding(.leading, 10)
                                     
                                     ZStack{
                                         RoundedRectangle(cornerRadius: 10)
@@ -198,10 +197,8 @@ struct PostView: View {
                                             .frame(maxWidth: .infinity, alignment: .leading)
                                             .multilineTextAlignment(.leading)
                                             .padding(.horizontal, 10)
-                                    }.padding(.horizontal, 15)
-                                    Spacer()
+                                    }.padding(.trailing, 10)
                                 }
-                                .padding(.horizontal, 30)
                                 
                             }
                             .padding(.vertical)

@@ -7,35 +7,6 @@
 import SwiftUI
 import MapKit
 
-struct MyView: View {
-    
-    @StateObject var locationManager = LocationManager()
-    
-    var userLatitude: String {
-        return "\(locationManager.lastLocation?.coordinate.latitude ?? 0)"
-    }
-    
-    var userLongitude: String {
-        return "\(locationManager.lastLocation?.coordinate.longitude ?? 0)"
-    }
-    
-    var body: some View {
-        VStack {
-            Text("location status: \(locationManager.statusString)")
-            HStack {
-                Text("latitude: \(userLatitude)")
-                Text("longitude: \(userLongitude)")
-            }
-        }
-    }
-}
-
-//struct MyView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        MyView()
-//    }
-//}
-
 //Annotations
 extension CLLocationCoordinate2D: Equatable, Hashable {
     public static func == (lhs: CLLocationCoordinate2D, rhs: CLLocationCoordinate2D) -> Bool {
@@ -68,33 +39,113 @@ struct mapAnnotationView: View {
 
 struct MapView: View {
     //    @State var region: MKCoordinateRegion
-    @State var restaurants: [CLLocationCoordinate2D]
+    @StateObject var locationManager = LocationManager()
+    
+    @ObservedObject var vm: ViewModel
+    @State private var posts: [Post]
+    @State private var myPins = [Pin]()
+    @Binding var showFullMap: Bool
+    
+    init(vm: ViewModel, showFullMap: Binding<Bool>, posts: [Post] = [], friendPosts: Binding<[Post]?> = Binding.constant(nil)) {
+        self.vm = vm
+        self._showFullMap = showFullMap
+        self.posts = friendPosts.wrappedValue != nil ? friendPosts.wrappedValue! : posts
+    }
+    
     var body: some View{
         VStack{
             HStack {
+                Button(action: {
+                    self.showFullMap.toggle()
+                }, label: {
+                    Image(systemName: "chevron.left")
+                        .padding()
+                })
                 Text("Your Restaurants")
                     .font(.title2)
                     .padding()
                 Spacer()
-                Image(systemName: "person.2.fill")
-                    .padding()
-            }
+            }.foregroundColor(.black)
+            
             Map() {
-                ForEach(restaurants, id: \.self) { restaurant in
-                    Annotation("", coordinate: restaurant) {
-                        mapAnnotationView(imageName: "waffles")
+                UserAnnotation()
+                ForEach(self.myPins, id: \.self) { pin in
+                    Annotation(pin.place.name, coordinate: CLLocationCoordinate2D(latitude: pin.place.geocodes.main.latitude, longitude: pin.place.geocodes.main.longitude)) {
+                        vm.imageLoader.img(url: URL(string: pin.post.images[pin.postIndex][0])) { image in
+                            image.resizable()
+                        }.aspectRatio(contentMode: .fit)
+                            .frame(width: 50)
+                            .cornerRadius(10)
                     }
+                }
+            }
+                     }.onAppear() {
+                         Task {
+                                 await self.populateAllPlaces(posts: posts)
+                    }
+                }
+    }
+    func populateAllPlaces(posts: [Post]) async {
+        for post in posts {
+            if let link = post.locationLink {
+                for i in 0..<link.count {
+                    await getPlaceFromLink(post: post, index: i)
                 }
             }
         }
     }
+    func getPlaceFromLink(post: Post, index: Int) async {
+        let urlString = "https://api.foursquare.com\(post.locationLink![index])"
+        
+        guard var urlComponents = URLComponents(string: urlString) else {
+            print("Invalid URL")
+            return
+        }
+        
+        print(urlComponents.url?.absoluteString)
+        var request = URLRequest(url: urlComponents.url!)
+        
+        // setting headers
+        request.setValue("application/json", forHTTPHeaderField: "accept")
+        request.setValue("fsq3WNw5aEH2EMpBBI2iRc4FU2sJHHQr/xJUhdvCYp/dHgI=", forHTTPHeaderField: "Authorization")
+        request.httpMethod = "GET"
+        
+        request.timeoutInterval = 5
+        
+        do {
+            let (data, _) = try await URLSession.shared.data(for: request)
+            
+            print("Data received (Size: \(data.count))")
+            
+            let decoder = JSONDecoder()
+            decoder.keyDecodingStrategy = .convertFromSnakeCase
+            
+            print("DATA: \(String(data: data, encoding: .utf8) ?? "Invalid JSON data")")
+            
+            let decodedResponse = try decoder.decode(Place.self, from: data)
+            
+            print("Places found: \(decodedResponse)")
+           
+            
+            self.myPins.append(Pin(place: decodedResponse, post: post, postIndex: index))
+            
+        } catch {
+            print("Error: \(error)")
+        }
+    }
+
+}
+
+struct Pin: Hashable {
+    let place: Place
+    let post: Post
+    let postIndex: Int
 }
 
 struct MapView_Previews: PreviewProvider {
     static var previews: some View {
         VStack {
-            MyView()
-            MapView(restaurants: [])
+            MapView(vm: ViewModel(), showFullMap: Binding.constant(true), posts: [])
         }
     }
 }

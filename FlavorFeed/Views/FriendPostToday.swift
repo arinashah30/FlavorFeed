@@ -1,26 +1,16 @@
 //
-//  MyPostTodayPreviewView.swift
+//  FriendPostToday.swift
 //  FlavorFeed
 //
-//  Created by Nicholas Candello on 11/19/23.
+//  Created by Arina Shah on 11/29/23.
 //
 
 import SwiftUI
 
-
-
-struct MyPostTodayPreviewView: View {
-    @State var post: Post
+struct FriendPostToday: View {
+    var post: Post
     
     @ObservedObject var vm: ViewModel
-    @EnvironmentObject var index: MyPostTodayPreviewVariables
-    
-    init(post: Post, vm: ViewModel) {
-        
-        self.post = post
-        self.vm = vm
-        print("NUMBER OF POST ENTRIES FOUND: \(post.images.count)")
-    }
     
     var body: some View {
         
@@ -28,13 +18,8 @@ struct MyPostTodayPreviewView: View {
             ScrollViewReader { value in
                 
                 HStack {
-                    Spacer()
-                        .frame(width: UIScreen.main.bounds.size.width * 0.37)
-                    
                     ForEach(0..<post.images.count, id: \.self) { i in
-                        Button {
-                            index.myPostIndex = i
-                        } label: {
+                        VStack {
                             ZStack {
                                 VStack {
                                     vm.imageLoader.img(url: URL(string: post.images[i][0])!) { image in
@@ -65,7 +50,7 @@ struct MyPostTodayPreviewView: View {
                                     }
                                     Spacer()
                                 }
-                                if (post.comments.count > 0 && i == index.myPostIndex) {
+                                if (post.comments.count > 0) {
                                     VStack {
                                         Spacer()
                                         ZStack(alignment: .center) {
@@ -80,34 +65,29 @@ struct MyPostTodayPreviewView: View {
                                 }
                                 
                             }.frame(width: 112, height: 160)
-//                            .task {
-//                                Task {
-//                                    self.post.location?[i] = try await vm.locationManager.getPlaceFromLink(link: post.locations[i])
-//                                }
-//                            }
+                            Text(post.caption[i])
+                                .frame(width: 112)
+                                .foregroundStyle(Color.ffSecondary)
+                                .minimumScaleFactor(0.4)
+                                .lineLimit(1)
+                                .font(.system(size: 12, weight: .semibold))
+                                
+                            Text(post.locations[i])
+                                .font(.system(size: 12, weight: .none))
+                                .foregroundStyle(Color.gray)
                         }
-                            .padding(5)
-                            .id(i)
+
                         
                     }
-                    Spacer()
-                        .frame(width: UIScreen.main.bounds.size.width * 0.37)
                 }.scrollTargetLayout()
-                .onChange(of: index.myPostIndex) { _ in
-                                    if index.myPostIndex >= 0 {
-                                        withAnimation(.easeInOut(duration: 0.5)) {
-                                                value.scrollTo(index.myPostIndex, anchor: .top)
-                                            }
-                                        }
-                                    }
                 
             }
-        }.scrollDisabled(true)
+        }
         .scrollTargetBehavior(.paging)
         
     }
 }
 
-#Preview {
-    MyPostTodayPreviewView(post: Post(id: UUID().uuidString, userID: "nac5504", images: ["https://firebasestorage.googleapis.com:443/v0/b/flavorfeed-ec138.appspot.com/o/images%2F9CCC81DF-04D0-49E0-931F-12A2411B7413.jpg?alt=media&token=833f3cad-7010-4b5a-88ec-7f09786064bd https://firebasestorage.googleapis.com:443/v0/b/flavorfeed-ec138.appspot.com/o/images%2F9CCC81DF-04D0-49E0-931F-12A2411B7413.jpg?alt=media&token=833f3cad-7010-4b5a-88ec-7f09786064bd"], date: ["11-19-2023 05:33:38 pm"], day: "11-19-2023", comments: [Comment(id: UUID().uuidString, userID: "nac5504", text: "Hello there", date: Date(), profilePicture: "https://firebasestorage.googleapis.com:443/v0/b/flavorfeed-ec138.appspot.com/o/images%2F9CCC81DF-04D0-49E0-931F-12A2411B7413.jpg?alt=media&token=833f3cad-7010-4b5a-88ec-7f09786064bd")], caption: ["WOOHOO"], likes: [], locations: ["Atlanta, GA"], recipes: [], friend: nil), vm: ViewModel())
-}
+//#Preview {
+//    FriendPostToday()
+//}

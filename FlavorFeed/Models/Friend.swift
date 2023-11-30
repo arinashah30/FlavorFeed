@@ -21,6 +21,6 @@ struct Friend: Identifiable, Hashable {
     // OPTIONAL PROPERTIES (could be empty arrays)
     var mutualFriends: [String] // array of userIDs of mutual friends (usernames)
     var pins: [String] // array of post IDs
-    var todaysPosts: [String] // friend may not have posted today.
+    var todaysPost: String? // friend may not have posted today.
     
 }
