@@ -49,7 +49,7 @@ struct MainScrollView: View {
                         }
                         Rectangle()
                             .frame(height: UIScreen.main.bounds.size.height * 0.2)
-                            .background(Color.clear)
+                            .foregroundColor(Color.clear)
                     }
                     .refreshable {
                         DispatchQueue.main.async {
