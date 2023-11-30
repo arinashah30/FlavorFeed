@@ -51,12 +51,13 @@ struct FriendProfileView: View {
                                     .frame(width: 50, height: 50)
                                     .offset(x: CGFloat(20 * index), y: 0)
                             }
-                        }.padding(.trailing, 40)
+                        }.padding(.trailing, 35)
                         
                         Text("Friends with \(friend?.mutualFriends[0] ?? ""), \(friend?.mutualFriends[1] ?? "") and \((friend?.mutualFriends.count ?? 0) - 2) more")
                             .frame(maxWidth: .infinity)
                             .background(Color.clear)
                             .foregroundColor(.gray)
+                            .padding(.horizontal, 5)
                         
                     }.frame(maxWidth: .infinity, alignment: .leading)
                     VStack {
@@ -71,7 +72,7 @@ struct FriendProfileView: View {
                     .background(RoundedRectangle(cornerRadius: 25.0).fill(Color(.systemGray6)).frame(maxWidth: .infinity))
                 }.padding()
 
-                PinsView(vm: vm, id: (friend?.id ?? ""), friend: friend)
+                PinsView(vm: vm, id: (friend?.id ?? ""), friend: friend).padding(.horizontal, 10)
                 Button(action: {
                     if (posts != nil) {
                         showFullMap.toggle()
