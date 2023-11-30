@@ -8,8 +8,14 @@
 import SwiftUI
 
 struct ContentView: View {
-    @ObservedObject var vm: ViewModel = ViewModel()
+    @ObservedObject var vm: ViewModel
     @AppStorage("log_Status") var logStatus = false
+    @Binding var isActive: Bool
+    
+    init(isActive: Binding<Bool>) {
+        self.vm = ViewModel(isActive: isActive)
+        self._isActive = isActive
+    }
     
     var body: some View {
         if logStatus == true && vm.auth.currentUser != nil {
@@ -17,7 +23,9 @@ struct ContentView: View {
                 .edgesIgnoringSafeArea(.bottom)
         } else {
             NavigationStack {
-                LoginView(vm: vm)
+                LoginView(vm: vm).onAppear {
+                    isActive = true
+                }
             }
         }
     }
@@ -25,5 +33,5 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
+    ContentView(isActive: Binding.constant(true))
 }

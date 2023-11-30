@@ -27,6 +27,7 @@
 		668CD51F2AEC205300A64DF1 /* PinsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 668CD51E2AEC205300A64DF1 /* PinsView.swift */; };
 		668CD5212AF03F2F00A64DF1 /* UserListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 668CD5202AF03F2F00A64DF1 /* UserListView.swift */; };
 		669C94B02AE98C770075BE66 /* ToolBars.swift in Sources */ = {isa = PBXBuildFile; fileRef = 669C94AF2AE98C770075BE66 /* ToolBars.swift */; };
+		66ABE7F62B187F0100323B64 /* SplashPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66ABE7F52B187F0100323B64 /* SplashPage.swift */; };
 		66BD36BD2B16534E004CCD20 /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21292502ACD21500064AE5D /* ViewModel.swift */; };
 		66D23C692B180B210006F5D1 /* SelfProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66D23C682B180B210006F5D1 /* SelfProfileView.swift */; };
 		66D4A3FA2B183F1600B34B9F /* FriendPostToday.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66D4A3F92B183F1600B34B9F /* FriendPostToday.swift */; };
@@ -109,6 +110,7 @@
 		668CD51E2AEC205300A64DF1 /* PinsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PinsView.swift; sourceTree = "<group>"; };
 		668CD5202AF03F2F00A64DF1 /* UserListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserListView.swift; sourceTree = "<group>"; };
 		669C94AF2AE98C770075BE66 /* ToolBars.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToolBars.swift; sourceTree = "<group>"; };
+		66ABE7F52B187F0100323B64 /* SplashPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashPage.swift; sourceTree = "<group>"; };
 		66D23C682B180B210006F5D1 /* SelfProfileView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelfProfileView.swift; sourceTree = "<group>"; };
 		66D4A3F92B183F1600B34B9F /* FriendPostToday.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendPostToday.swift; sourceTree = "<group>"; };
 		66F125552B0D4D1000CB63A9 /* LandingPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LandingPage.swift; sourceTree = "<group>"; };
@@ -194,6 +196,7 @@
 				082052E22B06E40F007BE0CE /* FriendProfileView.swift */,
 				668CD51A2AEC1D6F00A64DF1 /* MainScrollView.swift */,
 				48349B1F2ACCCAEF00F672E3 /* CalendarView.swift */,
+				66ABE7F52B187F0100323B64 /* SplashPage.swift */,
 				B2164D522B15891200F269C8 /* FullCalendarView.swift */,
 				B2164D542B15895000F269C8 /* CalendarItemView.swift */,
 				48349B212ACCCAF600F672E3 /* MapView.swift */,
@@ -477,6 +480,7 @@
 				B2BACCCF2ACF132000F942A3 /* ContentView.swift in Sources */,
 				B23FF6B82B0AC3FE00F27AF2 /* MyPostTodayPreviewView.swift in Sources */,
 				66F125562B0D4D1000CB63A9 /* LandingPage.swift in Sources */,
+				66ABE7F62B187F0100323B64 /* SplashPage.swift in Sources */,
 				664B8F062AC5F1AA001E8C7F /* FlavorFeedApp.swift in Sources */,
 				A91C89B22AFEAB01002146FF /* LocationManager.swift in Sources */,
 				BF0C62DD2ADF43A6003A7553 /* SignupView.swift in Sources */,
@@ -658,7 +662,6 @@
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = 6.0;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
@@ -692,7 +695,6 @@
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = 6.0;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;

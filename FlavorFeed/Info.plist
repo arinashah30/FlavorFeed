@@ -15,5 +15,12 @@
 	</array>
 	<key>FirebaseAppDelegateProxyEnabled</key>
 	<string>YES</string>
+	<key>UILaunchScreen</key>
+	<dict>
+		<key>UIImageRespectsSafeAreaInsets</key>
+		<true/>
+		<key>UIColorName</key>
+		<string>splashcolor</string>
+	</dict>
 </dict>
 </plist>
