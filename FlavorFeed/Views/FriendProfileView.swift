@@ -62,7 +62,7 @@ struct FriendProfileView: View {
                     .padding()
                     .background(RoundedRectangle(cornerRadius: 25.0).fill(Color(.systemGray6)).frame(maxWidth: .infinity))
                 }.padding()
-                
+
                 PinsView(vm: vm, id: (friend?.id ?? ""), friend: friend)
                 MapView(restaurants: [CLLocationCoordinate2D(latitude: 43, longitude: 100), CLLocationCoordinate2D(latitude: -10, longitude: 30), CLLocationCoordinate2D(latitude: 20, longitude: -50), CLLocationCoordinate2D(latitude: 17, longitude: -40)])
                     .frame(height: 400)

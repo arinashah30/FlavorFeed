@@ -33,6 +33,7 @@ import SwiftUI
 class ViewModel: ObservableObject {
     
     @ObservedObject var imageLoader = ImageLoader()
+    @ObservedObject var locationManager = LocationManager()
     
     @Published var current_user: User? = nil
     @Published var errorText: String? = nil

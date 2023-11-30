@@ -60,6 +60,7 @@
 		B2BACCCF2ACF132000F942A3 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2BACCCE2ACF132000F942A3 /* ContentView.swift */; };
 		B2C5E46C2AF2A476000EA620 /* Friend.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C5E46B2AF2A476000EA620 /* Friend.swift */; };
 		B2C5E46E2AF2AF02000EA620 /* Recipe.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C5E46D2AF2AF02000EA620 /* Recipe.swift */; };
+		B2ECE1B12B180885001A7305 /* PickRestaurantView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2ECE1B02B180885001A7305 /* PickRestaurantView.swift */; };
 		B2FCB8FF2AC63AA200865FCF /* FFColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2FCB8FE2AC63AA100865FCF /* FFColors.swift */; };
 		B624B05F2B058650007B43E5 /* RecipeFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B624B05E2B058650007B43E5 /* RecipeFormView.swift */; };
 		B6903C972AC8D2FF009CCE41 /* AddFriendsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6903C962AC8D2FF009CCE41 /* AddFriendsView.swift */; };
@@ -126,6 +127,7 @@
 		B2BACCD32ACF161100F942A3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		B2C5E46B2AF2A476000EA620 /* Friend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Friend.swift; sourceTree = "<group>"; };
 		B2C5E46D2AF2AF02000EA620 /* Recipe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Recipe.swift; sourceTree = "<group>"; };
+		B2ECE1B02B180885001A7305 /* PickRestaurantView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickRestaurantView.swift; sourceTree = "<group>"; };
 		B2FCB8FE2AC63AA100865FCF /* FFColors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FFColors.swift; sourceTree = "<group>"; };
 		B624B05E2B058650007B43E5 /* RecipeFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeFormView.swift; sourceTree = "<group>"; };
 		B6903C962AC8D2FF009CCE41 /* AddFriendsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFriendsView.swift; sourceTree = "<group>"; };
@@ -184,6 +186,7 @@
 				B2BACCCE2ACF132000F942A3 /* ContentView.swift */,
 				BF0C62DC2ADF43A6003A7553 /* SignupView.swift */,
 				B27054502B06CFBD00BC7174 /* PublishPostView.swift */,
+				B2ECE1B02B180885001A7305 /* PickRestaurantView.swift */,
 				B23FF6B72B0AC3FE00F27AF2 /* MyPostTodayPreviewView.swift */,
 				66D4A3F92B183F1600B34B9F /* FriendPostToday.swift */,
 				B27054492B06B5A300BC7174 /* CameraView.swift */,
@@ -448,6 +451,7 @@
 			files = (
 				48349B202ACCCAEF00F672E3 /* CalendarView.swift in Sources */,
 				48349B222ACCCAF600F672E3 /* MapView.swift in Sources */,
+				B2ECE1B12B180885001A7305 /* PickRestaurantView.swift in Sources */,
 				48349B1C2ACCCADA00F672E3 /* BioView.swift in Sources */,
 				082052E32B06E40F007BE0CE /* FriendProfileView.swift in Sources */,
 				668CD5212AF03F2F00A64DF1 /* UserListView.swift in Sources */,
@@ -646,7 +650,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"FlavorFeed/Preview Content\"";
-				DEVELOPMENT_TEAM = W25VYB4Y9F;
+				DEVELOPMENT_TEAM = 3U7XP56VTS;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FlavorFeed/Info.plist;
@@ -680,7 +684,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"FlavorFeed/Preview Content\"";
-				DEVELOPMENT_TEAM = W25VYB4Y9F;
+				DEVELOPMENT_TEAM = 3U7XP56VTS;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FlavorFeed/Info.plist;

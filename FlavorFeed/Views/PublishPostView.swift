@@ -11,19 +11,20 @@ struct PublishPostView: View {
     @ObservedObject var vm: ViewModel
     
     @Binding var showCameraViewSheet: Bool
+    @State private var showPickRestaurantSheet = false
     @State private var showSelfieFirst = false
     
     @State private var caption: String = ""
     @State private var isShowingRecipeForm: Bool = false
     @State private var recipe: Recipe?
+    @State private var restaurant: Place?
     
     var body: some View {
         VStack {
             ZStack(alignment: .center) {
                 HStack {
                     Button(action: {
-                        vm.bothImagesCaptured = false
-                        
+                        self.showCameraViewSheet = false
                     }, label: {
                         Image(systemName: "chevron.left")
                             .frame(width: 15.07, height: 8.64)
@@ -157,7 +158,7 @@ struct PublishPostView: View {
                     }
                     
                     Button {
-                        //
+                        self.showPickRestaurantSheet.toggle()
                     } label: {
                         HStack {
                             Image("storefront")
@@ -165,7 +166,7 @@ struct PublishPostView: View {
                                 .aspectRatio(contentMode: .fill)
                                 .frame(width: 20, height: 20)
                             
-                            Text("Add Restaurant")
+                            Text(restaurant == nil ? "Add Restaurant" : restaurant!.name)
                                 .foregroundStyle(Color.ffSecondary)
                                 .font(.system(size: 14))
                         }
@@ -179,7 +180,13 @@ struct PublishPostView: View {
                 
                 Button(action: {
                     // PUBLISH POST
-                    vm.publish_post(caption: caption, location: "Atlanta, GA", recipe: recipe) { close in
+                    var locationString = ""
+                    if let restaurant = restaurant {
+                        locationString = "\(restaurant.name)|||||\(restaurant.link)"
+                    } else {
+                        locationString = "Atlanta, GA"
+                    }
+                    vm.publish_post(caption: caption, location: locationString, recipe: recipe) { close in
                         print("Recipe uploaded: \((!close).description)")
                         if !close {
                             vm.refreshFeed() {
@@ -215,7 +222,10 @@ struct PublishPostView: View {
             vm.photo_1 = nil
             vm.photo_2 = nil
             vm.bothImagesCaptured = false
-        }
+        }.sheet(isPresented: $showPickRestaurantSheet, content: {
+            PickRestaurantView(vm: vm, restaurant: $restaurant)
+                
+        })
         .sheet(isPresented: $isShowingRecipeForm) {
             RecipeFormView(recipe: $recipe, isPresentingRecipeForm: $isShowingRecipeForm)
         }
