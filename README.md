@@ -21,3 +21,5 @@ Discover the joy of sharing meals with FlavorFeed, where "phone eats first" is a
 
 
 **Winner of Georgia Tech iOS Club Demo Day Fall 2023!**
+
+View our demo day presentation here: https://youtu.be/mJCetpK-TMw
